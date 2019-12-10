@@ -1,31 +1,40 @@
 package com.warehouse.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class StockAmount {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stockAmountId;
 
+    @NotNull
     private Integer productId;
 
+    @NotNull
     private Integer categoryId;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
+    @NotNull
     private Measure measure;
 
+    @NotNull
     private Double amount;
+
+    @NotNull
+    private Boolean available;
 
     public StockAmount() {
     }
 
-    public StockAmount(Integer productId, Integer categoryId, Measure measure, Double amount) {
+    public StockAmount(Integer productId, Integer categoryId, Measure measure, Double amount, Boolean available) {
         this.productId = productId;
         this.categoryId = categoryId;
         this.measure = measure;
         this.amount = amount;
+        this.available = available;
     }
 
     public Integer getStockAmountId() {
@@ -66,5 +75,13 @@ public class StockAmount {
 
     public void setAmount(Double amount) {
         this.amount = amount;
+    }
+
+    public Boolean getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(Boolean available) {
+        this.available = available;
     }
 }
