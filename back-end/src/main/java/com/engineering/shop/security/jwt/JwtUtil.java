@@ -103,7 +103,7 @@ public class JwtUtil implements Serializable {
                 .setSubject(userTokenInformation.getEmail())
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(privateKey, SIGNATURE_ALGORITHM).compact();
+                .signWith(SIGNATURE_ALGORITHM,privateKey).compact();
     }
 
 
