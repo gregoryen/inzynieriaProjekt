@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class UserToUserTokenInformationTransformer implements Transformer<User, UserTokenInformation> {
     @Override
     public UserTokenInformation transform(User user) {
-        List<String> roles = user.getUserRoles().stream().map(Object::toString).collect(Collectors.toList());
+        List<String> roles = user.getRoles().stream().map(Object::toString).collect(Collectors.toList());
         return UserTokenInformation.builder()
                 .email(user.getEmail())
                 .name(user.getFirstName() + " " + user.getLastName())

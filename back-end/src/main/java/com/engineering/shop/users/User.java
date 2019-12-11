@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+
 import java.util.Set;
 
 @AllArgsConstructor
@@ -14,13 +15,8 @@ import java.util.Set;
 @Entity
 @Table(name = "USERS")
 public class User implements Serializable {
-    @Singular
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "USER_ROLES",
-            joinColumns = {@JoinColumn(name = "user_id")},
-            inverseJoinColumns = {@JoinColumn(name = "role_id")})
-    Set<UserRole> userRoles;
-    int indexNumber;
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -35,6 +31,15 @@ public class User implements Serializable {
     @NotBlank
     private String lastName;
 
+    @Singular
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "users_roles",
+            joinColumns = @JoinColumn(
+                    name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(
+                    name = "role_id", referencedColumnName = "id"))
+    Set<Role> roles;
     public User() {
     }
 }
