@@ -16,21 +16,20 @@ public class Supply {
     @NotNull
     private Supplier supplier;
 
-    @JoinTable
-    @OneToMany
+    @NotNull
+    private LocalDateTime deliveryDateTime;
+
+    @ManyToMany
     @NotNull
     private List<StockAmount> stockAmounts;
-
-    @NotNull
-    private LocalDateTime deliveryDate;
 
     public Supply()  {
     }
 
-    public Supply(Supplier supplier, List<StockAmount> stockAmounts, LocalDateTime deliveryDate) {
+    public Supply(Supplier supplier, LocalDateTime deliveryDateTime, List<StockAmount> stockAmounts) {
         this.supplier = supplier;
+        this.deliveryDateTime = deliveryDateTime;
         this.stockAmounts = stockAmounts;
-        this.deliveryDate = deliveryDate;
     }
 
     public Integer getSupplyId() {
@@ -49,19 +48,19 @@ public class Supply {
         this.supplier = supplier;
     }
 
-    public List<StockAmount> getStockAmounts() {
-        return stockAmounts;
+//    public List<StockAmount> getStockAmounts() {
+//        return stockAmounts;
+//    }
+//
+//    public void setStockAmounts(List<StockAmount> stockAmounts) {
+//        this.stockAmounts = stockAmounts;
+//    }
+
+    public LocalDateTime getDeliveryDateTime() {
+        return deliveryDateTime;
     }
 
-    public void setStockAmounts(List<StockAmount> stockAmounts) {
-        this.stockAmounts = stockAmounts;
-    }
-
-    public LocalDateTime getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(LocalDateTime deliveryDate) {
-        this.deliveryDate = deliveryDate;
+    public void setDeliveryDateTime(LocalDateTime deliveryDateTime) {
+        this.deliveryDateTime = deliveryDateTime;
     }
 }
