@@ -105,6 +105,12 @@
             <version>1.5.2</version>
             <scope>compile</scope>
         </dependency>
+       <!-- Add to extract file extension-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.6</version>
+        </dependency>
 
     </dependencies>
 
