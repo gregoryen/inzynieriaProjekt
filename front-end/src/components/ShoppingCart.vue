@@ -1,6 +1,6 @@
 <template>
   <div class="shoppingCart">
-    <p> koszyczek </p>
+    <b-button>Button</b-button>
   </div>
 </template>
 
