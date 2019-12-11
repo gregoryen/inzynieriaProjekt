@@ -7,11 +7,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/categories")
-public class ControllerCategories {
+public class CategoriesController {
     private CategoriesRepo categoriesRepo;
 
     @Autowired
-    public ControllerCategories(CategoriesRepo categoriesRepo) {
+    public CategoriesController(CategoriesRepo categoriesRepo) {
         this.categoriesRepo = categoriesRepo;
     }
 
