@@ -2,6 +2,8 @@ package com.engineering.shop.fileUpload.controller;
 
 import com.engineering.shop.fileUpload.payload.UploadFileResponse;
 import com.engineering.shop.fileUpload.service.FileStorageService;
+import com.engineering.shop.imageProducts.ImageProduct;
+import com.engineering.shop.imageProducts.ImageProductRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,8 @@ public class FileController {
 
     @Autowired
     private FileStorageService fileStorageService;
+    @Autowired
+    private ImageProductRepo imageProductRepo;
 
     @PostMapping("/uploadFile")
     public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
@@ -48,10 +52,11 @@ public class FileController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+    @GetMapping("/downloadFile")
+    public ResponseEntity<Resource> downloadFile(@RequestParam Integer idProduct, HttpServletRequest request) {
         // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+       List<ImageProduct> imageProducts = imageProductRepo.findByIdProduct(idProduct);
+        Resource resource = fileStorageService.loadFileAsResource(imageProducts.get(1).getImageName());
 
         // Try to determine file's content type
         String contentType = null;

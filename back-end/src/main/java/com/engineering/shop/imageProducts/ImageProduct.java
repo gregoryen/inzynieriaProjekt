@@ -15,11 +15,15 @@ public class ImageProduct {
     private String extension;
 
     public ImageProduct() {
-        this.idProduct=-1;
+        this.idProduct = -1;
     }
 
     public ImageProduct(String extension) {
         this();
         this.extension = extension;
+    }
+
+    public String getImageName() {
+        return this.id.toString() + "." + this.extension;
     }
 }

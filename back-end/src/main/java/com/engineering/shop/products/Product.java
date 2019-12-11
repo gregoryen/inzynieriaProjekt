@@ -1,13 +1,14 @@
 package com.engineering.shop.products;
 
+import com.engineering.shop.imageProducts.ImageProduct;
+import javafx.scene.paint.ImagePattern;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,6 +25,4 @@ public class Product {
     private String isbn;
     private String ean13;
     private boolean active;
-
-
 }

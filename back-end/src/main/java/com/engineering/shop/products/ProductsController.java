@@ -2,6 +2,8 @@ package com.engineering.shop.products;
 
 import com.engineering.shop.fileUpload.controller.FileController;
 import com.engineering.shop.fileUpload.service.FileStorageService;
+import com.engineering.shop.imageProducts.ImageProduct;
+import com.engineering.shop.imageProducts.ImageProductRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,7 @@ public class ProductsController {
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
     @Autowired
-    private FileStorageService fileStorageService;
+    private ImageProductRepo imageProductRepo;
 
     private ProductsRepo productsRepo;
 
