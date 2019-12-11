@@ -1,10 +1,10 @@
-package com.engineering.shop;
+package com.example.teamE;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ShopApplicationTests {
+class RestApiApplicationTests {
 
     @Test
     void contextLoads() {
