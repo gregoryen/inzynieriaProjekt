@@ -1,6 +1,7 @@
 package com.warehouse.models;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class Supplier {
@@ -8,12 +9,16 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer supplierId;
 
+    @NotNull
     private String firstname;
 
+    @NotNull
     private String lastname;
 
+    @NotNull
     private String company;
 
+    @NotNull
     private String phoneNumber;
 
     public Supplier() {
