@@ -1,0 +1,41 @@
+1. StockAmountController
+
+POST - /stock_amounts/add
+
+{
+   "productId":9001,
+   "categoryId":1001,
+   "measure":"AMOUNT",
+   "amount":100.0
+}
+
+PATCH - /stock_amounts/decrease (Content-Type: application/json)
+PATCH - /stock_amounts/increase (Content-Type: application/json)
+
+{
+   "stockAmountId":1,
+   "amount":500.0
+}
+
+
+GET - /stock_amounts/availability/{available}
+
+2. Report
+
+POST - /reports/create (Content-Type: application/json)
+
+{
+   "dateTimes": {
+      "startDateTime": "2019-12-11 19:15:16",
+      "endDateTime": "2019-12-11 19:15:16",
+   }
+}
+
+POST - /reports/create (Content-Type: application/json)
+
+{
+   "filepathAndReportId": {
+      "filepath": "C:\Users\Mój komputer\Desktop\report.csv",
+      "reportId": "1",
+   }
+}
