@@ -7,6 +7,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import HelloWorld from './components/HelloWorld'
 import ShoppingCart from './components/ShoppingCart'
+import OrderSummary from './components/OrderSummary'
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -22,6 +23,10 @@ const router = new VueRouter({
     {
       path: '/shoppingCart',
       component: ShoppingCart
+    },
+    {
+      path: '/orderSummary',
+      component: OrderSummary
     }
   ]
 })
