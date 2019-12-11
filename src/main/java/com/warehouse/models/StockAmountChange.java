@@ -13,31 +13,30 @@ public class StockAmountChange {
     private Integer stockAmountChangeId;
 
     @NotNull
-    private Double amountChange;
+    private Double previousAmount;
+
+    @NotNull
+    private Double currentAmount;
 
     @NotNull
     private LocalDateTime changeDateTime;
 
     @NotNull
-    private String changed;
+    private String changeInfo;
 
-    @ManyToMany
+    @OneToOne
     @NotNull
-    private List<StockAmount> stockAmounts;
-
-    @ManyToMany
-    @NotNull
-    private List<Report> reports;
+    private StockAmount stockAmount;
 
     public StockAmountChange() {
     }
 
-    public StockAmountChange(Double amountChange, LocalDateTime changeDateTime, String changed, List<StockAmount> stockAmounts, List<Report> reports) {
-        this.amountChange = amountChange;
+    public StockAmountChange(Double previousAmount, Double currentAmount, LocalDateTime changeDateTime, String changeInfo, StockAmount stockAmount) {
+        this.previousAmount = previousAmount;
+        this.currentAmount = currentAmount;
         this.changeDateTime = changeDateTime;
-        this.changed = changed;
-        this.stockAmounts = stockAmounts;
-        this.reports = reports;
+        this.changeInfo = changeInfo;
+        this.stockAmount = stockAmount;
     }
 
     public Integer getStockAmountChangeId() {
@@ -48,12 +47,20 @@ public class StockAmountChange {
         this.stockAmountChangeId = stockAmountChangeId;
     }
 
-    public Double getAmountChange() {
-        return amountChange;
+    public Double getPreviousAmount() {
+        return previousAmount;
     }
 
-    public void setAmountChange(Double amountChange) {
-        this.amountChange = amountChange;
+    public void setPreviousAmount(Double previousAmount) {
+        this.previousAmount = previousAmount;
+    }
+
+    public Double getCurrentAmount() {
+        return currentAmount;
+    }
+
+    public void setCurrentAmount(Double currentAmount) {
+        this.currentAmount = currentAmount;
     }
 
     public LocalDateTime getChangeDateTime() {
@@ -64,27 +71,19 @@ public class StockAmountChange {
         this.changeDateTime = changeDateTime;
     }
 
-    public String getChanged() {
-        return changed;
+    public String getChangeInfo() {
+        return changeInfo;
     }
 
-    public void setChanged(String changed) {
-        this.changed = changed;
+    public void setChangeInfo(String changeInfo) {
+        this.changeInfo = changeInfo;
     }
 
-    public List<StockAmount> getStockAmounts() {
-        return stockAmounts;
+    public StockAmount getStockAmount() {
+        return stockAmount;
     }
 
-    public void setStockAmounts(List<StockAmount> stockAmounts) {
-        this.stockAmounts = stockAmounts;
-    }
-
-    public List<Report> getReports() {
-        return reports;
-    }
-
-    public void setReports(List<Report> reports) {
-        this.reports = reports;
+    public void setStockAmount(StockAmount stockAmount) {
+        this.stockAmount = stockAmount;
     }
 }

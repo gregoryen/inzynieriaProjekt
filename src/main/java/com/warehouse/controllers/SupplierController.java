@@ -29,11 +29,6 @@ public class SupplierController {
         return supplierRepository.findBySupplierId(supplierId);
     }
 
-//    @GetMapping(path = "/availability/{available}")
-//    public Optional<Supplier> getByAvailability(@PathVariable Boolean available) {
-//        return supplierRepository.findByAvailable(available);
-//    }
-
     @PostMapping(path = "/add")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
