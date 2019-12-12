@@ -51,13 +51,13 @@ public class FileStorageService {
 
             String extension = FilenameUtils.getExtension(fileName);
             ImageProduct imageProduct = imageProductRepo.save(new ImageProduct(extension));
-            fileName = imageProduct.getId().toString()+"."+extension;
+            String localFileName = imageProduct.getId().toString()+"."+extension;
 
             // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetLocation = this.fileStorageLocation.resolve(localFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            return imageProduct.getId().toString();
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }

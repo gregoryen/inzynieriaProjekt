@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface ImageProductRepo extends CrudRepository<ImageProduct, Integer> {
-    List<ImageProduct> findByIdProduct(Integer idProduct);
 }

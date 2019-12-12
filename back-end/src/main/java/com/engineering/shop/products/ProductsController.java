@@ -1,16 +1,15 @@
 package com.engineering.shop.products;
 
 import com.engineering.shop.fileUpload.controller.FileController;
-import com.engineering.shop.fileUpload.service.FileStorageService;
 import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
+import com.engineering.shop.products.exception.ProductCreateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -63,9 +62,39 @@ public class ProductsController {
         return productsRepo.save(product);
     }*/
 
-    @PostMapping
+/*    @PostMapping
     public Product addProduct(@RequestBody Product product) {
         return productsRepo.save(product);
+    }*/
+
+    @PostMapping
+    public Product addProduct(@RequestBody ProductImageHolder productImageHolder) {
+        Product product = productImageHolder.getProduct();
+        Integer mainImage = productImageHolder.getMainImage();
+        List<Integer> additionalImages = productImageHolder.getAdditionalImages();
+
+        if (imageProductRepo.findById(mainImage).isEmpty()) {
+            throw new ProductCreateException("Sorry, error occurred while saving the images attached to the product. Please try again");
+        }
+        for (Integer image : additionalImages) {
+            if (imageProductRepo.findById(image).isEmpty()) {
+                throw new ProductCreateException("Sorry, error occurred while saving the images attached to the product. Please try again");
+            }
+        }
+
+        Optional<ImageProduct> temp = imageProductRepo.findById(mainImage);
+        temp.get().setIdProduct(product.getId());
+        imageProductRepo.save(temp.get());
+
+        product.setMainImageId(mainImage);
+
+        for (Integer image : additionalImages) {
+            temp = imageProductRepo.findById(image);
+            temp.get().setIdProduct(product.getId());
+            imageProductRepo.save(temp.get());
+        }
+        return productsRepo.save(product);
+     //   return product;
     }
 
     @PutMapping
