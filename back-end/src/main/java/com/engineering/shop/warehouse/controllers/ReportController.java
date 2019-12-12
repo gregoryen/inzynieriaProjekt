@@ -1,4 +1,4 @@
-package com.warehouse.controllers;
+package com.engineering.shop.warehouse.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
