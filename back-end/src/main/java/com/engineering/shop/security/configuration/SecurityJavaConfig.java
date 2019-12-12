@@ -66,8 +66,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
-                .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**","/downloadAdditionalImage"
-                        ,"/downloadMainImage").permitAll()
+                .antMatchers("/images/**", "/products/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()

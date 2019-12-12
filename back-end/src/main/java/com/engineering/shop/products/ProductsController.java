@@ -42,25 +42,6 @@ public class ProductsController {
         return productsRepo.findByCategoryId(categoryId);
     }
 
-/*    @PostMapping
-    public Product addProduct(@RequestParam("file") MultipartFile file, @RequestParam("product") Product product) {
-        String fileName = fileStorageService.storeFile(file);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-
-*//*        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());*//*
-        return productsRepo.save(product);
-    }*/
-
-/*    @PostMapping
-    public Product addProduct(@RequestBody Product product) {
-        return productsRepo.save(product);
-    }*/
-
     @PostMapping
     public Product addProduct(@RequestBody ProductImageHolder productImageHolder) {
         Product product = productImageHolder.getProduct();

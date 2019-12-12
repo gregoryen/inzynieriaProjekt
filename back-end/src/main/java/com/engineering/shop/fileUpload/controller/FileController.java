@@ -24,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/images")
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
@@ -39,17 +40,21 @@ public class FileController {
         this.imageProductRepo = imageProductRepo;
     }
 
-    @PostMapping("/uploadFile")
+    @PostMapping("/uploadImage")
     public ImageProduct uploadFile(@RequestParam("file") MultipartFile file) {
         return fileStorageService.storeFile(file);
     }
 
-    @PostMapping("/uploadMultipleFiles")
-    public List<ImageProduct> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+    //NIEZALECANA (rozwaz uzycie /uploadImage)
+    //nie wiem dlaczego ale jak sie nie da praamtru files to w prawdzie nie dodoa zadnych plikow
+    //ale zwroci 200 jakby wszystko bylo dobrze
+    @PostMapping("/uploadMultipleImages")
+    public List<ImageProduct> uploadMultipleFiles(@RequestParam(name="files") MultipartFile[] files) {
         return Arrays.stream(files)
                 .map(this::uploadFile)
                 .collect(Collectors.toList());
     }
+
 
     @GetMapping("/downloadAdditionalImage")
     public ResponseEntity<Resource> downloadFileById(@RequestParam Integer idImage, HttpServletRequest request) {
