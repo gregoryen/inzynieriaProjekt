@@ -3,6 +3,7 @@ package com.warehouse.controllers;
 import com.warehouse.models.Supplier;
 import com.warehouse.repositories.SupplierRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,9 @@ public class SupplierController {
     }
 
     @GetMapping(path = "/{supplierId}")
-    public Optional<Supplier> getBySupplierId(@PathVariable Integer supplierId) {
-        return supplierRepository.findBySupplierId(supplierId);
+    public Supplier getBySupplierId(@PathVariable Integer supplierId) {
+        Supplier supplier = supplierRepository.findBySupplierId(supplierId).orElseThrow(() -> new ResourceNotFoundException("Supplier not found"));
+        return supplier;
     }
 
     @PostMapping(path = "/add")
