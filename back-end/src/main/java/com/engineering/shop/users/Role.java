@@ -1,19 +1,25 @@
 package com.engineering.shop.users;
 
 import lombok.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Set;
+
 
 @Data
 @Entity
 public class Role {
 
+
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
+    @Column(unique = true)
     private String name;
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
@@ -25,10 +31,17 @@ public class Role {
                     name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "privilege_id", referencedColumnName = "id"))
-    private Set<Privilege> privileges;
+    private Collection<Privilege> privileges;
     public Role(String name) {
         this.name = name;
-        privileges = Set.of(new Privilege ("READ_PRIVILEGE"));
+    }
+    public Role(String name, Set<Privilege> privileges) {
+        this.name = name;
+        this.privileges = privileges;
+    }
+    public Role()
+    {
+
     }
 }
 

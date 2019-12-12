@@ -7,6 +7,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
+import java.util.Collection;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -39,7 +40,7 @@ public class User implements Serializable {
                     name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
-    Set<Role> roles;
+    Collection<Role> roles;
     public User() {
     }
 }
