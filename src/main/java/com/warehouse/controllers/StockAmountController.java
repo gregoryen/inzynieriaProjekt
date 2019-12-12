@@ -117,6 +117,9 @@ public class StockAmountController {
 
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();
+        if (oldAmount == null) {
+            oldAmount = 0.0;
+        }
         if (newAmount > 0.0) {
             stockAmount.setAmount(oldAmount + newAmount);
             if (!stockAmount.isAvailable()) {
@@ -139,6 +142,9 @@ public class StockAmountController {
                 orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with product id"));
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();
+        if (oldAmount == null) {
+            throw new UnprocessableEntityException("old amount is null");
+        }
         if (oldAmount - newAmount >= 0.0) {
             stockAmount.setAmount(oldAmount - newAmount);
             if (stockAmount.isAvailable() && stockAmount.getAmount() == 0.0) {
