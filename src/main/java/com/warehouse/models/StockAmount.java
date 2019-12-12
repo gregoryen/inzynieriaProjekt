@@ -20,7 +20,6 @@ public class StockAmount {
     @NotNull
     private Measure measure;
 
-    @NotNull
     private Double amount;
 
     @NotNull

@@ -100,8 +100,6 @@ public class ReportController {
                 stringBuffer.append("\""+changeInfo+"\"");
                 stringBuffer.append(separator);
                 stringBuffer.append("\""+stockAmountChange.getStockAmount().getProductId()+"\"");
-                stringBuffer.append(separator);
-                stringBuffer.append("\""+stockAmountChange.getStockAmount().getCategoryId()+"\"");
                 bufferedWriter.write(stringBuffer.toString());
                 bufferedWriter.newLine();
             }

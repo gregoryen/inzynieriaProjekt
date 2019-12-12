@@ -1,5 +1,7 @@
 package com.warehouse.controllers;
 
+import com.google.common.collect.Iterables;
+import com.warehouse.exceptions.UnprocessableEntityException;
 import com.warehouse.models.StockAmount;
 import com.warehouse.repositories.StockAmountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class StockAmountController {
     @GetMapping(path = "/all")
     public Iterable<StockAmount> getAll() {
         Iterable<StockAmount> stockAmounts = stockAmountRepository.findAll();
-        if (stockAmounts == null) {
+        if (Iterables.size(stockAmounts) == 0) {
             throw new ResourceNotFoundException("There are not any stock amounts");
         }
         return stockAmounts;
@@ -32,9 +34,7 @@ public class StockAmountController {
     @GetMapping(path = "/{stockAmountId}")
     public Optional<StockAmount> getByStockAmountId(@PathVariable Integer stockAmountId) {
         Optional<StockAmount> optionalStockAmount = stockAmountRepository.findStockAmountByStockAmountId(stockAmountId);
-        if (optionalStockAmount == null) {
-            throw new ResourceNotFoundException("Stock amount not found with provided stock amount id");
-        }
+        optionalStockAmount.orElseThrow(() -> new ResourceNotFoundException("Stock amount not found with provided stock amount id"));
         return optionalStockAmount;
     }
 
@@ -42,37 +42,48 @@ public class StockAmountController {
     public Double getAmountByProductId(@PathVariable Integer productId) {
         StockAmount stockAmount = stockAmountRepository.findStockAmountByProductId(productId).
                 orElseThrow(() -> new ResourceNotFoundException("Stock amount not found with provided product id"));
-        return stockAmount.getAmount();
+        Double amount = stockAmount.getAmount();
+        if (amount == null) {
+            throw new ResourceNotFoundException("Amount of stock amount with provided product id equals null");
+        }
+        return amount;
     }
 
-    // "przed usunięciem produktu moglibyśmy jeszcze sprawdzić, czy jest on jeszcze na magazynie"
-    @GetMapping(path = "/products/availability/{productId}")
+    @GetMapping(path = "/products/avail/{productId}")
     public Boolean isAvailableByProductId(@PathVariable Integer productId) {
         StockAmount stockAmount = stockAmountRepository.findStockAmountByProductId(productId).
                 orElseThrow(() -> new ResourceNotFoundException("Stock amount not found with provided product id"));
-        return stockAmount.isAvailable();
+        Boolean available = stockAmount.isAvailable();
+        if (available == null) {
+            throw new ResourceNotFoundException("Available of stock amount with provided product id equals null");
+        }
+        return available;
     }
 
-    @GetMapping(path = "/availability/{available}")
-    public Iterable<StockAmount> getAllByAvailability(@PathVariable Boolean available) {
+    @GetMapping(path = "/avail/{available}")
+    public Iterable<StockAmount> getAllByAvailable(@PathVariable Boolean available) {
         Iterable<StockAmount> stockAmounts = stockAmountRepository.findAllByAvailable(available);
-        if (stockAmounts == null) {
+        if (Iterables.size(stockAmounts) == 0) {
             throw new ResourceNotFoundException(
                     available ? "There are not any available stock amounts" : "There are not any unavailable stock amounts");
         }
         return stockAmounts;
     }
 
-    // TODO: potrzebne info, czy produkt w spisie modułu Produkty jest, czy nie ma,
-    //  jeśli nie ma,
-    //  to sami tworzymy stan magazynowy z iloscia produktu nowego
-    //  w takim wypadku potrzebny endpoint do dodania nowego produktu w module Produkty
     @PostMapping(path = "/add")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
     String addStockAmount(@RequestBody StockAmount stockAmount) {
+        if (stockAmount.getProductId()  == null || stockAmount.getMeasure()  == null || stockAmount.getAmount() == null) {
+            throw new ResourceNotFoundException("Product id or measure or amount is/are not provided");
+        }
+        if (stockAmountRepository.existsStockAmountByProductId(stockAmount.getProductId())) {
+            throw new ResourceNotFoundException("Stock amount for product with product id provided already exists");
+        }
         if (stockAmount.getAmount() > 0.0) {
             stockAmount.setAvailable(true);
+        } else {
+            stockAmount.setAvailable(false);
         }
         stockAmountRepository.save(stockAmount);
         return "Saved";
@@ -83,10 +94,14 @@ public class StockAmountController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
     String addEmptyStockAmount(@RequestBody StockAmount stockAmount) {
+        if (stockAmount.getAmount() != null) {
+            throw new ResourceNotFoundException("Amount is not null");
+        }
         if (!stockAmountRepository.existsStockAmountByProductId(stockAmount.getProductId())) {
+            stockAmount.setAvailable(false);
             stockAmountRepository.save(stockAmount);
         } else {
-            // http 400 cos tam
+            throw new ResourceNotFoundException("Stock amount with provided product id exists");
         }
         return "Saved";
     }
@@ -94,9 +109,12 @@ public class StockAmountController {
     @PatchMapping("/increase")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     String increaseAmount(@RequestBody StockAmount newStockAmount) {
-        Integer stockAmountId = newStockAmount.getStockAmountId();
-        StockAmount stockAmount  = stockAmountRepository.findStockAmountByStockAmountId(stockAmountId).
-                orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with stockAmountId"));
+        if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
+            throw new ResourceNotFoundException("Product id or amount is/are not provided");
+        }
+        StockAmount stockAmount  = stockAmountRepository.findStockAmountByProductId(newStockAmount.getProductId()).
+                orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with product id"));
+
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();
         if (newAmount > 0.0) {
@@ -105,7 +123,7 @@ public class StockAmountController {
                 stockAmount.setAvailable(true);
             }
         } else {
-            // kod bledu HTTP
+            throw new UnprocessableEntityException("Amount is less than or equal 0");
         }
         stockAmountRepository.save(stockAmount);
         return "Increased";
@@ -114,9 +132,11 @@ public class StockAmountController {
     @PatchMapping("/decrease")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     String decreaseAmount(@RequestBody StockAmount newStockAmount) {
-        Integer stockAmountId = newStockAmount.getStockAmountId();
-        StockAmount stockAmount  = stockAmountRepository.findStockAmountByStockAmountId(stockAmountId).
-                orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with stockAmountId"));
+        if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
+            throw new ResourceNotFoundException("Product id or amount is/are not provided");
+        }
+        StockAmount stockAmount  = stockAmountRepository.findStockAmountByProductId(newStockAmount.getProductId()).
+                orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with product id"));
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();
         if (oldAmount - newAmount >= 0.0) {
@@ -125,7 +145,7 @@ public class StockAmountController {
                 stockAmount.setAvailable(false);
             }
         } else {
-            // kod bledu HTTP
+            throw new UnprocessableEntityException("New amount is greater than old amount");
         }
         stockAmountRepository.save(stockAmount);
         return "Decreased";
