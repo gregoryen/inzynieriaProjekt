@@ -1,13 +1,5 @@
 package com.engineering.shop.products;
 
-import com.engineering.shop.imageProducts.ImageProduct;
-import javafx.scene.paint.ImagePattern;
-
-import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.engineering.shop.categories.Category;
 import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
