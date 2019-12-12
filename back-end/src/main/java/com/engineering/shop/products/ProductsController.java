@@ -1,11 +1,8 @@
 package com.engineering.shop.products;
 
-import com.engineering.shop.fileUpload.controller.FileController;
 import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
 import com.engineering.shop.products.exception.ProductCreateException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,15 +13,12 @@ import java.util.Optional;
 @RequestMapping("/products")
 public class ProductsController {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileController.class);
-
-    @Autowired
     private ImageProductRepo imageProductRepo;
-
     private ProductsRepo productsRepo;
 
     @Autowired
-    public ProductsController(ProductsRepo productsRepo) {
+    public ProductsController(ImageProductRepo imageProductRepo, ProductsRepo productsRepo) {
+        this.imageProductRepo = imageProductRepo;
         this.productsRepo = productsRepo;
     }
 
@@ -83,18 +77,22 @@ public class ProductsController {
         }
 
         Optional<ImageProduct> temp = imageProductRepo.findById(mainImage);
-        temp.get().setIdProduct(product.getId());
-        imageProductRepo.save(temp.get());
+        if (temp.isPresent()) {
+            temp.get().setIdProduct(product.getId());
+            imageProductRepo.save(temp.get());
+        }
+
 
         product.setMainImageId(mainImage);
 
         for (Integer image : additionalImages) {
             temp = imageProductRepo.findById(image);
-            temp.get().setIdProduct(product.getId());
-            imageProductRepo.save(temp.get());
+            if (temp.isPresent()) {
+                temp.get().setIdProduct(product.getId());
+                imageProductRepo.save(temp.get());
+            }
         }
         return productsRepo.save(product);
-     //   return product;
     }
 
     @PutMapping

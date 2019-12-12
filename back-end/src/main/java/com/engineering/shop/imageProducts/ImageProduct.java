@@ -23,11 +23,6 @@ public class ImageProduct {
         this.extension = extension;
     }
 
-    public ImageProduct(Integer idProduct, String extension) {
-        this.idProduct = idProduct;
-        this.extension = extension;
-    }
-
     public String getImageName() {
         return this.id.toString() + "." + this.extension;
     }
