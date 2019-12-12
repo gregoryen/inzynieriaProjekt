@@ -7,5 +7,8 @@ import java.util.Optional;
 
 @Repository
 public interface CategoriesRepo extends CrudRepository<Category, Integer> {
+
+    Optional<Category> findById(Integer id);
+
     Optional<Category> findByParentId(Integer parentId);
 }
