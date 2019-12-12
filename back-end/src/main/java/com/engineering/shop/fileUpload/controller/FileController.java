@@ -1,7 +1,11 @@
 package com.engineering.shop.fileUpload.controller;
 
-import com.engineering.shop.fileUpload.payload.UploadFileResponse;
+import com.engineering.shop.fileUpload.exception.MyFileNotFoundException;
 import com.engineering.shop.fileUpload.service.FileStorageService;
+import com.engineering.shop.imageProducts.ImageProduct;
+import com.engineering.shop.imageProducts.ImageProductRepo;
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,47 +15,73 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/images")
 public class FileController {
 
     private static final Logger logger = LoggerFactory.getLogger(FileController.class);
 
-    @Autowired
     private FileStorageService fileStorageService;
+    private ProductsRepo productsRepo;
+    private  ImageProductRepo imageProductRepo;
 
-    @PostMapping("/uploadFile")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file) {
-        String fileName = fileStorageService.storeFile(file);
-
-        String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
-                .path(fileName)
-                .toUriString();
-
-        return new UploadFileResponse(fileName, fileDownloadUri,
-                file.getContentType(), file.getSize());
+    @Autowired
+    public FileController(FileStorageService fileStorageService, ProductsRepo productsRepo, ImageProductRepo imageProductRepo) {
+        this.fileStorageService = fileStorageService;
+        this.productsRepo = productsRepo;
+        this.imageProductRepo = imageProductRepo;
     }
 
-    @PostMapping("/uploadMultipleFiles")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-        return Arrays.asList(files)
-                .stream()
-                .map(file -> uploadFile(file))
+    @PostMapping("/uploadImage")
+    public ImageProduct uploadFile(@RequestParam("file") MultipartFile file) {
+        return fileStorageService.storeFile(file);
+    }
+
+    //NIEZALECANA (rozwaz uzycie /uploadImage)
+    //nie wiem dlaczego ale jak sie nie da praamtru files to w prawdzie nie dodoa zadnych plikow
+    //ale zwroci 200 jakby wszystko bylo dobrze
+    @PostMapping("/uploadMultipleImages")
+    public List<ImageProduct> uploadMultipleFiles(@RequestParam(name="files") MultipartFile[] files) {
+        return Arrays.stream(files)
+                .map(this::uploadFile)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        // Load file as Resource
-        Resource resource = fileStorageService.loadFileAsResource(fileName);
+
+    @GetMapping("/downloadAdditionalImage")
+    public ResponseEntity<Resource> downloadFileById(@RequestParam Integer idImage, HttpServletRequest request) {
+
+        Optional<ImageProduct>  image = imageProductRepo.findById(idImage);
+        if(image.isEmpty()) {
+            throw new MyFileNotFoundException("Image with id:  " + idImage + "dont exists");
+        }
+        return fetchImage(image.get(), request);
+    }
+
+    @GetMapping("/downloadMainImage")
+    public ResponseEntity<Resource> downloadFile(@RequestParam Integer idProduct, HttpServletRequest request) {
+        Optional<Product> product = productsRepo.findById(idProduct);
+        if(product.isEmpty()) {
+            throw new MyFileNotFoundException("Product with id:  " + idProduct + "not found");
+        }
+
+        Optional<ImageProduct>  mainImage = imageProductRepo.findById(product.get().getMainImageId());
+        if(mainImage.isEmpty()) {
+            throw new MyFileNotFoundException("Product with id:  " + idProduct + "dont have main image");
+        }
+        return fetchImage(mainImage.get(), request);
+    }
+
+    private ResponseEntity<Resource> fetchImage(ImageProduct imageProduct, HttpServletRequest request) {
+        Resource resource = fileStorageService.loadFileAsResource(imageProduct.getImageName());
 
         // Try to determine file's content type
         String contentType = null;

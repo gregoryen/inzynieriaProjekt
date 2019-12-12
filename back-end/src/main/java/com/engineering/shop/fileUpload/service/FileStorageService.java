@@ -3,6 +3,9 @@ package com.engineering.shop.fileUpload.service;
 import com.engineering.shop.fileUpload.exception.FileStorageException;
 import com.engineering.shop.fileUpload.exception.MyFileNotFoundException;
 import com.engineering.shop.fileUpload.property.FileStorageProperties;
+import com.engineering.shop.imageProducts.ImageProduct;
+import com.engineering.shop.imageProducts.ImageProductRepo;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -21,9 +24,11 @@ import java.nio.file.StandardCopyOption;
 public class FileStorageService {
 
     private final Path fileStorageLocation;
+    private ImageProductRepo imageProductRepo;
 
     @Autowired
-    public FileStorageService(FileStorageProperties fileStorageProperties) {
+    public FileStorageService(FileStorageProperties fileStorageProperties,ImageProductRepo imageProductRepo) {
+        this.imageProductRepo = imageProductRepo;
         this.fileStorageLocation = Paths.get(fileStorageProperties.getUploadDir())
                 .toAbsolutePath().normalize();
 
@@ -34,7 +39,7 @@ public class FileStorageService {
         }
     }
 
-    public String storeFile(MultipartFile file) {
+    public ImageProduct storeFile(MultipartFile file) {
         // Normalize file name
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
@@ -44,11 +49,15 @@ public class FileStorageService {
                 throw new FileStorageException("Sorry! Filename contains invalid path sequence " + fileName);
             }
 
+            String extension = FilenameUtils.getExtension(fileName);
+            ImageProduct imageProduct = imageProductRepo.save(new ImageProduct(extension));
+            String localFileName = imageProduct.getId().toString()+"."+extension;
+
             // Copy file to the target location (Replacing existing file with the same name)
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            Path targetLocation = this.fileStorageLocation.resolve(localFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            return imageProduct;
         } catch (IOException ex) {
             throw new FileStorageException("Could not store file " + fileName + ". Please try again!", ex);
         }
