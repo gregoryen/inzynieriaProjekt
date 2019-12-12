@@ -22,19 +22,51 @@ public class StockAmountController {
 
     @GetMapping(path = "/all")
     public Iterable<StockAmount> getAll() {
-        return stockAmountRepository.findAll();
+        Iterable<StockAmount> stockAmounts = stockAmountRepository.findAll();
+        if (stockAmounts == null) {
+            throw new ResourceNotFoundException("There are not any stock amounts");
+        }
+        return stockAmounts;
     }
 
     @GetMapping(path = "/{stockAmountId}")
     public Optional<StockAmount> getByStockAmountId(@PathVariable Integer stockAmountId) {
-        return stockAmountRepository.findByStockAmountId(stockAmountId);
+        Optional<StockAmount> optionalStockAmount = stockAmountRepository.findStockAmountByStockAmountId(stockAmountId);
+        if (optionalStockAmount == null) {
+            throw new ResourceNotFoundException("Stock amount not found with provided stock amount id");
+        }
+        return optionalStockAmount;
+    }
+
+    @GetMapping(path = "/products/amount/{productId}")
+    public Double getAmountByProductId(@PathVariable Integer productId) {
+        StockAmount stockAmount = stockAmountRepository.findStockAmountByProductId(productId).
+                orElseThrow(() -> new ResourceNotFoundException("Stock amount not found with provided product id"));
+        return stockAmount.getAmount();
+    }
+
+    // "przed usunięciem produktu moglibyśmy jeszcze sprawdzić, czy jest on jeszcze na magazynie"
+    @GetMapping(path = "/products/availability/{productId}")
+    public Boolean isAvailableByProductId(@PathVariable Integer productId) {
+        StockAmount stockAmount = stockAmountRepository.findStockAmountByProductId(productId).
+                orElseThrow(() -> new ResourceNotFoundException("Stock amount not found with provided product id"));
+        return stockAmount.isAvailable();
     }
 
     @GetMapping(path = "/availability/{available}")
     public Iterable<StockAmount> getAllByAvailability(@PathVariable Boolean available) {
-        return stockAmountRepository.findAllByAvailable(available);
+        Iterable<StockAmount> stockAmounts = stockAmountRepository.findAllByAvailable(available);
+        if (stockAmounts == null) {
+            throw new ResourceNotFoundException(
+                    available ? "There are not any available stock amounts" : "There are not any unavailable stock amounts");
+        }
+        return stockAmounts;
     }
 
+    // TODO: potrzebne info, czy produkt w spisie modułu Produkty jest, czy nie ma,
+    //  jeśli nie ma,
+    //  to sami tworzymy stan magazynowy z iloscia produktu nowego
+    //  w takim wypadku potrzebny endpoint do dodania nowego produktu w module Produkty
     @PostMapping(path = "/add")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
@@ -46,29 +78,24 @@ public class StockAmountController {
         return "Saved";
     }
 
-//    @PatchMapping("/update")
-//    @ResponseStatus(value = HttpStatus.NO_CONTENT)
-//    public @ResponseBody
-//    String updateStockAmount(@RequestBody StockAmount newStockAmount) {
-//        Integer stockAmountId = newStockAmount.getStockAmountId();
-//        Optional<StockAmount> optionalStockAmount = stockAmountRepository.findByStockAmountId(stockAmountId);
-//        StockAmount stockAmount = optionalStockAmount.orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with stockAmountId"));
-//        Double amount = newStockAmount.getAmount();
-//        stockAmount.setAmount(amount);
-//        if (stockAmount.getAmount() == 0.0 && stockAmount.isAvailable() == true) {
-//            stockAmount.setAvailable(false);
-//        } else if (stockAmount.getAmount() > 0.0 && stockAmount.isAvailable() == false) {
-//            stockAmount.setAvailable(true);
-//        }
-//        stockAmountRepository.save(stockAmount);
-//        return "Updated";
-//    }
+    // "metodę przyjmującą id produktu i na tej podstawie tworzył stan magazynowy"
+    @PostMapping(path = "/add_empty")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody
+    String addEmptyStockAmount(@RequestBody StockAmount stockAmount) {
+        if (!stockAmountRepository.existsStockAmountByProductId(stockAmount.getProductId())) {
+            stockAmountRepository.save(stockAmount);
+        } else {
+            // http 400 cos tam
+        }
+        return "Saved";
+    }
 
     @PatchMapping("/increase")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     String increaseAmount(@RequestBody StockAmount newStockAmount) {
         Integer stockAmountId = newStockAmount.getStockAmountId();
-        StockAmount stockAmount  = stockAmountRepository.findByStockAmountId(stockAmountId).
+        StockAmount stockAmount  = stockAmountRepository.findStockAmountByStockAmountId(stockAmountId).
                 orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with stockAmountId"));
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();
@@ -88,7 +115,7 @@ public class StockAmountController {
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     String decreaseAmount(@RequestBody StockAmount newStockAmount) {
         Integer stockAmountId = newStockAmount.getStockAmountId();
-        StockAmount stockAmount  = stockAmountRepository.findByStockAmountId(stockAmountId).
+        StockAmount stockAmount  = stockAmountRepository.findStockAmountByStockAmountId(stockAmountId).
                 orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with stockAmountId"));
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();

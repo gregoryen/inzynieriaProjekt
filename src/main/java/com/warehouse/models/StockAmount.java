@@ -11,11 +11,9 @@ public class StockAmount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stockAmountId;
 
+//    @OneToOne
     @NotNull
     private Integer productId;
-
-    @NotNull
-    private Integer categoryId;
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20)
@@ -25,16 +23,14 @@ public class StockAmount {
     @NotNull
     private Double amount;
 
-//    @Type(type="yes_no")
     @NotNull
     private Boolean available;
 
     public StockAmount() {
     }
 
-    public StockAmount(Integer productId, Integer categoryId, Measure measure, Double amount, Boolean available) {
+    public StockAmount(Integer productId, Measure measure, Double amount, Boolean available) {
         this.productId = productId;
-        this.categoryId = categoryId;
         this.measure = measure;
         this.amount = amount;
         this.available = available;
@@ -54,14 +50,6 @@ public class StockAmount {
 
     public void setProductId(Integer productId) {
         this.productId = productId;
-    }
-
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
     }
 
     public Measure getMeasure() {
