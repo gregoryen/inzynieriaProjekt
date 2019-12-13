@@ -17,6 +17,8 @@ public class UserController {
 
     @GetMapping(path = "user/{id}")
     public User getUser(@PathVariable("id") long id) {
+
         return userRepository.getById(id);
     }
+
 }
