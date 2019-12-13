@@ -1,13 +1,9 @@
 <template>
-  <div>
-    <nav class="navbar navbar-light bg-light justify-content-between">
-      <Category/>
-      <form class="form-inline">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-      </form>
-    </nav>
-  </div>
+  <nav>
+    <ul>
+      <Category v-for="root in categories" v-bind:key="root.category.id" :root="root"/>
+    </ul>
+  </nav>
 </template>
 
 <script>
@@ -23,14 +19,83 @@ export default {
   data: () => {
     return {
       categories: null,
-      response: null
     };
   },
   mounted() {
     axios.get("http://localhost:8080/categories/tree").then(response => {
-      this.categories = response.data._embedded.categories;
+      this.categories = response.data;
     });
   },
   methods: {}
 };
 </script>
+
+<style>
+/* CSS Document */
+
+nav {
+  margin: 0;
+  background-color: #252323;
+  text-align: left;
+}
+
+nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  position: relative;
+}
+
+nav ul li {
+  display: inline-block;
+  background-color: #252323;
+}
+
+nav a {
+  display: block;
+  padding: 0 10px;
+  color: #fff;
+  font-size: 20px;
+  line-height: 60px;
+}
+
+nav a:hover {
+  background-color: #000000;
+}
+
+/* Hide Dropdowns by Default */
+nav ul ul {
+  display: none;
+  position: absolute;
+  top: 60px; /* the height of the main nav */
+}
+
+/* Display Dropdowns on Hover */
+nav ul li:hover > ul {
+  display: inherit;
+}
+
+/* Fisrt Tier Dropdown */
+nav ul ul li {
+  width: 170px;
+  float: none;
+  display: list-item;
+  position: relative;
+}
+
+/* Second, Third and more Tiers	*/
+nav ul ul ul li {
+  position: relative;
+  top: -60px;
+  left: 170px;
+}
+
+/* Change this in order to change the Dropdown symbol */
+li > a:after {
+  content: " ⯆";
+}
+li > a:only-child:after {
+  content: "";
+}
+</style>
+
