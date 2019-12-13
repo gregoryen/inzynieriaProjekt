@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+@CrossOrigin
 @RestController
 @RequestMapping(path = "/suppliers")
 public class SupplierController {
@@ -31,6 +32,7 @@ public class SupplierController {
         return supplier;
     }
 
+    @CrossOrigin
     @PostMapping(path = "/add")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
