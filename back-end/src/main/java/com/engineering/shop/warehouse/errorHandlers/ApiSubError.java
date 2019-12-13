@@ -1,4 +1,4 @@
-package com.warehouse.errorHandlers;
+package com.engineering.shop.warehouse.errorHandlers;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

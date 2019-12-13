@@ -1,4 +1,4 @@
-package com.warehouse.models;
+package com.engineering.shop.warehouse.models;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

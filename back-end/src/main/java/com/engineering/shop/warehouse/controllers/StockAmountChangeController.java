@@ -1,7 +1,7 @@
-package com.warehouse.controllers;
+package com.engineering.shop.warehouse.controllers;
 
-import com.warehouse.models.StockAmountChange;
-import com.warehouse.repositories.StockAmountChangeRepository;
+import com.engineering.shop.warehouse.models.StockAmountChange;
+import com.engineering.shop.warehouse.repositories.StockAmountChangeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

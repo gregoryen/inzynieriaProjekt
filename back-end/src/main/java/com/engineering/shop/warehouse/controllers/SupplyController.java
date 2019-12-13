@@ -1,7 +1,7 @@
-package com.warehouse.controllers;
+package com.engineering.shop.warehouse.controllers;
 
-import com.warehouse.models.Supply;
-import com.warehouse.repositories.SupplyRepository;
+import com.engineering.shop.warehouse.models.Supply;
+import com.engineering.shop.warehouse.repositories.SupplyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package com.warehouse.repositories;
+package com.engineering.shop.warehouse.repositories;
 
-import com.warehouse.models.Report;
+import com.engineering.shop.warehouse.models.Report;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

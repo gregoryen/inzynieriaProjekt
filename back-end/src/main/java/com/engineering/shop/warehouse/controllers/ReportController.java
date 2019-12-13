@@ -2,11 +2,11 @@ package com.engineering.shop.warehouse.controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.warehouse.models.Report;
-import com.warehouse.models.StockAmountChange;
-import com.warehouse.repositories.ReportRepository;
-import com.warehouse.repositories.StockAmountChangeRepository;
-import com.warehouse.repositories.StockAmountRepository;
+import com.engineering.shop.warehouse.models.Report;
+import com.engineering.shop.warehouse.models.StockAmountChange;
+import com.engineering.shop.warehouse.repositories.ReportRepository;
+import com.engineering.shop.warehouse.repositories.StockAmountChangeRepository;
+import com.engineering.shop.warehouse.repositories.StockAmountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -100,8 +100,6 @@ public class ReportController {
                 stringBuffer.append("\""+changeInfo+"\"");
                 stringBuffer.append(separator);
                 stringBuffer.append("\""+stockAmountChange.getStockAmount().getProductId()+"\"");
-                stringBuffer.append(separator);
-                stringBuffer.append("\""+stockAmountChange.getStockAmount().getCategoryId()+"\"");
                 bufferedWriter.write(stringBuffer.toString());
                 bufferedWriter.newLine();
             }

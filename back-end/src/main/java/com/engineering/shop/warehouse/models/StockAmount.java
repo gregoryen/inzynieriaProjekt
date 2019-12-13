@@ -1,4 +1,4 @@
-package com.warehouse.models;
+package com.engineering.shop.warehouse.models;
 
 import org.hibernate.annotations.Type;
 
@@ -20,7 +20,6 @@ public class StockAmount {
     @NotNull
     private Measure measure;
 
-    @NotNull
     private Double amount;
 
     @NotNull

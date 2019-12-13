@@ -1,6 +1,6 @@
-package com.warehouse.repositories;
+package com.engineering.shop.warehouse.repositories;
 
-import com.warehouse.models.StockAmountChange;
+import com.engineering.shop.warehouse.models.StockAmountChange;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
