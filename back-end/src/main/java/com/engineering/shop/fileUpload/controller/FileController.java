@@ -73,7 +73,7 @@ public class FileController {
             throw new MyFileNotFoundException("Product with id:  " + idProduct + "not found");
         }
 
-        Optional<ImageProduct>  mainImage = imageProductRepo.findById(product.get().getMainImageId());
+        Optional<ImageProduct>  mainImage = imageProductRepo.findById(product.get().getMainImage());
         if(mainImage.isEmpty()) {
             throw new MyFileNotFoundException("Product with id:  " + idProduct + "dont have main image");
         }

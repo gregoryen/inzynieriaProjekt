@@ -31,6 +31,7 @@ public class ProductPOJOToProductTransformer implements Transformer<ProductPOJO,
                 .reference(pojo.getReference())
                 .categories(getCategories(pojo.getCategories()))
                 .mainCategoryId(pojo.getMainCategoryId())
+                .mainImage(pojo.getMainImage())
                 .build();
     }
 

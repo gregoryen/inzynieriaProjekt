@@ -6,7 +6,6 @@ import java.util.List;
 
 @Data
 class ProductImageHolder {
-    private Product product;
-    private Integer mainImage;
+    private ProductPOJO product;
     private List<Integer> additionalImages;
 }

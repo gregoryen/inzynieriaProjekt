@@ -18,4 +18,5 @@ public class ProductPOJO {
     private String isbn;
     private String ean13;
     private boolean active;
+    private Integer mainImage;
 }

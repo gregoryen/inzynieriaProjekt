@@ -34,5 +34,5 @@ public class Product extends RepresentationModel<Product> {
     private String isbn;
     private String ean13;
     private boolean active;
-    private Integer mainImageId;
+    private Integer mainImage;
 }
