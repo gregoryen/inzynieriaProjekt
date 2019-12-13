@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <AdminPanel />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import AdminPanel from './components/AdminPanel.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    AdminPanel
   }
 }
 </script>
@@ -22,7 +21,15 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
+}
+
+.small-table{
   margin-top: 60px;
+  margin-left: 4em;
+}
+
+.main-table{
+  margin-top: 60px;
+  margin-right: 4em;
 }
 </style>
