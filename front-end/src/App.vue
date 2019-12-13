@@ -1,17 +1,23 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Categories baseUrl = 'localhost:8080' />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Categories from './components/Categories.vue'
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap-vue/dist/bootstrap-vue.css";
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    Categories
+  },
+  data: function () {
+    return {
+      apiUrl: 'http://localhost:8080'
+    }
   }
 }
 </script>
