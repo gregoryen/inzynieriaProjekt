@@ -22,7 +22,6 @@
                         v-model="supplier.lastname"
                 />
             </div>
-<!--                    pattern="[0-9]{3}[-][0-9]{3}[-][0-9]{3}" required         -->
             <div class="form-group row">
                 <label for="input-phone" class="col-sm-2 col-form-label">Tel.:</label>
                 <input
@@ -36,19 +35,46 @@
                 >
             </div>
 
-            <div class="form-group row">
-                <label for="input-company" class="col-sm-2 col-form-label">Firma:</label>
-                <select
-                        class="form-control"
-                        id="input-company"
-                        v-model="supplier.company"
-                >
-                    <option v-for="(company, index) in companies" v-bind:item="company" v-bind:key="index">{{company}}
-                    </option>
-                    <option style="color: darkgray" disabled value="">Firma</option>
+            <form>
+                <div class="row">
+                    <div  v-if="clicked === false" class="col-sm-6">
+                        <select
 
-                </select>
-            </div>
+                                class="form-control"
+                                id="input-company"
+                                v-model="supplier.company"
+                        >
+                            <option v-for="(company, index) in companies" v-bind:item="company" v-bind:key="index">
+                                {{company}}
+                            </option>
+                            <option style="color: darkgray" disabled value="">Wybierz firmę</option>
+                        </select>
+                    </div>
+                    <div v-if="clicked === false"  class="col-sm-6">
+                        <button v-on:click="clicked = true" class="form-control">
+                            Dodaj nową firmę
+                        </button>
+                    </div>
+                    <div  class="col-sm-4" v-if="clicked === true">
+                        <input
+                                minlength="3"
+                                class="form-control"
+                                v-model="company"
+                        >
+                    </div>
+                    <div  class="col-sm-4">
+                        <button :disabled='(company.length < 3 || company === "")' v-if="clicked === true" v-on:click="addNewCompany()" class="form-control">
+                            Zatwierdź
+                        </button>
+                    </div>
+                    <div class="col-sm-4">
+                        <button  v-if="clicked === true" v-on:click="clicked = false" class="form-control">
+                            Wróóóć
+                        </button>
+                    </div>
+                </div>
+            </form>
+
             <div class="form-group row">
                 <label for="input-delivery-date" class="col-sm-2 col-form-label">Data dostawy:</label>
                 <input
@@ -127,7 +153,7 @@
         props: {},
         data: function () {
             return {
-                companies: Set,
+                companies: [],
                 measures: Set,
                 date: "",
                 time: "",
@@ -144,12 +170,20 @@
                         measure: "",
                         amount: ""
                     }
-                ]
+                ],
+                clicked: false,
+                company: ""
             };
         },
         methods: {
             addNewCompany: function () {
-
+                this.clicked = false;
+                let companiesLowerCased = this.companies.slice().map(v => v.toLowerCase());
+                if (!companiesLowerCased.includes(this.company.toLowerCase())) {
+                    this.companies.push(this.company);
+                } else {
+                    alert("Taka firma już istnieje na liście");
+                }
             },
             getAllCompanies: function () {
                 axios.get('http://localhost:8081/suppliers/companies', {
@@ -255,5 +289,9 @@
 
 <style scoped>
     #supplier-info {
+    }
+
+    form > div {
+        text-align: left;
     }
 </style>
