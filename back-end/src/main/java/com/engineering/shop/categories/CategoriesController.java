@@ -3,6 +3,7 @@ package com.engineering.shop.categories;
 import lombok.Data;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +27,7 @@ public class CategoriesController {
         return categoriesRepo.findByParentId(parentId);
     }
 
+    @Cacheable("categoriesTree")
     @GetMapping("/tree")
     public Iterable<TreeNode> getCategoriesTree() {
         Iterable<Category> allCategories = categoriesRepo.findAll();
