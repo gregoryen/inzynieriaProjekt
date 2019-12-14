@@ -56,6 +56,8 @@ public class SupplierController {
         return "Updated";
     }
 
+    // ---
+
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(path = "/companies")
     public Set<String> getAllCompanies() {

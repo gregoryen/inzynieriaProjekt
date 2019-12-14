@@ -22,6 +22,7 @@
                         v-model="supplier.lastname"
                 />
             </div>
+<!--                    pattern="[0-9]{3}[-][0-9]{3}[-][0-9]{3}" required         -->
             <div class="form-group row">
                 <label for="input-phone" class="col-sm-2 col-form-label">Tel.:</label>
                 <input
@@ -29,10 +30,12 @@
                         pattern="^\d{3}-\d{3}-\d{3}$" required
                         class="form-control"
                         id="input-phone"
+                        maxlength=11
                         placeholder="000-000-000"
                         v-model="supplier.phoneNumber"
                 >
             </div>
+
             <div class="form-group row">
                 <label for="input-company" class="col-sm-2 col-form-label">Firma:</label>
                 <select
@@ -53,7 +56,7 @@
                         class="form-control"
                         id="input-delivery-date"
                         v-model="date"
-                >{{date}}
+                >
             </div>
             <div class="form-group row">
                 <label for="input-delivery-time" class="col-sm-2 col-form-label">Czas dostawy:</label>
@@ -63,10 +66,8 @@
                         id="input-delivery-time"
                         v-model="time"
                 >
-                {{time}}
             </div>
         </form>
-        {{this.deliveryDateTime}}
         <table id="supply-products" align="center" class="container">
             <thead>
             <tr>
@@ -147,6 +148,9 @@
             };
         },
         methods: {
+            addNewCompany: function () {
+
+            },
             getAllCompanies: function () {
                 axios.get('http://localhost:8081/suppliers/companies', {
                     "Access-Control-Allow-Origin": "*",
@@ -181,30 +185,49 @@
                 this.products.splice(index, 1);
             },
             submit: function () {
-                // if (this.isFormCorrect == true) {
+                if (this.isFormCorrect() == true) {
                     this.acceptDelivery();
-                // }
+                } else {
+                    alert("POPRAWNE DANE TO NIE SĄ");
+                }
             },
             isFormCorrect: function () {
                 let correct = true;
-                if (this.supplier.company == null ||
-                    this.supplier.firstname == null ||
-                    this.supplier.lastname == null ||
-                    this.supplier.phoneNumber == null) {
+                if (this.supplier.company == "" ||
+                    this.supplier.firstname == "" ||
+                    this.supplier.lastname == "" ||
+                    this.supplier.phoneNumber == "" ||
+                    this.date == "" ||
+                    this.time == "") {
                     correct = false;
                 }
-                for (let idx = 0; idx < this.products.length - 1; idx++) {
-                    if (this.products[idx].productId == null ||
-                        this.products[idx].measure == null ||
-                        this.products[idx].amount == null) {
-                        correct = false;
+                if (this.products.length == 1) {
+                    correct = false;
+                } else {
+                    for (let idx = 0; idx < this.products.length - 1; idx++) {
+                        if (this.products[idx].productId == "" ||
+                            this.products[idx].measure == "" ||
+                            this.products[idx].amount == "") {
+                            // eslint-disable-next-line no-console
+                            console.log(this.products.length);
+                            correct = false;
+                        }
                     }
+                }
+                if (!this.supplier.phoneNumber.match("[0-9]{3}-[0-9]{3}-[0-9]{3}")) {
+                    alert("niepoprawny numer telefonu");
+                }
+                if (!this.supplier.firstname.match("[A-Z]{1}[a-z]")) {
+                    alert("niepoprawne imię");
+                }
+                if (!this.supplier.lastname.match("[A-Z]{1}[a-z]")) {
+                    alert("niepoprawne nazwisko");
                 }
                 return correct;
             },
             acceptDelivery: function () {
                 this.deliveryDateTime = this.date + "T" + this.time + ":00";
-                let stockAmounts = this.products;
+                let stockAmounts = this.products.slice();
                 stockAmounts.pop();
                 axios.post('http://localhost:8081/supplies/accept_delivery', {
                     supplier: {

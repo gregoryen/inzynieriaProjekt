@@ -28,17 +28,6 @@ public class StockAmountController {
         this.stockAmountRepository = stockAmountRepository;
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @GetMapping(path = "/measures")
-    public Set<Measure> getAllMeasures() {
-        Iterable<StockAmount> stockAmounts = stockAmountRepository.findAll();
-        Set<Measure> measures = new HashSet<>();
-        for (StockAmount s : stockAmounts) {
-            measures.add(s.getMeasure());
-        }
-        return Sets.newHashSet(measures);
-    }
-
     @GetMapping(path = "/all")
     public Iterable<StockAmount> getAll() {
         Iterable<StockAmount> stockAmounts = stockAmountRepository.findAll();
@@ -172,5 +161,14 @@ public class StockAmountController {
         }
         stockAmountRepository.save(stockAmount);
         return "Decreased";
+    }
+
+    // ---
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path = "/measures")
+    public Measure[] getAllMeasures() {
+        Measure[] measures = Measure.class.getEnumConstants();
+        return measures;
     }
 }

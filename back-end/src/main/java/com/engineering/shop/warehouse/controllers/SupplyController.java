@@ -51,29 +51,45 @@ public class SupplyController {
         return "Saved";
     }
 
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    @PostMapping(path = "/accept_delivery")
-    @ResponseStatus(value = HttpStatus.CREATED)
-    public @ResponseBody
-    String addAllSupplies(@RequestBody Supply supply) {
-        Supplier supplier = supply.getSupplier();
-        List<StockAmount> stockAmounts = supply.getStockAmounts();
-        supplierRepository.save(supplier);
-        for (StockAmount stockAmount : stockAmounts) {
-            if (stockAmount.getAmount() > 0.0) {
-                stockAmount.setAvailable(true);
-            }
-            stockAmountRepository.save(stockAmount);
-        }
-        supplyRepository.save(supply);
-        return "Saved";
-    }
-
     @PostMapping(path = "/update")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public @ResponseBody
     String updateSupply(@RequestBody Supply Supply) {
         supplyRepository.save(Supply);
         return "Updated";
+    }
+
+    // ---
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(path = "/accept_delivery")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public @ResponseBody
+    String addAllSupplies(@RequestBody Supply supply) {
+        Supplier supplier = supply.getSupplier();
+        supplierRepository.save(supplier);
+
+        List<StockAmount> stockAmounts = supply.getStockAmounts();
+        saveStockAmounts(stockAmounts);
+
+        supplyRepository.save(supply);
+        return "Saved";
+    }
+
+    private void saveStockAmounts(List<StockAmount> stockAmounts) {
+        for (StockAmount stockAmount : stockAmounts) {
+            stockAmount.setAvailable(stockAmount.getAmount() > 0.0 ? true : false);
+            if (stockAmountRepository.existsStockAmountByProductId(stockAmount.getProductId())) {
+                updateExistingStockAmount(stockAmount);
+            } else {
+                stockAmountRepository.save(stockAmount);
+            }
+        }
+    }
+
+    private void updateExistingStockAmount(StockAmount stockAmount) {
+        StockAmount existing = stockAmountRepository.findStockAmountByProductId(stockAmount.getProductId()).orElseThrow();
+        existing.setAmount(existing.getAmount() + stockAmount.getAmount());
+        stockAmountRepository.save(existing);
     }
 }
