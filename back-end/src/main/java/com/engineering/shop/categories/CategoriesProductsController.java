@@ -33,7 +33,7 @@ public class CategoriesProductsController {
     }
 
     private List<Category> getCategoriesForProduct(Product product) throws ResourceNotFoundException {
-        if(Objects.equals(null, product.getMainCategoryId())){
+        if (Objects.equals(null, product.getMainCategoryId())) {
             return new ArrayList<>();
         }
         Optional<Category> category = getCategoryById(product.getMainCategoryId());
