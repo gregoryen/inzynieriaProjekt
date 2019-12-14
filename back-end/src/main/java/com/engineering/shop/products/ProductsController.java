@@ -1,13 +1,14 @@
 package com.engineering.shop.products;
 
-import com.engineering.shop.categories.CategoriesController;
 import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
 import com.engineering.shop.products.exception.ProductCreateException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,19 +28,6 @@ public class ProductsController {
         this.productPOJOToProductTransformer = productPOJOToProductTransformer;
         this.productsRepo = productsRepo;
         this.imageProductRepo = imageProductRepo;
-    }
-
-    @GetMapping
-    public Iterable<Product> getAllProducts() {
-        Iterable<Product> products = productsRepo.findAll();
-        products.forEach(product -> {
-            product.add(ControllerLinkBuilder.linkTo(ProductsController.class).slash(product.getId()).withSelfRel());
-            product.getCategories().forEach(category -> {
-                if (!category.hasLink("self"))
-                    category.add(ControllerLinkBuilder.linkTo(CategoriesController.class).slash(category.getId()).withSelfRel());
-            });
-        });
-        return products;
     }
 
     @PostMapping
@@ -64,7 +52,6 @@ public class ProductsController {
             temp.get().setIdProduct(product.getId());
             imageProductRepo.save(temp.get());
         }
-
 
         product.setMainImage(mainImage);
 
