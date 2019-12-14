@@ -22,7 +22,7 @@ public class Product extends RepresentationModel<Product> {
     @JoinTable(name = "CATEGORIES_PRODUCTS",
             joinColumns = {@JoinColumn(name = "product_id")},
             inverseJoinColumns = {@JoinColumn(name = "category_id")})
-    Set<Category> categories;
+    private Set<Category> categories;
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Integer id;

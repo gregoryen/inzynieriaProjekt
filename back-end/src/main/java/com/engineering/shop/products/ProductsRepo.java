@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@RepositoryRestResource(collectionResourceRel = "products", path = "products")
 public interface ProductsRepo extends CrudRepository<Product, Integer> {
     Optional<Product> getById(Integer id);
 
@@ -17,6 +16,8 @@ public interface ProductsRepo extends CrudRepository<Product, Integer> {
     Iterable<Product> findByNameContainingIgnoreCase(String name);
 
     Iterable<Product> findByMainCategoryId(Integer categoryId);
+
+    Iterable<Product> findAll();
 
     @Override
     @RestResource(exported = false)
