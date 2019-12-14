@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,6 @@ public class SupplyController {
             }
             stockAmountRepository.save(stockAmount);
         }
-        supply.setDeliveryDateTime(LocalDateTime.now());
         supplyRepository.save(supply);
         return "Saved";
     }

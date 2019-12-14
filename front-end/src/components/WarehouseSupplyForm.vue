@@ -1,5 +1,6 @@
 <template>
-    <div id="warehouse-supply-form">
+    <div id="warehouse-supply-form" class="container">
+        <h1>Realizacja dostawy</h1>
         <form id="supplier-info" class="container">
             <div class="form-group row">
                 <label for="input-firstname" class="col-sm-2 col-form-label">Imię:</label>
@@ -8,7 +9,7 @@
                         class="form-control"
                         id="input-firstname"
                         placeholder="imię"
-                        v-model="supplier.inputFirstname"
+                        v-model="supplier.firstname"
                 />
             </div>
             <div class="form-group row">
@@ -18,52 +19,98 @@
                         class="form-control"
                         id="input-lastname"
                         placeholder="nazwisko"
-                        v-model="supplier.inputLastname"
+                        v-model="supplier.lastname"
                 />
             </div>
             <div class="form-group row">
                 <label for="input-phone" class="col-sm-2 col-form-label">Tel.:</label>
                 <input
-                        type="text"
+                        type="tel"
+                        pattern="^\d{3}-\d{3}-\d{3}$" required
                         class="form-control"
                         id="input-phone"
                         placeholder="000-000-000"
-                        v-model="supplier.inputPhoneNumber"
+                        v-model="supplier.phoneNumber"
                 >
             </div>
             <div class="form-group row">
                 <label for="input-company" class="col-sm-2 col-form-label">Firma:</label>
-                <input
-                        type="text"
+                <select
                         class="form-control"
                         id="input-company"
-                        placeholder="firma"
-                        v-model="supplier.inputCompany"
+                        v-model="supplier.company"
                 >
+                    <option v-for="(company, index) in companies" v-bind:item="company" v-bind:key="index">{{company}}
+                    </option>
+                    <option style="color: darkgray" disabled value="">Firma</option>
+
+                </select>
+            </div>
+            <div class="form-group row">
+                <label for="input-delivery-date" class="col-sm-2 col-form-label">Data dostawy:</label>
+                <input
+                        type="date"
+                        class="form-control"
+                        id="input-delivery-date"
+                        v-model="date"
+                >{{date}}
+            </div>
+            <div class="form-group row">
+                <label for="input-delivery-time" class="col-sm-2 col-form-label">Czas dostawy:</label>
+                <input
+                        type="time"
+                        class="form-control"
+                        id="input-delivery-time"
+                        v-model="time"
+                >
+                {{time}}
             </div>
         </form>
-        <table id="supply" align="center">
+        {{this.deliveryDateTime}}
+        <table id="supply-products" align="center" class="container">
             <thead>
             <tr>
                 <td><strong>Id produktu</strong></td>
-                <td><strong>Jednostka</strong></td>
                 <td><strong>Ilość</strong></td>
+                <td><strong>Jednostka</strong></td>
                 <td></td>
             </tr>
             </thead>
             <tbody>
             <tr v-for="(product, index) in products" v-bind:item="product" v-bind:key="index">
-                <td><input type="text" v-model="product.productId"></td>
-                <td><input type="text" v-model="product.measure"></td>
-                <td><input type="text" v-model="product.amount"></td>
+                <td><input class="form-control" type="text" v-model="product.productId"></td>
+                <td><input class="form-control" type="text" v-model="product.amount"></td>
                 <td>
-                    <button v-if="index === products.length-1" v-on:click="addProduct" style="cursor: pointer">+
+                    <select
+                            class="form-control"
+                            type="text"
+                            v-model="product.measure"
+                    >
+                        <option v-for="(measure, index) in measures" v-bind:item="measure" v-bind:key="index">
+                            {{measure}}
+                        </option>
+                        <option style="color: darkgray" disabled value="">jednostka</option>
+
+                    </select>
+                </td>
+                <td>
+                    <button :disabled="(product.productId === '' || product.amount === '' || product.measure === '') && (index === products.length - 1)"
+                            class="form-control" v-if="index === products.length-1" v-on:click="addProduct"
+                            style="cursor: pointer">+
+                    </button>
+                </td>
+                <td>
+                    <button :disabled="index === 0" class="form-control" v-on:click="removeProduct(index)"
+                            v-if="index === products.length-1" style="cursor: pointer">-
                     </button>
                 </td>
             </tr>
             </tbody>
+
         </table>
-        <button v-on:click="submit">Zatwierdź</button>
+        <div id="submit-button-div" class="container">
+            <button class="form-control" v-on:click="submit">Zatwierdź</button>
+        </div>
     </div>
 </template>
 
@@ -72,14 +119,23 @@
     import axios from 'axios';
 
     export default {
+        created() {
+            this.getAllCompanies();
+            this.getAllMeasures();
+        },
         props: {},
         data: function () {
             return {
+                companies: Set,
+                measures: Set,
+                date: "",
+                time: "",
+                deliveryDateTime: "",
                 supplier: {
-                    inputFirstname: "",
-                    inputLastname: "",
-                    inputPhoneNumber: "",
-                    inputCompany: ""
+                    firstname: "",
+                    lastname: "",
+                    phoneNumber: "",
+                    company: ""
                 },
                 products: [
                     {
@@ -91,6 +147,26 @@
             };
         },
         methods: {
+            getAllCompanies: function () {
+                axios.get('http://localhost:8081/suppliers/companies', {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                }).then((response) => {
+                    this.companies = response.data;
+                    // eslint-disable-next-line no-console
+                    console.log(response)
+                });
+            },
+            getAllMeasures: function () {
+                axios.get('http://localhost:8081/stock_amounts/measures', {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                }).then((response) => {
+                    this.measures = response.data;
+                    // eslint-disable-next-line no-console
+                    console.log(response)
+                });
+            },
             addProduct: function () {
                 document.createElement('tr');
                 this.products.push({
@@ -98,16 +174,47 @@
                     measure: "",
                     amount: ""
                 });
+                // eslint-disable-next-line no-console
+                console.log(this.products);
+            },
+            removeProduct: function (index) {
+                this.products.splice(index, 1);
             },
             submit: function () {
+                // if (this.isFormCorrect == true) {
+                    this.acceptDelivery();
+                // }
+            },
+            isFormCorrect: function () {
+                let correct = true;
+                if (this.supplier.company == null ||
+                    this.supplier.firstname == null ||
+                    this.supplier.lastname == null ||
+                    this.supplier.phoneNumber == null) {
+                    correct = false;
+                }
+                for (let idx = 0; idx < this.products.length - 1; idx++) {
+                    if (this.products[idx].productId == null ||
+                        this.products[idx].measure == null ||
+                        this.products[idx].amount == null) {
+                        correct = false;
+                    }
+                }
+                return correct;
+            },
+            acceptDelivery: function () {
+                this.deliveryDateTime = this.date + "T" + this.time + ":00";
+                let stockAmounts = this.products;
+                stockAmounts.pop();
                 axios.post('http://localhost:8081/supplies/accept_delivery', {
                     supplier: {
-                        firstname: this.supplier.inputFirstname,
-                        lastname: this.supplier.inputLastname,
-                        company: this.supplier.inputCompany,
-                        phoneNumber: this.supplier.inputPhoneNumber
+                        firstname: this.supplier.firstname,
+                        lastname: this.supplier.lastname,
+                        company: this.supplier.company,
+                        phoneNumber: this.supplier.phoneNumber
                     },
-                    stockAmounts: this.products
+                    deliveryDateTime: this.deliveryDateTime,
+                    stockAmounts: stockAmounts
                 }, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"

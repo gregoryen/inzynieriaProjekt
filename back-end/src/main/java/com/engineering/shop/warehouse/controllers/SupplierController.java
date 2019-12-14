@@ -3,10 +3,15 @@ package com.engineering.shop.warehouse.controllers;
 
 import com.engineering.shop.warehouse.models.Supplier;
 import com.engineering.shop.warehouse.repositories.SupplierRepository;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -49,5 +54,16 @@ public class SupplierController {
     String updateSupplier(@RequestBody Supplier supplier) {
         supplierRepository.save(supplier);
         return "Updated";
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path = "/companies")
+    public Set<String> getAllCompanies() {
+        Iterable<Supplier> suppliers = supplierRepository.findAll();
+        Set<String> companies = new HashSet<>();
+        for (Supplier s : suppliers) {
+            companies.add(s.getCompany());
+        }
+        return Sets.newHashSet(companies);
     }
 }

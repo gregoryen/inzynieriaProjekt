@@ -1,16 +1,22 @@
 package com.engineering.shop.warehouse.controllers;
 
+import com.engineering.shop.warehouse.models.Measure;
+import com.engineering.shop.warehouse.models.Supplier;
 import com.google.common.collect.Iterables;
 import com.engineering.shop.warehouse.exceptions.UnprocessableEntityException;
 import com.engineering.shop.warehouse.models.StockAmount;
 import com.engineering.shop.warehouse.repositories.StockAmountRepository;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping(path = "/stock_amounts")
 public class StockAmountController {
@@ -20,6 +26,17 @@ public class StockAmountController {
     @Autowired
     public StockAmountController(StockAmountRepository stockAmountRepository) {
         this.stockAmountRepository = stockAmountRepository;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path = "/measures")
+    public Set<Measure> getAllMeasures() {
+        Iterable<StockAmount> stockAmounts = stockAmountRepository.findAll();
+        Set<Measure> measures = new HashSet<>();
+        for (StockAmount s : stockAmounts) {
+            measures.add(s.getMeasure());
+        }
+        return Sets.newHashSet(measures);
     }
 
     @GetMapping(path = "/all")
