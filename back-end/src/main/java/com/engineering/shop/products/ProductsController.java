@@ -3,6 +3,7 @@ package com.engineering.shop.products;
 import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
 import com.engineering.shop.products.exception.ProductCreateException;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,9 +39,11 @@ public class ProductsController {
         if (imageProductRepo.findById(mainImage).isEmpty()) {
             throw new ProductCreateException("Sorry, error occurred while saving the images attached to the product. Please try again");
         }
-        for (Integer image : additionalImages) {
-            if (imageProductRepo.findById(image).isEmpty()) {
-                throw new ProductCreateException("Sorry, error occurred while saving the images attached to the product. Please try again");
+        if (CollectionUtils.isNotEmpty(additionalImages)) {
+            for (Integer image : additionalImages) {
+                if (imageProductRepo.findById(image).isEmpty()) {
+                    throw new ProductCreateException("Sorry, error occurred while saving the images attached to the product. Please try again");
+                }
             }
         }
 
@@ -53,13 +56,16 @@ public class ProductsController {
 
         product.setMainImage(mainImage);
 
-        for (Integer image : additionalImages) {
-            temp = imageProductRepo.findById(image);
-            if (temp.isPresent()) {
-                temp.get().setIdProduct(product.getId());
-                imageProductRepo.save(temp.get());
+        if (CollectionUtils.isNotEmpty(additionalImages)) {
+            for (Integer image : additionalImages) {
+                temp = imageProductRepo.findById(image);
+                if (temp.isPresent()) {
+                    temp.get().setIdProduct(product.getId());
+                    imageProductRepo.save(temp.get());
+                }
             }
         }
+
         return productsRepo.save(product);
     }
 }

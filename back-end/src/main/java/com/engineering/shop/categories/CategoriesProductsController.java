@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
 @RestController
 public class CategoriesProductsController {
@@ -31,11 +28,14 @@ public class CategoriesProductsController {
         Optional<Product> productOptional = Optional.ofNullable(productsRepo.getById(id)).orElseThrow(ResourceNotFoundException::new);
         Product product = productOptional.get();
         List<Category> categories = getCategoriesForProduct(product);
-        categories.forEach(c -> c.add(ControllerLinkBuilder.linkTo(Category.class).slash(c.getId()).withSelfRel()));
+        categories.forEach(c -> c.add(ControllerLinkBuilder.linkTo(CategoriesController.class).slash(c.getId()).withSelfRel()));
         return categories;
     }
 
     private List<Category> getCategoriesForProduct(Product product) throws ResourceNotFoundException {
+        if(Objects.equals(null, product.getMainCategoryId())){
+            return new ArrayList<>();
+        }
         Optional<Category> category = getCategoryById(product.getMainCategoryId());
 
         Stack<Category> categories = new Stack<>();

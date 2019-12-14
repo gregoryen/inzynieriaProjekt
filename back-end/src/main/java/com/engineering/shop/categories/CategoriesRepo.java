@@ -1,6 +1,7 @@
 package com.engineering.shop.categories;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +20,7 @@ public interface CategoriesRepo extends CrudRepository<Category, Integer> {
     <S extends Category> Iterable<S> saveAll(Iterable<S> iterable);
 
     @Override
-    @CacheEvict("categoriesTree")
+    @CachePut("categoriesTree")
     <S extends Category> S save(S s);
 
     @Override

@@ -4,6 +4,7 @@ import lombok.Data;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,11 +33,11 @@ public class CategoriesController {
     public Iterable<TreeNode> getCategoriesTree() {
         Iterable<Category> allCategories = categoriesRepo.findAll();
         List<Category> categories = IteratorUtils.toList(allCategories.iterator());
+        categories.forEach(c -> c.add(ControllerLinkBuilder.linkTo(CategoriesController.class).slash(c.getId()).withSelfRel()));
         Collection<Category> rootCategories = categories.stream().filter(category -> category.getParentId() == null).collect(Collectors.toSet());
         categories.removeAll(rootCategories);
         List<TreeNode> trees = rootCategories.stream().map(TreeNode::new).collect(Collectors.toList());
         trees.forEach(treeNode -> buildTree(treeNode, categories));
-
         return trees;
     }
 
