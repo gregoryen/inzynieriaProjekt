@@ -16,17 +16,18 @@ public class Supply {
     @NotNull
     private Supplier supplier;
 
-    @NotNull
+//    @NotNull
     private LocalDateTime deliveryDateTime;
 
     @ManyToMany
-    @NotNull
+//    @NotNull
     private List<StockAmount> stockAmounts;
 
     public Supply()  {
     }
 
-    public Supply(Supplier supplier, LocalDateTime deliveryDateTime, List<StockAmount> stockAmounts) {
+    public Supply(Integer supplyId, Supplier supplier, LocalDateTime deliveryDateTime, List<StockAmount> stockAmounts) {
+        this.supplyId = supplyId;
         this.supplier = supplier;
         this.deliveryDateTime = deliveryDateTime;
         this.stockAmounts = stockAmounts;
@@ -48,13 +49,13 @@ public class Supply {
         this.supplier = supplier;
     }
 
-//    public List<StockAmount> getStockAmounts() {
-//        return stockAmounts;
-//    }
-//
-//    public void setStockAmounts(List<StockAmount> stockAmounts) {
-//        this.stockAmounts = stockAmounts;
-//    }
+    public List<StockAmount> getStockAmounts() {
+        return stockAmounts;
+    }
+
+    public void setStockAmounts(List<StockAmount> stockAmounts) {
+        this.stockAmounts = stockAmounts;
+    }
 
     public LocalDateTime getDeliveryDateTime() {
         return deliveryDateTime;

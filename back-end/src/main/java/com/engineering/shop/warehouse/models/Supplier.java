@@ -24,7 +24,8 @@ public class Supplier {
     public Supplier() {
     }
 
-    public Supplier(String firstname, String lastname, String company, String phoneNumber) {
+    public Supplier(Integer supplierId, String firstname, String lastname, String company, String phoneNumber) {
+        this.supplierId = supplierId;
         this.firstname = firstname;
         this.lastname = lastname;
         this.company = company;

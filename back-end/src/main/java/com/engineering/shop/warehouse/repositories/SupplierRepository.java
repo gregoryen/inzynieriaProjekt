@@ -11,4 +11,10 @@ import java.util.Optional;
 public interface SupplierRepository extends CrudRepository<Supplier, Integer> {
 
     Optional<Supplier> findBySupplierId(Integer SupplierId);
+    Optional<Supplier> findSupplierByFirstnameAndLastnameAndPhoneNumberAndCompany(
+            String firstname, String lastname, String phoneNumber, String company
+    );
+    Boolean existsSupplierByFirstnameAndLastnameAndPhoneNumberAndCompany(
+            String firstname, String lastname, String phoneNumber, String company
+    );
 }

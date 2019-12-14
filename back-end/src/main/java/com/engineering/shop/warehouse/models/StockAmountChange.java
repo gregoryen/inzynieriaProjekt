@@ -31,7 +31,8 @@ public class StockAmountChange {
     public StockAmountChange() {
     }
 
-    public StockAmountChange(Double previousAmount, Double currentAmount, LocalDateTime changeDateTime, String changeInfo, StockAmount stockAmount) {
+    public StockAmountChange(Integer stockAmountChangeId, Double previousAmount, Double currentAmount, LocalDateTime changeDateTime, String changeInfo, StockAmount stockAmount) {
+        this.stockAmountChangeId = stockAmountChangeId;
         this.previousAmount = previousAmount;
         this.currentAmount = currentAmount;
         this.changeDateTime = changeDateTime;
