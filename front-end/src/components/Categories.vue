@@ -1,13 +1,15 @@
 <template>
   <nav>
     <ul>
-      <Category v-for="root in categories" v-bind:key="root.category.id" :root="root"/>
+      <li><a @click="emitAllProducts">Wszystkie produkty</a></li>
+      <Category v-for="root in categories" v-bind:key="root.category.id" :root="root" />
     </ul>
   </nav>
 </template>
 
 <script>
 import axios from "axios";
+import { bus } from '../main'
 import Category from "./Category.vue";
 
 export default {
@@ -18,15 +20,19 @@ export default {
   },
   data: () => {
     return {
-      categories: null,
+      categories: null
     };
   },
   mounted() {
-    axios.get("http://localhost:8080/categories/tree").then(response => {
+    axios.get(this.baseUrl + "/categories/tree").then(response => {
       this.categories = response.data;
     });
   },
-  methods: {}
+  methods: {
+    emitAllProducts() {
+      axios.get(this.baseUrl + "/products/search/findAllByActiveIsTrue?projection=header").then(response => {bus.$emit('PRODUCTS', response.data._embedded.products)});
+    }
+  }
 };
 </script>
 
