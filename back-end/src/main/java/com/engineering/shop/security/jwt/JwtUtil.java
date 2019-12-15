@@ -65,7 +65,7 @@ public class JwtUtil implements Serializable {
         return getStringClaimFromToken(token, DEVICE_KEY);
     }
 
-    String getUserRolesFromToken(String token) {
+    String getUserPrivilegesFromToken(String token) {
         return getStringClaimFromToken(token, ROLE_KEY);
     }
 
@@ -76,12 +76,12 @@ public class JwtUtil implements Serializable {
         return isTokenNotExpired && doesEmailMatch;
     }
 
-    boolean doUserRolesMatch(String token, Collection<SimpleGrantedAuthority> authorities) {
-        String roles = getUserRolesFromToken(token);
+    boolean doUserPrivilegesMatch(String token, Collection<SimpleGrantedAuthority> authorities) {
+        String privileges = getUserPrivilegesFromToken(token);
         Collection<String> authStrings = authorities.stream().map(Objects::toString).collect(Collectors.toList());
         String authString = StringUtils.join(authStrings, ',');
 
-        return authString.equals(roles);
+        return authString.equals(privileges);
     }
 
     private boolean doesEmailMatch(String emailFromToken, String email) {
@@ -95,7 +95,7 @@ public class JwtUtil implements Serializable {
     public String generateToken(UserTokenInformation userTokenInformation) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(NAME_KEY, userTokenInformation.getName());
-        claims.put(ROLE_KEY, userTokenInformation.getRoles());
+        claims.put(ROLE_KEY, userTokenInformation.getPrivileges());
 
         Date now = new Date();
 

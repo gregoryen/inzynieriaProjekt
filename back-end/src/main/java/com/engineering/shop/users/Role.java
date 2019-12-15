@@ -22,9 +22,9 @@ public class Role {
     @Column(unique = true)
     private String name;
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Collection<User> users;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "roles_privileges",
             joinColumns = @JoinColumn(
@@ -35,12 +35,19 @@ public class Role {
     public Role(String name) {
         this.name = name;
     }
-    public Role(String name, Set<Privilege> privileges) {
+    public Role(String name, Collection<Privilege> privileges) {
         this.name = name;
         this.privileges = privileges;
     }
     public Role()
     {
+
+    }
+
+    @Override
+    public String toString() {
+        return name;
+
 
     }
 }

@@ -26,7 +26,7 @@ public class UserSignUpPOJOToUserTransformer implements Transformer<UserSignUpPO
                 .email(pojo.getEmail())
                 .firstName(pojo.getFirstName())
                 .lastName(pojo.getLastName())
-                .role(role)
+                .roles(Arrays.asList(role))
                 .password(pojo.getPassword())
                 .build();
     }
