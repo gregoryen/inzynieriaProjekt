@@ -23,15 +23,14 @@ public class MessageController {
 
     @PostMapping
     public Message addMessage(@RequestBody Message message){
-        Authentication nazwa = SecurityContextHolder.getContext().getAuthentication();
-        String email = nazwa.getName();
-        Set<String> nazwa1 = nazwa.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
+        Authentication token = SecurityContextHolder.getContext().getAuthentication();
+        String email = token.getName();
+        Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
 
-        if(nazwa1.contains(UserRoleType.ADMIN.name()))
+        if(roles.contains(UserRoleType.ADMIN.name()))
             message.setSender(null);
         else
             message.setSender(email);
-
 
         return messageRepository.save(message);
     }
@@ -39,7 +38,6 @@ public class MessageController {
     @GetMapping
     @RequestMapping("/user/{id}")
     public Iterable<Message> getMessages(@PathVariable("id") String id){
-        System.out.println(id);
         Iterable<Message> messagesToUser = messageRepository.getAllByReceiver(id);
         Iterable<Message> messagesFromUser = messageRepository.getAllBySender(id);
         List<Message> messages = new ArrayList<>();
@@ -53,8 +51,8 @@ public class MessageController {
     @GetMapping
     @RequestMapping("/user")
     public Iterable<Message> getUserMessages(){
-        Authentication nazwa = SecurityContextHolder.getContext().getAuthentication();
-        String email = nazwa.getName();
+        Authentication token = SecurityContextHolder.getContext().getAuthentication();
+        String email = token.getName();
         return getMessages(email);
     }
 
