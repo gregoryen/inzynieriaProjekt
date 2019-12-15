@@ -19,7 +19,7 @@ const Products = {
 
 const routes = [
   { path: '/product/:id', name: 'product', component: Product },
-  { path: '/products', component: Products }
+  { path: '/products', name: 'products', component: Products }
 ]
 
 const router = new VueRouter({

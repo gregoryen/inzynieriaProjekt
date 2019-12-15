@@ -42,6 +42,7 @@ export default {
 nav {
   margin: 0;
   background-color: #252323;
+  color: white;
   text-align: left;
 }
 

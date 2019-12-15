@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   name: "ProductHeader",
@@ -23,9 +23,11 @@ export default {
   },
   mounted() {
     this.imageUrl = this.product.links;
-    axios.get("http://localhost:8080").then(response => {
-      this.products = response.data;
-    });
+  },
+  created() {
+    // axios.get("http://localhost:8080").then(response => {
+    //   this.products = response.data;
+    // });
   },
   methods: {}
 };

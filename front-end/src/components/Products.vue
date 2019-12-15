@@ -8,7 +8,7 @@
 
 <script>
 import axios from "axios";
-import { bus } from '../main'
+import { bus } from "../main";
 import ProductHeader from "./ProductHeader.vue";
 
 export default {
@@ -22,7 +22,8 @@ export default {
       products: null
     };
   },
-  mounted() {
+  mounted() {},
+  created() {
     axios
       .get(
         this.baseUrl +
@@ -31,11 +32,9 @@ export default {
       .then(response => {
         this.products = response.data._embedded.products;
       });
-  },
-  created (){
-    bus.$on('PRODUCTS', (data) => {
+    bus.$on("PRODUCTS", data => {
       this.products = data;
-    })
+    });
   },
   methods: {}
 };
