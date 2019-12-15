@@ -39,7 +39,7 @@ public class CartController {
         this.productRepo = productRepo;
     }
 
-    @PostMapping("addProduct/{id}/{quantity}")
+    @PostMapping("addProductNewBucket/{id}/{quantity}")
     public @ResponseBody String addProductById(@PathVariable("id") Integer id,
                                                @PathVariable("quantity") int quantity){
 
