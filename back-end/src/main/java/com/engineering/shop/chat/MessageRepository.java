@@ -4,7 +4,8 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface MessageRepository extends CrudRepository<Message, Long> {
 
-    Iterable<Message> getAllBySender(long sender);
+    Iterable<Message> getAllBySender(String sender);
 
-    Iterable<Message> getAllByReceiver(long receiver);
+    Iterable<Message> getAllByReceiver(String receiver);
+
 }

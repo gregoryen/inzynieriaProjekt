@@ -66,7 +66,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
-                //.anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();

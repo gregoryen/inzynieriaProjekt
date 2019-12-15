@@ -17,11 +17,9 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NonNull
-    private long sender;
+    private String sender;
 
-    @NonNull
-    private long receiver;
+    private String receiver;
 
     @NonNull
     private String text;

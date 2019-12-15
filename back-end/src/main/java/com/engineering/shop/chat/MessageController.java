@@ -1,11 +1,13 @@
 package com.engineering.shop.chat;
 
+import com.engineering.shop.users.UserRoleType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -15,18 +17,29 @@ public class MessageController {
     private MessageRepository messageRepository;
 
     @Autowired
-    public MessageController(MessageRepository messageRepository) {
+    public MessageController(MessageRepository messageRepository){
         this.messageRepository = messageRepository;
     }
 
     @PostMapping
     public Message addMessage(@RequestBody Message message){
+        Authentication nazwa = SecurityContextHolder.getContext().getAuthentication();
+        String email = nazwa.getName();
+        Set<String> nazwa1 = nazwa.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
+
+        if(nazwa1.contains(UserRoleType.ADMIN.name()))
+            message.setSender(null);
+        else
+            message.setSender(email);
+
+
         return messageRepository.save(message);
     }
 
     @GetMapping
     @RequestMapping("/user/{id}")
-    public Iterable<Message> getMessages(@PathVariable("id") long id){
+    public Iterable<Message> getMessages(@PathVariable("id") String id){
+        System.out.println(id);
         Iterable<Message> messagesToUser = messageRepository.getAllByReceiver(id);
         Iterable<Message> messagesFromUser = messageRepository.getAllBySender(id);
         List<Message> messages = new ArrayList<>();
@@ -35,6 +48,23 @@ public class MessageController {
 
         messages.sort(Comparator.comparing(Message::getDate));
         return messages;
+    }
+
+    @GetMapping
+    @RequestMapping("/user")
+    public Iterable<Message> getUserMessages(){
+        Authentication nazwa = SecurityContextHolder.getContext().getAuthentication();
+        String email = nazwa.getName();
+        return getMessages(email);
+    }
+
+
+    @GetMapping
+    @RequestMapping("/users")
+    public Iterable<String> getUsers(){
+        List<Message> messages = new ArrayList<>();
+        messageRepository.findAll().forEach(messages::add);
+        return messages.stream().map(Message::getSender).distinct().collect(Collectors.toList());
     }
 }
 
