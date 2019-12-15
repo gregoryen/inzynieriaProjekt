@@ -64,7 +64,7 @@ public class CartController {
     }
 
     @PostMapping("addProductToExistingCartWithId/{bucketId}/{id}/{quantity}")
-    public @ResponseBody String addProductById(@PathVariable("bucketId") UUID bucketId,
+    public @ResponseBody String addProductById(@PathVariable("bucketId") String bucketId,
                                                @PathVariable("id") Integer id,
                                                @PathVariable("quantity") int quantity){
 
@@ -79,10 +79,10 @@ public class CartController {
         bucketPositionRepo.save(pos);
 
         Bucket bucket = bucketOptional.get();
-//        bucket.increaseTotalValue(pos.getProductPrice()*pos.getProductQuantity());
-//        pos.setBucketIndex(bucket.getBucketIndex());
-//
-//        bucketRepo.save(bucket);
+        bucket.increaseTotalValue(pos.getProductPrice()*pos.getProductQuantity());
+        pos.setBucketIndex(bucket.getBucketIndex());
+
+        bucketRepo.save(bucket);
         String test = "";
         test += product.getProductPrice();
         return test;

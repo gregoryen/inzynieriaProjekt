@@ -21,14 +21,14 @@ public class Bucket {
     @Id
     private Integer bucketId;
     @NonNull
-    private UUID bucketIndex;
+    private String bucketIndex;
     @NotNull
     private float totalValue;
     @NotNull
     private Integer orderId;
 
     public Bucket() {
-        this.bucketIndex = UUID.randomUUID();
+        this.bucketIndex = UUID.randomUUID().toString();
         this.totalValue = 0.00f;
     }
 
@@ -56,7 +56,7 @@ public class Bucket {
         return this.bucketId;
     }
 
-    public UUID getBucketIndex() {
+    public String getBucketIndex() {
         return bucketIndex;
     }
 }

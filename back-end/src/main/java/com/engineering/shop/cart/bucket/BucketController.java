@@ -31,7 +31,7 @@ public class BucketController {
     }
 
     @GetMapping("getByUUID/{uuid}")
-    public Optional<Bucket> getNyUUID(@PathVariable("uuid")UUID id){
+    public Optional<Bucket> getNyUUID(@PathVariable("uuid")String id){
         return bucketRepo.findByBucketIndex(id);
     }
 

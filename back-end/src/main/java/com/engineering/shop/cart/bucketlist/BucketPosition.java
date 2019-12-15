@@ -19,7 +19,7 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
     private Integer id;
     @NotNull
     private Integer productId;
-    private UUID bucketIndex;
+    private String bucketIndex;
     @NotNull
     private int productQuantity;
     @NotNull
@@ -37,7 +37,7 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
 
     }
 
-    public void setBucketIndex(UUID bucketIndex) {
+    public void setBucketIndex(String bucketIndex) {
         this.bucketIndex = bucketIndex;
     }
 
@@ -53,7 +53,7 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
         return productId;
     }
 
-    public UUID getBucketIndex() {
+    public String getBucketIndex() {
         return bucketIndex;
     }
 

@@ -8,6 +8,6 @@ import java.util.UUID;
 
 @Repository
 public interface BucketRepo extends CrudRepository<Bucket, Integer> {
-    Optional<Bucket> findByBucketIndex (UUID id);
+    Optional<Bucket> findByBucketIndex (String id);
     //Iterable<Bucket> findBucketById (Integer id);
 }
