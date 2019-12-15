@@ -23,6 +23,12 @@ public class BucketPositionController {
         this.bucketPositionRepo = bucketPositionRepo;
     }
 
+    @CrossOrigin
+    @GetMapping(path="/getByUUID/{uuid}")
+    public @ResponseBody Iterable<BucketPosition> getBtUUID(@PathVariable("uuid") String uuid) {
+        return bucketPositionRepo.findByBucketIndex(uuid);
+    }
+
     // metoda testowa
     @GetMapping("/test")
     public @ResponseBody String test(){

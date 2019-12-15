@@ -34,7 +34,7 @@ public class BucketProductController {
        // return "Product add !";
     }
 
-    @DeleteMapping("/deteleById/{id}")
+    @DeleteMapping("/deleteById/{id}")
     public void deleteBucketPositionById(@PathVariable("id") int id){
         bucketPositionRepo.deleteById(id);
     }

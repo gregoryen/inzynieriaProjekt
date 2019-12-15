@@ -41,7 +41,7 @@ public class CartController {
         this.productRepo = productRepo;
     }
 
-    @PostMapping("addProductToNewCartWithId/{id}/{quantity}")
+    @PostMapping("addProduct/{id}/{quantity}")
     public @ResponseBody String addProductById(@PathVariable("id") Integer id,
                                                @PathVariable("quantity") int quantity){
 
@@ -58,12 +58,12 @@ public class CartController {
         p.setBucketIndex(bucket.getBucketIndex());
 
         bucketRepo.save(bucket);
-        String test = "";
-        test += product.getProductPrice();
-        return test;
+        String responseBody = "";
+        responseBody += bucket.getBucketIndex();
+        return responseBody;
     }
 
-    @PostMapping("addProductToExistingCartWithId/{bucketId}/{id}/{quantity}")
+    @PostMapping("addProduct/{bucketId}/{id}/{quantity}")
     public @ResponseBody String addProductById(@PathVariable("bucketId") String bucketId,
                                                @PathVariable("id") Integer id,
                                                @PathVariable("quantity") int quantity){
@@ -83,9 +83,7 @@ public class CartController {
         pos.setBucketIndex(bucket.getBucketIndex());
 
         bucketRepo.save(bucket);
-        String test = "";
-        test += product.getProductPrice();
-        return test;
+        return "Dodano nowy element do koszyka";
     }
 
 
