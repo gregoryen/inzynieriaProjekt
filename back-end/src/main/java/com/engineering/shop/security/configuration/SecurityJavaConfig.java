@@ -87,19 +87,21 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         http.
                 cors()
                 .and()
+
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
-                //.anyRequest().authenticated()
+                .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
+                .anyRequest().authenticated()
+
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        http.authorizeRequests().antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE");
-        http.authorizeRequests().anyRequest().authenticated();
+        
 
     }
 
