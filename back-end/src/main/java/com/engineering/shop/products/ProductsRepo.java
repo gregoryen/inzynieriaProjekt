@@ -9,8 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface ProductsRepo extends JpaRepository<Product, Integer> {
-    Optional<Product> getById(Integer id);
-
     Iterable<Product> findByName(String name);
 
     Iterable<Product> findByNameContainingIgnoreCase(String name);
