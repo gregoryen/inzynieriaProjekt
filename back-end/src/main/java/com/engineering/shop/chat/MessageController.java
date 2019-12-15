@@ -58,6 +58,7 @@ public class MessageController {
 
 
     @GetMapping
+    @CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping("/users")
     public Iterable<String> getUsers(){
         List<Message> messages = new ArrayList<>();
