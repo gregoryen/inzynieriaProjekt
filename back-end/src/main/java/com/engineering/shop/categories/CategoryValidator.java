@@ -30,7 +30,7 @@ public class CategoryValidator implements Validator {
         ValidationUtils.rejectIfEmpty(errors, "name", "name.empty");
         Category category = (Category) o;
 
-        List<Category> sameParentCategories = IteratorUtils.toList(categoriesRepo.findAllByParentId(category.getId()).iterator());
+        List<Category> sameParentCategories = IteratorUtils.toList(categoriesRepo.findAllByParentId(category.getParentId()).iterator());
         if (sameParentCategories.stream().anyMatch(c -> Objects.equals(category.getPreviousCategoryId(), c.getPreviousCategoryId()))) {
             errors.rejectValue("previousCategoryId", "wrong position - already in use");
         }
