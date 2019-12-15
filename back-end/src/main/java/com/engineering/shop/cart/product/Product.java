@@ -1,11 +1,10 @@
 package com.engineering.shop.cart.product;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-
+// klasa testowa
 import javax.persistence.*;
 
 @Entity
-@EnableAutoConfiguration
 @Table(name="Product")
 public class Product {
     @Id

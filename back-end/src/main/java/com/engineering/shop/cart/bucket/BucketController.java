@@ -1,23 +1,21 @@
 package com.engineering.shop.cart.bucket;
 
-import com.engineering.shop.cart.bucketlist.BucketPosition;
-import com.engineering.shop.cart.bucketlist.BucketPositionRepo;
-import com.engineering.shop.cart.bucketlist.BucketProductPosition;
-import com.engineering.shop.cart.product.Product;
+import com.engineering.shop.cart.bucketlist.BucketProductController;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/bucket")
 public class BucketController {
 
     private BucketRepo bucketRepo;
-    private BucketProductPosition bucketProductPositionRepo;
+    private BucketProductController bucketProductControllerRepo;
 
-    public BucketController(BucketRepo bucketRepo, BucketProductPosition bucketProductPositionRepo) {
+    public BucketController(BucketRepo bucketRepo, BucketProductController bucketProductControllerRepo) {
         this.bucketRepo = bucketRepo;
-        this.bucketProductPositionRepo = bucketProductPositionRepo;
+        this.bucketProductControllerRepo = bucketProductControllerRepo;
     }
 
     // Repo methods implementation
@@ -30,6 +28,11 @@ public class BucketController {
     @GetMapping("/getById/{id}")
     public Optional<Bucket> getById(@PathVariable("id") Integer id) {
         return bucketRepo.findById(id);
+    }
+
+    @GetMapping("getByUUID/{uuid}")
+    public Optional<Bucket> getNyUUID(@PathVariable("uuid")String id){
+        return bucketRepo.findByBucketIndex(id);
     }
 
 //    @PostMapping("/addById/{id}")
