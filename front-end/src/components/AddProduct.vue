@@ -1,188 +1,192 @@
 <template>
     <div>
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show" dark>
-            <b-form-group
-                    id="input-group-1"
-                    label="Nazwa produktu:"
-                    label-for="input-1"
-            >
-                <b-form-input
-                        id="input-1"
-                        v-model="form.product.name"
-                        type="text"
-                        required
-                        placeholder="Podaj nazwe produktu"
-                ></b-form-input>
-            </b-form-group>
+        <b-container>
+            <b-row align-h="center" class="mt-5">
+                <b-col cols ="10">
+                    <b-card-text class="p-3">
+                        <h3 class="mb-4">Dodaj Produkt</h3>
+                        <b-form @submit="onSubmit" @reset="onReset" v-if="show" dark>
+                            <b-form-group
+                                    id="input-group-1"
+                                    label="Nazwa produktu:"
+                                    label-for="input-1"
+                            >
+                                <b-form-input
+                                        id="input-1"
+                                        v-model="form.product.name"
+                                        type="text"
+                                        required
+                                        placeholder="Podaj nazwe produktu"
+                                ></b-form-input>
+                            </b-form-group>
 
-            <b-form-group
-                    id="mainImage"
-                    label="Wybierz główne zdjęcie Twojego produktu:"
-                    label-for="mainImage"
-            >
-                <b-form-file
-                        id="mainImage"
-                        ref="mainImage"
-                        v-model="mainImageFile"
-                        :state="Boolean(mainImageFile)"
-                        placeholder="Przeciągnij i upuść plik tutaj"
-                        drop-placeholder="Upouść plik tutaj..."
-                        accept="image/*"
-                        @change="onMainImagePicked"
-                ></b-form-file>
-                <v-flex xs12 sm6 offset-sm3>
-                    <v-text-field
-                            name="imageUrl"
-                            label="Image URL"
-                            id="image-url"
-                            v-model="supported.mainImageURL"
-                            required></v-text-field>
-                </v-flex>
-                <v-flex xs12 sm6 offset-sm3>
-                    <img :src="supported.mainImageURL" height="150">
-                </v-flex>
-            </b-form-group>
+                            <b-form-group
+                                    id="mainImage"
+                                    label="Wybierz główne zdjęcie Twojego produktu:"
+                                    label-for="mainImage"
+                            >
+                                <b-form-file
+                                        id="mainImage"
+                                        ref="mainImage"
+                                        v-model="mainImageFile"
+                                        :state="Boolean(mainImageFile)"
+                                        placeholder="Przeciągnij i upuść plik tutaj"
+                                        drop-placeholder="Upouść plik tutaj..."
+                                        accept="image/*"
+                                        @change="onMainImagePicked"
+                                ></b-form-file>
+                                <div v-if="supported.mainImageURL" xs12 sm6 offset-sm3>
+                                    <img :src="supported.mainImageURL" height="150">
+                                </div>
+                            </b-form-group>
 
-            <b-button @click="resetMainImage" class="mr-2">Zresetuj zjdęcie główne</b-button>
+                            <b-button type="reset" variant="danger" v-if="supported.mainImageURL" @click="resetMainImage" class="mr-2">Zresetuj zjdęcie główne</b-button>
 
-            <b-form-group
-                    id="additionalImages"
-                    label="Wybierz dodatkowe zdjęcia Twojego produktu:"
-                    label-for="additionalImages"
-            >
-                <b-form-file
-                        id="additionalImages"
-                        ref="additionalImages"
-                        v-model="additionalImagesFiles"
-                        :state="Boolean(additionalImagesFiles)"
-                        accept="image/*"
-                        multiple
-                        placeholder="Przeciągnij i upuść pliki tutaj"
-                        drop-placeholder="Upouść pliki tutaj..."
-                        @change="onAdditionalImagesPicked"
-                ></b-form-file>
-                <b-container fluid class="p-4">
-                    <b-row>
-                        <b-col v-for="imageURL in supported.additionalImagesURL" v-bind:key="imageURL.id" >
-                            <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.id"></b-img>
-                        </b-col>
-                    </b-row>
-                </b-container>
-            </b-form-group>
+                            <b-form-group
+                                    id="additionalImages"
+                                    label="Wybierz dodatkowe zdjęcia Twojego produktu:"
+                                    label-for="additionalImages"
+                            >
+                                <b-form-file
+                                        id="additionalImages"
+                                        ref="additionalImages"
+                                        v-model="additionalImagesFiles"
+                                        :state="Boolean(form.additionalImages)"
+                                        accept="image/*"
+                                        multiple
+                                        placeholder="Przeciągnij i upuść pliki tutaj"
+                                        drop-placeholder="Upouść pliki tutaj..."
+                                        @change="onAdditionalImagesPicked"
+                                ></b-form-file>
+                                <b-container v-if="supported.additionalImagesURL" fluid class="p-4">
+                                    <b-row>
+                                        <b-col v-for="imageURL in supported.additionalImagesURL" v-bind:key="imageURL.id" >
+                                            <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.id"></b-img>
+                                        </b-col>
+                                    </b-row>
+                                </b-container>
+                            </b-form-group>
 
-            <b-button @click="resetAdditionalImages" class="mr-2">Zresetuj zjdęcia dodatkowe</b-button>
+                            <b-button type="reset" variant="danger" v-if="supported.additionalImagesURL" @click="resetAdditionalImages" class="mr-2">Zresetuj zjdęcia dodatkowe</b-button>
 
-            <b-form-group id="description"
-                          label="Krótki opis: "
-                          label-for="input-1">
-                <b-form-textarea
-                        id="description"
-                        v-model="form.product.description"
-                        placeholder="Opisz produkt"
-                        rows="3"
-                        max-rows="8"
-                ></b-form-textarea>
-            </b-form-group>
+                            <b-form-group id="description"
+                                          label="Krótki opis: "
+                                          label-for="input-1">
+                                <b-form-textarea
+                                        id="description"
+                                        v-model="form.product.description"
+                                        placeholder="Opisz produkt"
+                                        rows="3"
+                                        max-rows="8"
+                                ></b-form-textarea>
+                            </b-form-group>
 
-            <b-form-group
-                    id="mainCategory"
-                    label="Wybierz kategorię główną: "
-                    label-for="searcher">
-                <b-form-input
-                        id="searcher"
-                        v-model="supported.searchMainCategories"
-                        type="text"
-                        placeholder="Wpisz szukaną kategorię"
-                ></b-form-input>
-                <div>
-                    <b-form-select v-model="form.product.mainCategoryId" :options="filteredMainCategoriesId" :select-size="4"></b-form-select>
-                    <div class="mt-3">Wybrana kategoria: <strong>{{ form.product.mainCategoryId }}</strong></div>
-                </div>
-            </b-form-group>
+                            <b-form-group
+                                    id="mainCategory"
+                                    label="Wybierz kategorię główną: "
+                                    label-for="searcher">
+                                <b-form-input
+                                        id="searcher"
+                                        v-model="supported.searchMainCategories"
+                                        type="text"
+                                        placeholder="Wpisz szukaną kategorię"
+                                ></b-form-input>
+                                <div>
+                                    <b-form-select v-model="form.product.mainCategoryId" :options="filteredMainCategoriesId" :select-size="4" required></b-form-select>
+                                    <div v-if="form.product.mainCategoryId" class="mt-3">Wybrana kategoria: <strong>{{ form.product.mainCategoryId }}</strong></div>
+                                </div>
+                            </b-form-group>
 
-            <b-form-group
-                    id="additionalCategory"
-                    label="Wybierz kategorię dodatkowe: "
-                    label-for="searcher">
-                <b-form-input
-                        id="searcher"
-                        v-model="supported.searchAdditionalCategories"
-                        type="text"
-                        placeholder="Wpisz szukaną kategorie"
-                ></b-form-input>
-                <div>
-                    <b-form-select v-model="form.product.categories" :options="filteredAdditionalCategoriesId" :select-size="4" multiple></b-form-select>
-                    <div class="mt-3">Wybrane kategorie: <strong>{{ form.product.categories }}</strong></div>
-                </div>
-            </b-form-group>
+                            <b-form-group
+                                    id="additionalCategory"
+                                    label="Wybierz kategorię dodatkowe: "
+                                    label-for="searcher">
+                                <b-form-input
+                                        id="searcher"
+                                        v-model="supported.searchAdditionalCategories"
+                                        type="text"
+                                        placeholder="Wpisz szukaną kategorie"
+                                ></b-form-input>
+                                <div>
+                                    <b-form-select v-model="form.product.categories" :options="filteredAdditionalCategoriesId" :select-size="4" multiple></b-form-select>
+                                    <div class="mt-3">Wybrane kategorie: <strong>{{ form.product.categories }}</strong></div>
+                                </div>
+                            </b-form-group>
 
-            <b-form-group id="price"
-                          label="Cena: "
-                          label-for="price">
-                <currency-input
-                        id="price"
-                        v-model="form.product.price"
-                        currency="PLN"
-                        locale="pl"></currency-input>
-            </b-form-group>
+                            <b-form-group id="price"
+                                          label="Cena: "
+                                          label-for="price">
+                                <currency-input
+                                        id="price"
+                                        v-model="form.product.price"
+                                        placeholder = "Podaj cene"
+                                        required
+                                        currency="PLN"
+                                        locale="pl"></currency-input>
+                            </b-form-group>
 
-            <b-form-group
-                    id="reference"
-                    label="Kod REFERENCE:"
-                    label-for="reference"
-            >
-                <b-form-input
-                        id="reference"
-                        v-model="form.product.reference"
-                        type="text"
-                        required
-                        placeholder="Podaj kod REFERENCE produktu"
-                ></b-form-input>
-            </b-form-group>
+                            <b-form-group
+                                    id="reference"
+                                    label="Kod REFERENCE:"
+                                    label-for="reference"
+                            >
+                                <b-form-input
+                                        id="reference"
+                                        v-model="form.product.reference"
+                                        type="text"
+                                        required
+                                        placeholder="Podaj kod REFERENCE produktu"
+                                ></b-form-input>
+                            </b-form-group>
 
-            <b-form-group
-                    id="isbn"
-                    label="Kod ISBN:"
-                    label-for="isbn"
-            >
-                <b-form-input
-                        id="isbn"
-                        v-model="form.product.isbn"
-                        type="text"
-                        required
-                        placeholder="Podaj kod ISBN produktu"
-                ></b-form-input>
-            </b-form-group>
+                            <b-form-group
+                                    id="isbn"
+                                    label="Kod ISBN:"
+                                    label-for="isbn"
+                            >
+                                <b-form-input
+                                        id="isbn"
+                                        v-model="form.product.isbn"
+                                        type="text"
+                                        required
+                                        placeholder="Podaj kod ISBN produktu"
+                                ></b-form-input>
+                            </b-form-group>
 
-            <b-form-group
-                    id="ean13"
-                    label="Kod EAN13:"
-                    label-for="ean13"
-            >
-                <b-form-input
-                        id="ean13"
-                        v-model="form.product.ean13"
-                        type="text"
-                        required
-                        placeholder="Podaj kod EAN13 produktu"
-                ></b-form-input>
-            </b-form-group>
+                            <b-form-group
+                                    id="ean13"
+                                    label="Kod EAN13:"
+                                    label-for="ean13"
+                            >
+                                <b-form-input
+                                        id="ean13"
+                                        v-model="form.product.ean13"
+                                        type="text"
+                                        required
+                                        placeholder="Podaj kod EAN13 produktu"
+                                ></b-form-input>
+                            </b-form-group>
 
 
-            <b-form-group
-                    id="active"
-                    label="Czy produkt jest dostępny:"
-                    label-for="ean13"
-            >
-                <b-form-checkbox v-model="form.product.active" name="check-button" switch>
-                </b-form-checkbox>
-                <b v-if="form.product.active">Dostępny</b>
-                <b v-else>Niedostępny</b>
-            </b-form-group>
+                            <b-form-group
+                                    id="active"
+                                    label="Czy produkt jest dostępny:"
+                                    label-for="ean13"
+                            >
+                                <b-form-checkbox v-model="form.product.active" name="check-button" switch>
+                                </b-form-checkbox>
+                                <b v-if="form.product.active">Dostępny</b>
+                                <b v-else>Niedostępny</b>
+                            </b-form-group>
 
-            <b-button type="submit" variant="primary">Submit</b-button>
-            <b-button type="reset" variant="danger">Reset</b-button>
-        </b-form>
+                            <b-button type="submit" variant="primary">Submit</b-button>
+                            <b-button type="reset" variant="danger">Reset</b-button>
+                        </b-form>
+                    </b-card-text>
+                </b-col>
+            </b-row>
+        </b-container>
+
         <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
         </b-card>
@@ -208,7 +212,7 @@
                         name: '',
                         description: '',
                         mainCategoryId: null,
-                        categories: [],
+                        categories: null,
                         price: '',
                         reference: '',
                         isbn: '',
@@ -223,7 +227,7 @@
                 show: true,
                 supported: {
                     mainImageURL: null,
-                    additionalImagesURL: [],
+                    additionalImagesURL: null,
                     allCategories: [],
                     searchedMainCategories: [],
                     searchedAdditionalCategories: [],
@@ -272,12 +276,12 @@
                 }
             },
             onReset(evt) {
-                evt.preventDefault()
+                evt.preventDefault();
                 // Reset  form.products
                 this.form.product.name = '';
                 this.form.product.description = '';
                 this.form.product.mainCategoryId = null;
-                this.form.product.categories = [];
+                this.form.product.categories = null;
                 this.form.product.price = '';
                 this.form.product.reference = '';
                 this.form.product.isbn = '';
@@ -338,7 +342,7 @@
                         let temp = {
                             image: fileReader.result,
                             id: i
-                        }
+                        };
                         this.supported.additionalImagesURL.push(temp)
                     });
                     fileReader.readAsDataURL(files[i])
@@ -390,7 +394,7 @@
                                 let item = {
                                     value: temp.id,
                                     text: temp.name
-                                }
+                                };
                                 this.supported.allCategories.push(item);
                             }}
                     }
