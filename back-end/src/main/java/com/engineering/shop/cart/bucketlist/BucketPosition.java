@@ -41,7 +41,7 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
         this.bucketIndex = bucketIndex;
     }
 
-    public void setProductQuantity(Integer productQuantity) {
+    public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
     }
 

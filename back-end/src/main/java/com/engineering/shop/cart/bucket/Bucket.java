@@ -44,6 +44,12 @@ public class Bucket {
         this.totalValue += value;
     }
 
+    public void decreaseTotalValue(float value){
+        if (totalValue > 0){
+            this.totalValue -= value;
+        }
+    }
+
     public Integer getOrderId() {
         return orderId;
     }

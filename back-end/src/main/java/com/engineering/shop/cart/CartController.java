@@ -58,14 +58,15 @@ public class CartController {
         p.setBucketIndex(bucket.getBucketIndex());
 
         bucketRepo.save(bucket);
-        String test = "";
-        test += product.getProductPrice();
-        return test;
+
+        return bucket.getBucketIndex();
     }
 
-    @PostMapping("addProductToExistingCartWithId/{bucketId}/{id}/{quantity}")
+    // productId to jest identyfikator produktu w snesie np. Grabi, Nasion, Spodnii ogrodnczych, a nie id produktu w zamówieniu
+
+    @PostMapping("addProductToExistingCartWithId/{bucketId}/{productId}/{quantity}")
     public @ResponseBody String addProductById(@PathVariable("bucketId") String bucketId,
-                                               @PathVariable("id") Integer id,
+                                               @PathVariable("productId") Integer id,
                                                @PathVariable("quantity") int quantity){
 
         Optional<Bucket> bucketOptional = Optional.ofNullable(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
@@ -83,10 +84,66 @@ public class CartController {
         pos.setBucketIndex(bucket.getBucketIndex());
 
         bucketRepo.save(bucket);
-        String test = "";
-        test += product.getProductPrice();
-        return test;
+
+        return bucket.getBucketIndex();
     }
+
+    // productId to jest identyfikator produktu w snesie np. Grabi, Nasion, Spodnii ogrodnczych, a nie id produktu w zamówieniu
+
+    @DeleteMapping("deleteProductFromBucketId/{bucketId}/{productId}")
+    public @ResponseBody String deleteProductById(@PathVariable("bucketId") String bucketId, @PathVariable("productId") int productId){
+
+        Optional<BucketPosition> optionalPosition = bucketPositionRepo.findByBucketIndexAndProductId(bucketId,productId);
+
+        BucketPosition position = optionalPosition.get();
+
+        Optional<Bucket> optionalBucket = Optional.ofNullable(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
+        Bucket bucket = optionalBucket.get();
+        bucket.decreaseTotalValue(position.getProductPrice() * position.getProductQuantity());
+
+        int idToDel = position.getId();
+        bucketPositionRepo.deleteById(idToDel);
+
+        return "Done";
+    }
+
+    @DeleteMapping("deleteBucketById/{bucketId}")
+    public String deleteBucketById(@PathVariable("bucketId") String bucketId){
+
+        Optional<Bucket> optionalBucket = Optional.ofNullable(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
+        Iterable<BucketPosition> optionalPositionList = bucketPositionRepo.findByBucketIndex(bucketId);
+
+        for (BucketPosition pos : optionalPositionList){
+            bucketPositionRepo.delete(pos);
+        }
+
+        bucketRepo.delete(optionalBucket.get());
+
+        return "Done";
+
+    }
+
+    // productId to jest identyfikator produktu w snesie np. Grabi, Nasion, Spodnii ogrodnczych, a nie id produktu w zamówieniu
+
+    @PostMapping("setProductQuantity/{bucketId}/{productId}/{quantity}")
+    public @ResponseBody String setProductQuantity(@PathVariable("bucketId") String bucketId, @PathVariable("productId") Integer productId, @PathVariable("quantity") int quantity){
+
+        String text = "";
+        Optional<Bucket> optionalBucket = Optional.of(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
+        Optional<BucketPosition> postion = bucketPositionRepo.findByBucketIndexAndProductId(bucketId,productId);
+        postion.get().setProductQuantity(quantity);
+        text += postion.get().getProductQuantity();
+        optionalBucket.get().setTotalValue(postion.get().getProductPrice() * postion.get().getProductQuantity());
+
+        bucketPositionRepo.save(postion.get());
+        bucketRepo.save(optionalBucket.get());
+
+        return text;
+    }
+
+    // productId to jest identyfikator produktu w snesie np. Grabi, Nasion, Spodnii ogrodnczych, a nie id produktu w zamówieniu
+
+
 
 
 
