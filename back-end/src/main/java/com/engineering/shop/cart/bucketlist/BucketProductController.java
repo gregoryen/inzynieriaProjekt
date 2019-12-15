@@ -1,10 +1,10 @@
 package com.engineering.shop.cart.bucketlist;
 
 import com.engineering.shop.cart.bucket.Bucket;
-import com.engineering.shop.cart.product.Product;
-import com.engineering.shop.cart.product.ProductRepo;
 import net.minidev.json.JSONObject;
 import org.springframework.web.bind.annotation.*;
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsRepo;
 
 import java.util.Optional;
 
@@ -13,9 +13,9 @@ import java.util.Optional;
 public class BucketProductController {
 
     BucketPositionRepo bucketPositionRepo;
-    ProductRepo productRepo;
+    ProductsRepo productRepo;
 
-    public BucketProductController(BucketPositionRepo bucketPositionRepo, ProductRepo productRepo){
+    public BucketProductController(BucketPositionRepo bucketPositionRepo, ProductsRepo productRepo){
         this.bucketPositionRepo = bucketPositionRepo;
         this.productRepo = productRepo;
     }
@@ -26,8 +26,8 @@ public class BucketProductController {
         Optional<Product> productcOptional = Optional.ofNullable(productRepo.findById(id).orElseThrow());
         Product product = productcOptional.get();
         Bucket bucket = new Bucket();
-        BucketPosition p = new BucketPosition(product.getProductId(),
-                1, product.getProductPrice());
+        BucketPosition p = new BucketPosition(product.getId(),
+                1, product.getPrice());
 
         bucketPositionRepo.save(p);
 

@@ -1,6 +1,5 @@
 package com.engineering.shop.cart.bucketlist;
 
-import com.engineering.shop.cart.product.Product;
 import com.sun.istack.NotNull;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +8,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -23,13 +23,13 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
     @NotNull
     private int productQuantity;
     @NotNull
-    private float productPrice;
+    private BigDecimal productPrice;
 
     public BucketPosition(){
 
     }
 
-    public BucketPosition( Integer productId, int productQuantity, Float price) {
+    public BucketPosition( Integer productId, int productQuantity, BigDecimal price) {
 
         this.productId = productId;
         this.productQuantity = productQuantity;
@@ -71,7 +71,7 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
         }
     }
 
-    public float getProductPrice() {
+    public BigDecimal getProductPrice() {
         return productPrice;
     }
 }

@@ -2,11 +2,9 @@ package com.engineering.shop.cart.bucketlist;
 
 import com.engineering.shop.cart.bucketlist.BucketPosition;
 import com.engineering.shop.cart.bucketlist.BucketPositionRepo;
-import com.engineering.shop.cart.product.Product;
-import com.engineering.shop.cart.product.ProductController;
-import com.engineering.shop.cart.product.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.engineering.shop.products.ProductsRepo;
 
 import java.util.Optional;
 
@@ -16,7 +14,7 @@ public class BucketPositionController {
 
     private BucketPositionRepo bucketPositionRepo;
     //private ProductController productController;
-    private ProductRepo productRepo;
+    private ProductsRepo productRepo;
 
     @Autowired
     public BucketPositionController(BucketPositionRepo bucketPositionRepo) {
