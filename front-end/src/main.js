@@ -2,7 +2,13 @@ import Vue from 'vue'
 import App from './App.vue'
 import BootstrapVue from 'bootstrap-vue'
 import VueRouter from 'vue-router'
+import VueCurrencyInput from 'vue-currency-input'
 
+const pluginOptions = {
+  globalOptions: { currency: 'PLN'}
+}
+
+Vue.use(VueCurrencyInput, pluginOptions)
 Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
