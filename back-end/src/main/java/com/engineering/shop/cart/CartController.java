@@ -8,13 +8,14 @@ import com.engineering.shop.cart.bucketlist.BucketPositionController;
 import com.engineering.shop.cart.bucketlist.BucketPositionRepo;
 import com.engineering.shop.cart.order.OrderController;
 import com.engineering.shop.cart.order.OrderRepo;
-import com.engineering.shop.cart.product.Product;
-import com.engineering.shop.cart.product.ProductController;
-import com.engineering.shop.cart.product.ProductRepo;
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsController;
+import com.engineering.shop.products.ProductsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,16 +26,13 @@ public class CartController {
     BucketRepo bucketRepo;
     BucketPositionRepo bucketPositionRepo;
     OrderRepo orderRepo;
-
-    //Tymczasowo docelowo moduł Bartka i Seby(?)
-
-    ProductRepo productRepo;
+    ProductsRepo productRepo;
 
     @Autowired
     public CartController(BucketRepo bucketRepo,
                           BucketPositionRepo bucketPositionRepo,
                           OrderRepo orderRepo,
-                          ProductRepo productRepo) {
+                          ProductsRepo productRepo) {
         this.bucketRepo = bucketRepo;
         this.bucketPositionRepo = bucketPositionRepo;
         this.orderRepo = orderRepo;
@@ -48,13 +46,13 @@ public class CartController {
         Optional<Product> productcOptional = Optional.ofNullable(productRepo.findById(id).orElseThrow());
         Product product = productcOptional.get();
         int q = quantity;
-        BucketPosition p = new BucketPosition(product.getProductId(),
-                q, product.getProductPrice());
+        BucketPosition p = new BucketPosition(product.getId(),
+                q, product.getPrice());
 
         bucketPositionRepo.save(p);
 
         Bucket bucket = new Bucket();
-        bucket.increaseTotalValue(p.getProductPrice()*p.getProductQuantity());
+        bucket.increaseTotalValue(p.getProductPrice().multiply(new BigDecimal(p.getProductQuantity())));
         p.setBucketIndex(bucket.getBucketIndex());
 
         bucketRepo.save(bucket);
@@ -73,13 +71,13 @@ public class CartController {
         Product product = productcOptional.get();
         int q = quantity;
 
-        BucketPosition pos = new BucketPosition(product.getProductId(),
-                q, product.getProductPrice());
+        BucketPosition pos = new BucketPosition(product.getId(),
+                q, product.getPrice());
 
         bucketPositionRepo.save(pos);
 
         Bucket bucket = bucketOptional.get();
-        bucket.increaseTotalValue(pos.getProductPrice()*pos.getProductQuantity());
+        bucket.increaseTotalValue(pos.getProductPrice().multiply(new BigDecimal(pos.getProductQuantity())));
         pos.setBucketIndex(bucket.getBucketIndex());
 
         bucketRepo.save(bucket);

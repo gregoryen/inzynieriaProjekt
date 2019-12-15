@@ -10,6 +10,7 @@ import lombok.Setter;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,25 +24,25 @@ public class Bucket {
     @NonNull
     private String bucketIndex;
     @NotNull
-    private float totalValue;
+    private BigDecimal totalValue;
     @NotNull
     private Integer orderId;
 
     public Bucket() {
         this.bucketIndex = UUID.randomUUID().toString();
-        this.totalValue = 0.00f;
+        this.totalValue = new BigDecimal(0);
     }
 
-    public float getTotalValue() {
+    public BigDecimal getTotalValue() {
         return totalValue;
     }
 
-    public void setTotalValue(float totalValue) {
+    public void setTotalValue(BigDecimal totalValue) {
         this.totalValue = totalValue;
     }
 
-    public void increaseTotalValue(float value){
-        this.totalValue += value;
+    public void increaseTotalValue(BigDecimal value){
+        this.totalValue.add(value);
     }
 
     public Integer getOrderId() {
