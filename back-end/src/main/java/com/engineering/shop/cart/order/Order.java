@@ -11,8 +11,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name="User_Order")
-@Data
-//@RequiredArgsConstructor
+
 public class Order {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

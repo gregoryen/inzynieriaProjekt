@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 
+// testowy contorller
+
 @RestController
 @RequestMapping("/product")
 public class ProductController {

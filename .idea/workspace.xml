@@ -2,67 +2,36 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f2f9db57-4a2d-4fed-a285-ad7045c04ea0" name="Default Changelist" comment="Dzialajace end pointy">
-      <change afterPath="$PROJECT_DIR$/back-end/.mvn/wrapper/MavenWrapperDownloader.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/back-end/.mvn/wrapper/maven-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/back-end/.mvn/wrapper/maven-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/cart/bucketlist/BucketProductPosition.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/cart/bucketlist/ProductToBucketPositionTransformer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/cart/product/ProductRepo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/LICENSE" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/bucket/Bucket.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/bucket/BucketController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/bucket/BucketRepo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/bucketlist/BucketPosition.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/bucketlist/BucketPositionController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/bucketlist/BucketPositionRepo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/cart/product/ProductSimulate.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/cart/product/ProductController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/cart/product/ProductsRepo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/order/Order.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/order/OrderController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/order/OrderRepo.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/product/Product.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/security/configuration/SecurityJavaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/main/java/com/engineering/shop/security/configuration/SecurityJavaConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/.mvn/wrapper/MavenWrapperDownloader.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/.mvn/wrapper/maven-wrapper.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Bucket/Bucket.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Bucket/BucketController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Bucket/BucketRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/BucktPosition/BucketPosition.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/BucktPosition/BucketPositionController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/BucktPosition/BucketRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Order/Order.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Order/OrderController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Order/OrderRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/Product/Product.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/java/com/cart/shoppingCart/ShoppingCartApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/main/resources/application.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/shoppingCart/src/test/java/com/cart/shoppingCart/ShoppingCartApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1V02o8yMk9291alqhyyhkFWQrtP" />
   <component name="PropertiesComponent">
     <property name="RequestMappingsPanelOrder0" value="0" />
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
     <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/back-end" />
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
+  <component name="RunDashboard">
+    <option name="ruleStates">
       <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
       </list>
     </option>
   </component>
@@ -70,7 +39,29 @@
     <configuration />
   </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f2f9db57-4a2d-4fed-a285-ad7045c04ea0" name="Default Changelist" comment="Dzialajace end pointy" />
+      <created>1576375863590</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1576375863590</updated>
+      <workItem from="1576375864800" duration="39000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="WindowStateProjectService">
     <state width="1798" height="294" key="GridCell.Tab.0.bottom" timestamp="1576374728540">
