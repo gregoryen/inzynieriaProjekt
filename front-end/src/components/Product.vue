@@ -110,5 +110,6 @@ img {
 #categories > ul {
   font-size: 30px;
   list-style: none;
+
 }
 </style>
