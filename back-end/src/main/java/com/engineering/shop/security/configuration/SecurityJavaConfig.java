@@ -68,7 +68,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With","Origin","Content-Type","Accept","Authorization"));
 
-        // This allow us to expose the headers
         configuration.setExposedHeaders(Arrays.asList("Access-Control-Allow-Headers", "Authorization, x-xsrf-token, Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, " +
                 "Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers"));
 
@@ -87,22 +86,20 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         http.
                 cors()
                 .and()
-
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
+                .antMatchers("/images/**", "/downloadFile/**").permitAll()
+                .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
                 .anyRequest().authenticated()
-
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();
 
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
-        
-
     }
 
 }
