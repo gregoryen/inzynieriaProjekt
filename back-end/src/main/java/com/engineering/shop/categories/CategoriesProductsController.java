@@ -25,7 +25,7 @@ public class CategoriesProductsController {
 
     @GetMapping("/products/branch/{id}")
     public Iterable<Category> getBranchByProductId(@PathVariable int id) {
-        Optional<Product> productOptional = Optional.ofNullable(productsRepo.getById(id)).orElseThrow(ResourceNotFoundException::new);
+        Optional<Product> productOptional = Optional.ofNullable(productsRepo.findById(id)).orElseThrow(ResourceNotFoundException::new);
         Product product = productOptional.get();
         List<Category> categories = getCategoriesForProduct(product);
         categories.forEach(c -> c.add(ControllerLinkBuilder.linkTo(CategoriesController.class).slash(c.getId()).withSelfRel()));
