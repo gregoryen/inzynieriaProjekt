@@ -2,7 +2,7 @@
     <div>
         <b-container>
             <b-row align-h="center" class="mt-5">
-                <b-col cols ="10">
+                <b-col cols="10">
                     <b-card-text class="p-3">
                         <h3 class="mb-4">Dodaj Produkt</h3>
                         <b-form @submit="onSubmit" @reset="onReset" v-if="show" dark>
@@ -40,7 +40,9 @@
                                 </div>
                             </b-form-group>
 
-                            <b-button type="reset" variant="danger" v-if="supported.mainImageURL" @click="resetMainImage" class="mr-2">Zresetuj zjdęcie główne</b-button>
+                            <b-button type="reset" variant="danger" v-if="supported.mainImageURL"
+                                      @click="resetMainImage" class="mr-2">Zresetuj zjdęcie główne
+                            </b-button>
 
                             <b-form-group
                                     id="additionalImages"
@@ -60,14 +62,17 @@
                                 ></b-form-file>
                                 <b-container v-if="supported.additionalImagesURL" fluid class="p-4">
                                     <b-row>
-                                        <b-col v-for="imageURL in supported.additionalImagesURL" v-bind:key="imageURL.id" >
+                                        <b-col v-for="imageURL in supported.additionalImagesURL"
+                                               v-bind:key="imageURL.id">
                                             <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.id"></b-img>
                                         </b-col>
                                     </b-row>
                                 </b-container>
                             </b-form-group>
 
-                            <b-button type="reset" variant="danger" v-if="supported.additionalImagesURL" @click="resetAdditionalImages" class="mr-2">Zresetuj zjdęcia dodatkowe</b-button>
+                            <b-button type="reset" variant="danger" v-if="supported.additionalImagesURL"
+                                      @click="resetAdditionalImages" class="mr-2">Zresetuj zjdęcia dodatkowe
+                            </b-button>
 
                             <b-form-group id="description"
                                           label="Krótki opis: "
@@ -92,8 +97,11 @@
                                         placeholder="Wpisz szukaną kategorię"
                                 ></b-form-input>
                                 <div>
-                                    <b-form-select v-model="form.product.mainCategoryId" :options="filteredMainCategoriesId" :select-size="4" required></b-form-select>
-                                    <div v-if="form.product.mainCategoryId" class="mt-3">Wybrana kategoria: <strong>{{ form.product.mainCategoryId }}</strong></div>
+                                    <b-form-select v-model="form.product.mainCategoryId"
+                                                   :options="filteredMainCategoriesId" :select-size="4"
+                                                   required></b-form-select>
+                                    <div v-if="form.product.mainCategoryId" class="mt-3">Wybrana kategoria: <strong>{{
+                                        form.product.mainCategoryId }}</strong></div>
                                 </div>
                             </b-form-group>
 
@@ -108,8 +116,11 @@
                                         placeholder="Wpisz szukaną kategorie"
                                 ></b-form-input>
                                 <div>
-                                    <b-form-select v-model="form.product.categories" :options="filteredAdditionalCategoriesId" :select-size="4" multiple></b-form-select>
-                                    <div class="mt-3">Wybrane kategorie: <strong>{{ form.product.categories }}</strong></div>
+                                    <b-form-select v-model="form.product.categories"
+                                                   :options="filteredAdditionalCategoriesId" :select-size="4"
+                                                   multiple></b-form-select>
+                                    <div class="mt-3">Wybrane kategorie: <strong>{{ form.product.categories }}</strong>
+                                    </div>
                                 </div>
                             </b-form-group>
 
@@ -119,7 +130,7 @@
                                 <currency-input
                                         id="price"
                                         v-model="form.product.price"
-                                        placeholder = "Podaj cene"
+                                        placeholder="Podaj cene"
                                         required
                                         currency="PLN"
                                         locale="pl"></currency-input>
@@ -196,10 +207,11 @@
 <script>
     import axios from 'axios';
 
-    const PRODUCTS =   '/products';
-    const UPLOAD_IMAGE =  '/images/uploadImage';
+    const PRODUCTS = '/products';
+    const UPLOAD_IMAGE = '/images/uploadImage';
     const UPLOAD_MULTIPLE_IMAGE = '/images/uploadMultipleImages';
-    const CATEGORIES_WITH_ID =   '/categories?projection=withId';
+    const CATEGORIES_WITH_ID = '/categories?projection=withId';
+    const WAREHOUSE = '/stock_amounts/add_empty';
 
     export default {
         props: {
@@ -266,13 +278,17 @@
                             'content-type': 'application/json'
                         },
                     };
-                    axios.post(this.baseUrl+PRODUCTS, this.form, config)
+                    axios.post(this.baseUrl + PRODUCTS, this.form, config)
                         .then(res => {
                             if (res.status === 200) {
                                 // eslint-disable-next-line no-console
                                 console.log(res);
+                                axios.post(this.baseUrl + WAREHOUSE, {
+                                    productId: res.id,
+                                    measure: 'UNIT',
+                                }, config);
                             }
-                        })
+                        });
                 }
             },
             onReset(evt) {
@@ -321,7 +337,7 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
-                axios.post(this.baseUrl+UPLOAD_IMAGE, formData, config)
+                axios.post(this.baseUrl + UPLOAD_IMAGE, formData, config)
                     .then(res => {
                         if (res.status === 200) {
                             this.form.product.mainImage = res.data.id;
@@ -336,7 +352,7 @@
                 const files = event.target.files;
                 this.supported.additionalImagesURL = [];
 
-                for (let i =0;i<files.length;i++) {
+                for (let i = 0; i < files.length; i++) {
                     const fileReader = new FileReader();
                     fileReader.addEventListener('load', () => {
                         let temp = {
@@ -358,7 +374,7 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
-                axios.post(this.baseUrl+UPLOAD_MULTIPLE_IMAGE, formData, config)
+                axios.post(this.baseUrl + UPLOAD_MULTIPLE_IMAGE, formData, config)
                     .then(res => {
                         if (res.status === 200) {
                             for (let temp of res.data) {
@@ -387,7 +403,7 @@
                     'content-type': 'application/json'
                 }
             };
-            axios.get(this.baseUrl+CATEGORIES_WITH_ID, config)
+            axios.get(this.baseUrl + CATEGORIES_WITH_ID, config)
                 .then(res => {
                         if (res.status === 200) {
                             for (let temp of res.data._embedded.categories) {
@@ -396,7 +412,8 @@
                                     text: temp.name
                                 };
                                 this.supported.allCategories.push(item);
-                            }}
+                            }
+                        }
                     }
                 );
         }
