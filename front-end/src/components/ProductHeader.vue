@@ -2,7 +2,7 @@
   <li>
     <router-link :to="{name: 'product', params: {id: product.id}}" id="product" >
       <div>{{product.name}}</div>
-      <div>{{product.price}}</div>
+      <div>{{product.price}} PLN</div>
     </router-link>
   </li>
 </template>
@@ -42,9 +42,5 @@ li > a {
 
 div:first-child{
   padding-right: 20px;
-}
-
-div:last-child::after{
-content: '\00a0PLN';
 }
 </style>
