@@ -66,7 +66,7 @@
                     "receiver": this.addressee,
                     "text": this.text
                 }
-                axios.post(root + "/messages", data, config).then(function() {
+                axios.post(root + "/messages", data, config).then(() => {
                     this.text = "";
                     this.loadMessages();
                 }).catch(error => {
