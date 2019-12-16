@@ -32,6 +32,7 @@
                                         :state="Boolean(mainImageFile)"
                                         placeholder="Przeciągnij i upuść plik tutaj"
                                         drop-placeholder="Upouść plik tutaj..."
+                                        required
                                         accept="image/*"
                                         @change="onMainImagePicked"
                                 ></b-form-file>
@@ -201,6 +202,15 @@
         <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
         </b-card>
+
+        <b-modal ref="successCreate" id="successModal" title="Utworzono nowy produkt">
+            <p class="my-4">Nowy produkt zostal dodany do sklepu</p>
+        </b-modal>
+
+        <b-modal ref="failCreate" id="failModal" title="NIE stworzono nowego produktu">
+            <p class="my-4">Utworzenie nowego produktu nie udało się</p>
+        </b-modal>
+
     </div>
 </template>
 
@@ -255,6 +265,12 @@
             }
         },
         methods: {
+            showSuccessModal() {
+                this.$refs["successCreate"].show()
+            },
+            showFailModal() {
+                this.$refs["failCreate"].show()
+            },
             resetMainImage() {
                 this.$refs['mainImage'].reset();
                 this.mainImageFile = null;
@@ -272,7 +288,16 @@
             onSubmit(evt) {
                 evt.preventDefault();
                 if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
+                    if (this.form.additionalImages === null) {
+                        this.form.additionalImages = []
+                    }
                     this.form.additionalImages.push(this.form.product.mainImage);
+                    if (this.form.product.categories === null) {
+                        this.form.product.categories  = []
+                    }
+                    if (this.form.product.categories.indexOf(this.form.product.mainCategoryId)) {
+                        this.form.product.categories.push(this.form.product.mainCategoryId);
+                    }
                     const config = {
                         headers: {
                             'content-type': 'application/json'
@@ -281,18 +306,18 @@
                     axios.post(this.baseUrl + PRODUCTS, this.form, config)
                         .then(res => {
                             if (res.status === 200) {
-                                // eslint-disable-next-line no-console
-                                console.log(res);
-                                if(res.status==201){
-                                    axios.post(this.baseUrl + WAREHOUSE, {
-                                        productId: res.id,
-                                        measure: 'UNIT',
-                                    }, config);
-                                }
+                                axios.post(this.baseUrl + WAREHOUSE, {
+                                    productId: res.id,
+                                    measure: 'UNIT',
+                                }, config)
+                                this.showSuccessModal();
+                            } else {
+                                this.showFailModal();
                             }
                         });
+                    this.onReset();
                 }
-            },
+                },
             onReset(evt) {
                 evt.preventDefault();
                 // Reset  form.products
