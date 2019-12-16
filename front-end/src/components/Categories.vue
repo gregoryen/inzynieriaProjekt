@@ -15,12 +15,10 @@ import Category from "./Category.vue";
 export default {
   name: "Categories",
   components: { Category },
-  props: {
-    baseUrl: String
-  },
   data: () => {
     return {
-      categories: null
+      categories: null,
+      baseUrl: "http://localhost:8080/"
     };
   },
   mounted() {
@@ -30,7 +28,7 @@ export default {
   },
   methods: {
     emitAllProducts() {
-      axios.get(this.baseUrl + "/products/search/findAllByActiveIsTrue?projection=header").then(response => {bus.$emit('PRODUCTS', response.data._embedded.products)});
+      axios.get(this.baseUrl + "products/search/findAllByActiveIsTrue?projection=header").then(response => {bus.$emit('PRODUCTS', response.data._embedded.products)});
     }
   }
 };
@@ -54,6 +52,7 @@ nav ul {
 }
 
 nav ul li {
+  z-index: 100;
   display: inline-block;
   background-color: #252323;
 }

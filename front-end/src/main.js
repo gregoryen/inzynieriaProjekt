@@ -1,36 +1,28 @@
 import Vue from 'vue'
 import App from './App.vue'
-import BootstrapVue from 'bootstrap-vue'
 import VueRouter from 'vue-router'
+import BootstrapVue from 'bootstrap-vue'
 import VueCurrencyInput from 'vue-currency-input'
 
-const pluginOptions = {
-  globalOptions: { currency: 'PLN' }
-}
+import Categories from './components/Categories.vue'
+import Products from './components/Products.vue'
+import Product from './components/Product.vue'
 
-Vue.config.productionTip = false
-Vue.use(VueCurrencyInput, pluginOptions)
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
+Vue.use(VueCurrencyInput, pluginOptions)
 
-const Product = {
-  props: ['id'],
-  template: '<Product :id="id" :/>'
-}
-
-const Products = {
-  props: ['products'],
-  template: '<Products/>'
-}
+Vue.config.productionTip = false;
 
 const routes = [
   { path: '/product/:id', name: 'product', component: Product },
-  { path: '/products', name: 'products', component: Products }
-]
+  { path: '/products', name: 'products', component: Products },
+  { path: '/categories', name: 'categories', compoment: Categories }
+];
 
-const router = new VueRouter({
-  routes
-})
+const pluginOptions = { globalOptions: { currency: 'PLN' } };
+
+const router = new VueRouter({ routes });
 
 export const bus = new Vue();
 

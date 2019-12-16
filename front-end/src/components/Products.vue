@@ -26,8 +26,7 @@ export default {
   created() {
     axios
       .get(
-        this.baseUrl +
-          "/products/search/findAllByActiveIsTrue?projection=header"
+        "http://localhost:8080/products/search/findAllByActiveIsTrue?projection=header"
       )
       .then(response => {
         this.products = response.data._embedded.products;
