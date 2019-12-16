@@ -3,7 +3,7 @@
     <h1>{{product.name}}</h1>
     <div class="grid-container">
       <div class="item1">
-        <img src="https://static.appvn.com/a/uploads/thumbnails/112015/mr-square_icon.png" />
+        <img :src="'http://localhost:8080/images/downloadAdditionalImage?idImage=' + product.mainImage" />
       </div>
       <div class="item2">
         <div id="price">Cena: {{product.price}} PLN</div>

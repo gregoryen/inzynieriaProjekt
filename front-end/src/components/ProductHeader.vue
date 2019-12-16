@@ -1,14 +1,24 @@
 <template>
   <li>
     <router-link :to="{name: 'product', params: {id: product.id}}" id="product" >
-      <div>{{product.name}}</div>
-      <div>{{product.price}} PLN</div>
+      <b-container class="bv-example-row">
+        <b-row>
+          <b-col>
+            <img :src="this.imageUrl + this.product.mainImage" width="50" height="50">
+          </b-col>
+          <b-col>
+            <div>{{product.name}}</div>
+          </b-col>
+          <b-col>
+            <div>{{product.price}} PLN</div>
+          </b-col>
+        </b-row>
+      </b-container>
     </router-link>
   </li>
 </template>
 
 <script>
-// import axios from "axios";
 
 export default {
   name: "ProductHeader",
@@ -17,22 +27,12 @@ export default {
   },
   data: () => {
     return {
-      imageUrl: null,
+      imageUrl: "http://localhost:8080/images/downloadAdditionalImage?idImage=",
       image: null
     };
-  },
-  mounted() {
-    this.imageUrl = this.product.links;
-  },
-  created() {
-    // axios.get("http://localhost:8080").then(response => {
-    //   this.products = response.data;
-    // });
-  },
-  methods: {}
+  }
 };
 </script>
-
 <style scoped>
 #product{
   display: flex;
