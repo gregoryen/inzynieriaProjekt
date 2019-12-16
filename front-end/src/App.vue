@@ -1,11 +1,5 @@
 <template>
   <div id="app">
-
-    
-
-<!--    <img alt="Vue logo" src="./assets/logo.png">-->
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <WarehouseSupplyForm/>
     <router-view />
 
   </div>
@@ -13,17 +7,12 @@
 
 <script>
 
-// import HelloWorld from './components/HelloWorld.vue'
-import WarehouseSupplyForm from './components/WarehouseSupplyForm.vue'
-
 export default {
   name: 'app',
   components: {
-    // HelloWorld,
-    WarehouseSupplyForm
   }
 }
-r
+
 </script>
 
 <style>
