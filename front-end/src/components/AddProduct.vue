@@ -283,10 +283,12 @@
                             if (res.status === 200) {
                                 // eslint-disable-next-line no-console
                                 console.log(res);
-                                axios.post(this.baseUrl + WAREHOUSE, {
-                                    productId: res.id,
-                                    measure: 'UNIT',
-                                }, config);
+                                if(res.status==201){
+                                    axios.post(this.baseUrl + WAREHOUSE, {
+                                        productId: res.id,
+                                        measure: 'UNIT',
+                                    }, config);
+                                }
                             }
                         });
                 }
