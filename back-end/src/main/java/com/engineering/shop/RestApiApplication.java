@@ -15,11 +15,9 @@ import org.springframework.cache.annotation.EnableCaching;
         FileStorageProperties.class
 })
 public class RestApiApplication {
-
     public static void main(String[] args) {
-		SpringApplication.run(RestApiApplication.class, args);
+        SpringApplication.run(RestApiApplication.class, args);
     }
-
 }
 
 

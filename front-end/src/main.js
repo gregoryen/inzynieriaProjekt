@@ -6,10 +6,11 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VueCurrencyInput from 'vue-currency-input'
 
-import HelloWorld from './components/HelloWorld'
 import ShoppingCart from './components/ShoppingCart'
 import OrderSummary from './components/OrderSummary'
 import AddProduct from "./components/AddProduct";
+import Home from './components/Home'
+import AdminPanel from './components/AdminPanel'
 
 const pluginOptions = {
   globalOptions: { currency: 'PLN' }
@@ -19,13 +20,16 @@ Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(VueCurrencyInput, pluginOptions)
 
+
 Vue.config.productionTip = false
+
+
 
 const router = new VueRouter({
   routes: [
     {
       path: '/',
-      component: HelloWorld
+      component: Home
     },
     {
       path: '/shoppingCart',
@@ -38,6 +42,10 @@ const router = new VueRouter({
     {
       path: '/addProduct',
       component: AddProduct
+    },
+    {
+      path: '/adminPanel',
+      component: AdminPanel
     }
   ]
 })

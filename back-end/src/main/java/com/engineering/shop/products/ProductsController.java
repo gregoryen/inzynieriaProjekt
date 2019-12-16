@@ -30,6 +30,7 @@ public class ProductsController {
         this.imageProductRepo = imageProductRepo;
     }
 
+    @CrossOrigin
     @PostMapping
     public Product addProduct(@RequestBody ProductImageHolder productImageHolder) {
         Product product = productPOJOToProductTransformer.transform(productImageHolder.getProduct());
