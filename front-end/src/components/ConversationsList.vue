@@ -10,7 +10,7 @@
 </template>
 
 <script>
-    // import axios from 'axios'
+    import axios from 'axios'
 
     export default {
         name: "ConversationsList",
@@ -18,42 +18,26 @@
         },
         data() {
             return {
-                token: "Bearer eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJHcnplZ29yeiBCYXJhbiIsInN1YiI6InVzZXIzQG9wLnBsIiwiaWF0IjoxNTc2NDE1Mzc5LCJleHAiOjE1NzkwMDczNzl9.s-QJFSWNiIU2tErvw5QrB0t5HJy0rLGqwkwZoz3WwOy68lO1-TuAVHgGtuDPaKMNPJxT8XQx3SGEgW-RaoaqEfEu48eZvGArO4IlucbcdeJPMsz4Oj0dtxUBxgnlv5N86ZRz3unvHgZqredQ3IFe5w_eiP5U1-IgWovJemvHjMWEveD81xm5euTGlL8ZruQVHfZcrdCF4KjtG4_RpgpRCQR7WWDzd_IsK1yjmBgCKHPyBa4xt03TYIQcVPCmAnZeKX7IZKOrIJcrPiAeFu4CRFn7M0gXe6-iqM-P2LiSlqKvkI5OQK9-_7u0YN9CFZDHC5AVZ6yeASm4WyvJQOqEgA"
+                token: "eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiQURNSU4iLCJuYW1lIjoiUGFyw7N3YSBJbmR5a3BvbCIsInN1YiI6InByYWNvd25pa0BvcC5jb20iLCJpYXQiOjE1NzYzNzUwODYsImV4cCI6MTU3ODk2NzA4Nn0.ee8T3o5GhCw8D0rcTfZYuATdqGYIvKomcmSuo-Y8gphzZMD31be5Hy6ctPvIU4rDqXKZtAscBBHAA07hk0PDkbk8sZiepY_GYuooC0OVyrHHXTpJDzIC3RdXWaWrpW_fsJWs6jU4L6RR8KwhayYBJU7WN8auya2PCjZP5VWSJS51VNUonfNNIAgegek1hBWzBeSPlKbi0NJdqSgQIi8mXPxQWS5DXA1FocXu_m85I4TDdDP6sCdA56zSwYFqWTeF9ENgRdU93zYc_XW8D7Dke5NaprQVDAjlu-w8lxUl_HFAMWTD7RgB5ymQgpn5pbgimvCnXr-v5IiQvxwnEo0VSA"
             }
         },
         methods: {
             smth: function() {
-                // eslint-disable-next-line no-console
-                console.log(this.token)
-                var req = new XMLHttpRequest();
-                req.open('GET', 'http://localhost:8080/messages/users', true);
-                req.setRequestHeader("Authorization", this.token);
-                // req.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:8081");
-                req.send(null);
-
-                // eslint-disable-next-line no-console
-                console.log("Content-Type: " + req.getResponseHeader("Content-Type") + "\n");
+                var root = "http://localhost:8080";
+                var token= "eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiQURNSU4iLCJuYW1lIjoiUGFyw7N3YSBJbmR5a3BvbCIsInN1YiI6InByYWNvd25pa0BvcC5jb20iLCJpYXQiOjE1NzYzNzUwODYsImV4cCI6MTU3ODk2NzA4Nn0.ee8T3o5GhCw8D0rcTfZYuATdqGYIvKomcmSuo-Y8gphzZMD31be5Hy6ctPvIU4rDqXKZtAscBBHAA07hk0PDkbk8sZiepY_GYuooC0OVyrHHXTpJDzIC3RdXWaWrpW_fsJWs6jU4L6RR8KwhayYBJU7WN8auya2PCjZP5VWSJS51VNUonfNNIAgegek1hBWzBeSPlKbi0NJdqSgQIi8mXPxQWS5DXA1FocXu_m85I4TDdDP6sCdA56zSwYFqWTeF9ENgRdU93zYc_XW8D7Dke5NaprQVDAjlu-w8lxUl_HFAMWTD7RgB5ymQgpn5pbgimvCnXr-v5IiQvxwnEo0VSA";
+                const config = {
+                    headers : {
+                        Authorization : "Bearer " + token
+                    }
+                };
+                axios.get(root + "/messages/users", config).then(response => {
+                    // eslint-disable-next-line no-console
+                    console.log(response);
+                }).catch(error => {
+                    /* eslint-disable no-console */
+                    console.log(error);
+                });
             }
-        },
-        mounted: function () {
-
-            // let config = {
-            //     headers: {'Authorization': 'Bearer eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJHcnplZ29yeiBCYXJhbiIsInN1YiI6InVzZXIzQG9wLnBsIiwiaWF0IjoxNTc2NDM3OTE3LCJleHAiOjE1NzkwMjk5MTd9.mNr3rUj-1AuKo51MajBhR_kk76DTWcUGjOYWBPxbILcHU7rHfOSTOac3ijG2n5JxKkdLlO7J8RmnGTvFjZ2L9fETFKpKDnKS75uv8r9uCsPy_X9v-W0u8sO01JQdEOwnVrueiFGvous4zrCjJRFQCfs-Q1lBwOvxUXk4tO9AlQSq9D6bCbQqAa_iVbxcF8cLgfDLdVmyPNA1jCNWueOvE6ZLkr2wcQueU0Yy2FL-qvNF2_HoGs_Qja_5q4VMBfXD7llhGDqo06UWG3hiz1Js1QAATwtAG6jbyXIqsAzsy47LFKVzIMCW4OnBm7giHBBfHmRTI0ezHauc58aAfyfVgQ'}
-            // };
-            //
-            // // let bodyParameters = {
-            // //     key: "value"
-            // // }
-            //
-            //
-            // axios.get('http://localhost:8080/messages/users', config)
-            //     .then(function (data) {
-            //         // eslint-disable-next-line no-console
-            //         console.log(data)
-            //     }).catch(function (error) {
-            //     // eslint-disable-next-line no-console
-            //     console.log(error);
-            // });
         }
     }
 
