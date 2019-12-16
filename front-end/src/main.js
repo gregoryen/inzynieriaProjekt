@@ -4,13 +4,20 @@ import VueRouter from 'vue-router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VueCurrencyInput from 'vue-currency-input'
 
 import HelloWorld from './components/HelloWorld'
 import ShoppingCart from './components/ShoppingCart'
 import OrderSummary from './components/OrderSummary'
+import AddProduct from "./components/AddProduct";
+
+const pluginOptions = {
+  globalOptions: { currency: 'PLN' }
+}
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
+Vue.use(VueCurrencyInput, pluginOptions)
 
 Vue.config.productionTip = false
 
@@ -27,6 +34,10 @@ const router = new VueRouter({
     {
       path: '/orderSummary',
       component: OrderSummary
+    },
+    {
+      path: '/addProduct',
+      component: AddProduct
     }
   ]
 })

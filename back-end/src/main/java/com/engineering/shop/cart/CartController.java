@@ -84,6 +84,54 @@ public class CartController {
         return "Dodano nowy element do koszyka";
     }
 
+    @DeleteMapping("deleteProductFromBucketId/{bucketId}/{productId}")
+    public @ResponseBody String deleteProductById(@PathVariable("bucketId") String bucketId, @PathVariable("productId") int productId){
 
+        Optional<BucketPosition> optionalPosition = bucketPositionRepo.findByBucketIndexAndProductId(bucketId,productId);
+
+        BucketPosition position = optionalPosition.get();
+
+        Optional<Bucket> optionalBucket = Optional.ofNullable(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
+        Bucket bucket = optionalBucket.get();
+
+        bucket.setTotalValue(position.getProductPrice().multiply(new BigDecimal(position.getProductQuantity())));
+
+        int idToDel = position.getId();
+        bucketPositionRepo.deleteById(idToDel);
+
+        return "Done";
+    }
+
+    @DeleteMapping("deleteBucketById/{bucketId}")
+    public String deleteBucketById(@PathVariable("bucketId") String bucketId){
+
+        Optional<Bucket> optionalBucket = Optional.ofNullable(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
+        Iterable<BucketPosition> optionalPositionList = bucketPositionRepo.findByBucketIndex(bucketId);
+
+        for (BucketPosition pos : optionalPositionList){
+            bucketPositionRepo.delete(pos);
+        }
+
+        bucketRepo.delete(optionalBucket.get());
+
+        return "Done";
+
+    }
+
+    @PostMapping("setProductQuantity/{bucketId}/{productId}/{quantity}")
+    public @ResponseBody String setProductQuantity(@PathVariable("bucketId") String bucketId, @PathVariable("productId") Integer productId, @PathVariable("quantity") int quantity){
+
+        String text = "";
+        Optional<Bucket> optionalBucket = Optional.of(bucketRepo.findByBucketIndex(bucketId)).orElseThrow();
+        Optional<BucketPosition> position = bucketPositionRepo.findByBucketIndexAndProductId(bucketId,productId);
+        position.get().setProductQuantity(quantity);
+        text += position.get().getProductQuantity();
+        optionalBucket.get().setTotalValue(position.get().getProductPrice().multiply(new BigDecimal(position.get().getProductQuantity())));
+
+        bucketPositionRepo.save(position.get());
+        bucketRepo.save(optionalBucket.get());
+
+        return text;
+    }
 
 }

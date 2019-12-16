@@ -83,7 +83,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/cart", "/cart/**").permitAll()
                 .antMatchers("/images/**", "/products/**").permitAll()
                 .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**").permitAll()
-                .anyRequest().authenticated()
+                //.anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();

@@ -8,8 +8,10 @@ import java.util.Optional;
 
 @Repository
 public interface BucketPositionRepo extends CrudRepository<BucketPosition, Integer> {
-    Iterable<BucketPosition> findByBucketIndex (String id);
-   // BucketPosition findByBucketPositionId(Integer bucketPositionId);
-    //Iterable<BucketPosition> findByBucketPositionId(Integer bucketPositionId);
+
+    Iterable<BucketPosition> findByBucketIndex(String id);
+
+    void deleteByBucketIndexAndProductId(String bucketIndex, Integer productId);
+    Optional<BucketPosition> findByBucketIndexAndProductId(String bucketIndex, Integer productId);
 
 }
