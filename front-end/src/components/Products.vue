@@ -56,7 +56,7 @@ export default {
 
 #emptyProductsMessage {
   text-align: center;
-  font-size: ;
+  font-size: 30;
 }
 ul {
   list-style-type: none;
