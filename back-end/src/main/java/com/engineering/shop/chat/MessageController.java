@@ -17,17 +17,17 @@ public class MessageController {
     private MessageRepository messageRepository;
 
     @Autowired
-    public MessageController(MessageRepository messageRepository){
+    public MessageController(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 
     @PostMapping
-    public Message addMessage(@RequestBody Message message){
+    public Message addMessage(@RequestBody Message message) {
         Authentication token = SecurityContextHolder.getContext().getAuthentication();
         String email = token.getName();
         Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
 
-        if(roles.contains(UserRoleType.ADMIN.name()))
+        if (roles.contains(UserRoleType.ADMIN.name()))
             message.setSender(null);
         else
             message.setSender(email);
@@ -37,7 +37,7 @@ public class MessageController {
 
     @GetMapping
     @RequestMapping("/user/{id}")
-    public Iterable<Message> getMessages(@PathVariable("id") String id){
+    public Iterable<Message> getMessages(@PathVariable("id") String id) {
         Iterable<Message> messagesToUser = messageRepository.getAllByReceiver(id);
         Iterable<Message> messagesFromUser = messageRepository.getAllBySender(id);
         List<Message> messages = new ArrayList<>();
@@ -45,12 +45,13 @@ public class MessageController {
         messagesFromUser.forEach(messages::add);
 
         messages.sort(Comparator.comparing(Message::getDate));
+
         return messages;
     }
 
     @GetMapping
     @RequestMapping("/user")
-    public Iterable<Message> getUserMessages(){
+    public Iterable<Message> getUserMessages() {
         Authentication token = SecurityContextHolder.getContext().getAuthentication();
         String email = token.getName();
         return getMessages(email);
@@ -58,9 +59,26 @@ public class MessageController {
 
 
     @GetMapping
+    @RequestMapping("/userRole")
+    public String getUserRole() {
+        Authentication token = SecurityContextHolder.getContext().getAuthentication();
+        Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
+
+        String role = "";
+
+        if (roles.contains(UserRoleType.ADMIN.name()))
+            role = "admin";
+        else
+            role = "user";
+
+        return role;
+    }
+
+
+    @GetMapping
     @CrossOrigin(origins = "http://localhost:8081")
     @RequestMapping("/users")
-    public Iterable<String> getUsers(){
+    public Iterable<String> getUsers() {
         List<Message> messages = new ArrayList<>();
         messageRepository.findAll().forEach(messages::add);
         return messages.stream().map(Message::getSender).distinct().collect(Collectors.toList());
