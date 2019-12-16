@@ -9,21 +9,22 @@
         <b-row>
           <b-col cols="8">
             <div class="cartList">
-              <ul class="cartItems" v-for="item in cartItems" v-bind:key="item.itemName">
+              <ul class="cartItems" v-for="item in productInfo" v-bind:key="item.itemName">
                 <b-row>
                   <b-col sm="4">
-                    <img src="../assets/kremowka.jpeg" height="85px" width="85px" />
+                   <!-- <p> {{index}} </p> -->
+                    <img :src="'http://localhost:8100/images/downloadAdditionalImage?idImage=' + item.mainImage" height="85px" width="85px" />
                   </b-col>
                   <b-col sm="4">
-                    <li>{{this.getProductsInfo(item.productId)}}</li>
-                    <li v-if="item.isAvailable === 'true'">Dostepny</li>
-                    <li v-else>Niedostepny</li>
-                    <li>{{item.price}} europapierze</li>
+                    <li>{{item.name}}</li>
+                    <li v-if="item.active === true">Dostępny</li>
+                    <li v-else>Niedostępny</li>
+                    <li>{{item.price}} zł</li>
                   </b-col>
                   <b-col sm="2">
                     <input
                       class="itemNumberSpinner"
-                      v-if="item.isAvailable === 'true'"
+                      v-if="item.active === true"
                       type="number"
                       min="1"
                       max="10"
@@ -51,17 +52,20 @@
           </b-col>
           <b-col cols="4">
             <div class="cartSummary">
-              <p v-if="cartItems.length > 1">{{cartItems.length}} produktow</p>
+              <p v-if="cartItems.length > 1">{{cartItems.length}} produktów</p>
               <p v-else>{{cartItems.length}} produkt</p>
-              <p>Wysyłka: Chcesz wysyłke za darmo? Pierdol sie 32 zł</p>
-              <p>Razem: {{}} europapierze</p>
-              <router-link to="/orderSummary" tag="b-button">Przejdz do kasy</router-link>
+              <p>Wysyłka: {{this.kosztWysylki}} zł</p>
+              <p>Razem: {{this.calculateCartValue()}} zł</p>
+              <router-link to="/orderSummary" tag="b-button">Przejdź do kasy</router-link>
             </div>
           </b-col>
         </b-row>
       </div>
 
+<!--
       <p>{{this.cartItems}}</p>
+      <p>{{this.productInfo}}</p>
+      -->
 
       <div style="float: left;">
         <router-link to="/" tag="b-button">Kontynuuj zakupy</router-link>
@@ -73,6 +77,7 @@
 
 <script>
 import axios from "axios";
+import apiConfig from "../config.js"
 
 export default {
   name: "ShoppingCart",
@@ -80,51 +85,45 @@ export default {
   data: function() {
     return {
       cartItems: [],
-      currentProduct: {},
-      bucket_id: "559767dd-74a3-4aba-8184-42f30a6c3de9"
+      productInfo: [],
+      bucket_id: apiConfig.bucketId,
+      kosztWysylki: 32
     };
   },
   methods: {
-    getProductInfo: function(productId) {
-      let url = "http://localhost:8080/bucketPosition/getById/" + productId;
-
-      var token =
-        "eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJzZGFzZCBzZGFzZGFzIiwic3ViIjoiY2h1akBjaHVqLmNvbSIsImlhdCI6MTU3NjQ0MzY5MiwiZXhwIjoxNTc5MDM1NjkyfQ.TJGwqRGKExwvhuVndpvZrkSg6AIxuCJGURDSz6ot9qzcnz5bQa7R47S1EH8KcUTmBwyHF9CRowwLt8vpQuLBgUFELQAHBUvrT89gVpaKxcni1dlHEUwV2GNi4HxmKSmTV2yKbmhKGjHcOe9H7He1LZte0JAGHBhtj0vS7RgtAm7aO4cXVKKaSl-faFcXDVFllXaW-ixx6Q0DKVIzK4UQboet3fdtEUBdnrBydVLcwpjy5Fvi9kcU8Wp0foqFtdcs0HriJy7_v8fTI7M0bjJoy1VS_vg6342No4q_ZGKtXxTosSp7sUXELV0AFgNnu4vyBxBkw07x5wRa8NSgTTn9ng";
-      const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
+    getProductInfo: function(productId, config) {
+      let url = apiConfig.root + "/products/" + productId;
 
       axios.get(url, config).then(response => {
-      // eslint-disable-next-line no-console
-      console.log(response);
-      this.currentProduct = response.data;
-      // eslint-disable-next-line no-console
-      console.log(this.currentProduct);
+      this.productInfo.push(response.data);
     });
+    },
+    calculateCartValue: function() {
+      let totalValue = 0;
+      for (let item of this.cartItems)
+      {
+        totalValue += item.productQuantity*item.productPrice;
+      }
+      return totalValue+this.kosztWysylki;
     }
   },
   created() {
-    let url =
-      "http://localhost:8080/bucketPosition/getByUUID/" + this.bucket_id;
+    let url = apiConfig.root + "/bucketPosition/getByUUID/" + this.bucket_id;
 
-    var token =
-      "eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiVVNFUiIsIm5hbWUiOiJzZGFzZCBzZGFzZGFzIiwic3ViIjoiY2h1akBjaHVqLmNvbSIsImlhdCI6MTU3NjQ0MzY5MiwiZXhwIjoxNTc5MDM1NjkyfQ.TJGwqRGKExwvhuVndpvZrkSg6AIxuCJGURDSz6ot9qzcnz5bQa7R47S1EH8KcUTmBwyHF9CRowwLt8vpQuLBgUFELQAHBUvrT89gVpaKxcni1dlHEUwV2GNi4HxmKSmTV2yKbmhKGjHcOe9H7He1LZte0JAGHBhtj0vS7RgtAm7aO4cXVKKaSl-faFcXDVFllXaW-ixx6Q0DKVIzK4UQboet3fdtEUBdnrBydVLcwpjy5Fvi9kcU8Wp0foqFtdcs0HriJy7_v8fTI7M0bjJoy1VS_vg6342No4q_ZGKtXxTosSp7sUXELV0AFgNnu4vyBxBkw07x5wRa8NSgTTn9ng";
     const config = {
       headers: {
-        Authorization: "Bearer " + token,
+        Authorization: "Bearer " + apiConfig.token,
         "Content-type": "application/json"
       }
     };
 
     axios.get(url, config).then(response => {
-      // eslint-disable-next-line no-console
-      console.log(response);
-      this.cartItems = response.data;
-      // eslint-disable-next-line no-console
-      console.log(this.cartItems);
+        this.cartItems = response.data;
+        
+        for (let item of this.cartItems)
+        {
+          this.getProductInfo(item.productId, config)
+        }
     });
   }
 };

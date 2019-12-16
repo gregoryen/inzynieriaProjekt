@@ -109,8 +109,8 @@
         <b-col cols="4">
           <div class="cartSummary">
             <p>{{productCount}} produktow</p>
-            <p>Wysyłka: Chcesz wysyłke za darmo? Pierdol sie 32 zł</p>
-            <p>Razem: {{totalPrice}} europapierze</p>
+            <p>Wysyłka: 32 zł</p>
+            <p>Razem: {{totalPrice}} zł</p>
           </div>
         </b-col>
       </b-row>
