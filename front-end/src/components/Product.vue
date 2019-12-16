@@ -3,7 +3,9 @@
     <h1>{{product.name}}</h1>
     <div class="grid-container">
       <div class="item1">
-        <img :src="'http://localhost:8080/images/downloadAdditionalImage?idImage=' + product.mainImage" />
+        <img
+          :src="'http://localhost:8080/images/downloadAdditionalImage?idImage=' + product.mainImage"
+        />
       </div>
       <div class="item2">
         <div id="price">Cena: {{product.price}} PLN</div>
@@ -22,41 +24,47 @@
 
 <script>
 import axios from "axios";
-import {bus} from '../main.js';
+import { bus } from "../main.js";
 
 export default {
   name: "Product",
-  props: {
-    id: Number
-  },
   data: () => {
     return {
       product: null,
       tree: null,
-      image: null
+      image: null,
     };
   },
   mounted() {
-    axios.get("http://localhost:8080/products/" + this.id).then(response => {
+    // eslint-disable-next-line no-console
+    console.log(this.$route.params.id);
+    axios.get("http://localhost:8080/products/" + this.$route.params.id).then(response => {
       this.product = response.data;
     });
     axios
-      .get("http://localhost:8080/products/branch/" + this.id)
-      .then(response => {
-        this.tree = response.data;
-      });
+      .get("http://localhost:8080/products/branch/" + this.$route.params.id)
+      .then(response => { this.tree = response.data; });
   },
   methods: {
-    emitProducts (id) {
-      axios.get('http://localhost:8080/products/search/findByMainCategoryId?categoryId=' + id).then(response => bus.$emit('PRODUCTS', response.data._embedded.products));
+    emitProducts(id) {
+      axios
+        .get(
+          "http://localhost:8080/products/search/findByMainCategoryId?categoryId=" +
+            id
+        )
+        .then(response =>
+          bus.$emit("products", response.data._embedded.products)
+        );
     }
   }
 };
 </script>
 
 <style scoped>
-.product-container{
+.product-container {
   height: 100%;
+  width: calc(100% - 40px);
+  padding: 20px;
   background-color: #232323;
   color: white;
 }
@@ -110,6 +118,5 @@ img {
 #categories > ul {
   font-size: 30px;
   list-style: none;
-
 }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <div id="app">
     <Categories />
-    <router-link to="products"> Products </router-link>
-    <router-link to="categories"> Categories </router-link>
-    <router-link to="product/26"> Product26 </router-link>
     <router-view />
   </div>
 </template>

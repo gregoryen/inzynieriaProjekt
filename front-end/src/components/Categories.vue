@@ -9,7 +9,7 @@
 
 <script>
 import axios from "axios";
-import { bus } from '../main'
+import { bus } from '../main';
 import Category from "./Category.vue";
 
 export default {
@@ -18,7 +18,7 @@ export default {
   data: () => {
     return {
       categories: null,
-      baseUrl: "http://localhost:8080/"
+      baseUrl: "http://localhost:8080"
     };
   },
   mounted() {
@@ -28,16 +28,16 @@ export default {
   },
   methods: {
     emitAllProducts() {
-      axios.get(this.baseUrl + "products/search/findAllByActiveIsTrue?projection=header").then(response => {bus.$emit('PRODUCTS', response.data._embedded.products)});
+      axios.get(this.baseUrl + "/products/search/findAllByActiveIsTrue?projection=header").then(response => {bus.$emit('products', response.data._embedded.products)});
+      this.$router.push('/');
     }
   }
 };
 </script>
 
 <style>
-/* CSS Document */
-
 nav {
+  width:100%;
   margin: 0;
   background-color: #252323;
   color: white;
