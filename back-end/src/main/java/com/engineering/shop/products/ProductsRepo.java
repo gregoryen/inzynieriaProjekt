@@ -21,6 +21,8 @@ public interface ProductsRepo extends JpaRepository<Product, Integer> {
 
     List<Product> findAllByIdIn(List<Integer> ids);
 
+    Iterable<Product> findByMainCategoryIdAndActiveIsTrue(Integer categoryId);
+
     @Override
     @RestResource(exported = false)
     void deleteInBatch(Iterable<Product> iterable);
