@@ -49,25 +49,29 @@ public class ProductsController {
             }
         }
 
+        product.setMainImage(mainImage);
+        Product savedProduct = productsRepo.save(product);
+
+
         Optional<ImageProduct> temp = imageProductRepo.findById(mainImage);
         if (temp.isPresent()) {
-            temp.get().setIdProduct(product.getId());
+            temp.get().setIdProduct(savedProduct.getId());
             imageProductRepo.save(temp.get());
         }
 
-        product.setMainImage(mainImage);
+
 
         if (CollectionUtils.isNotEmpty(additionalImages)) {
             for (Integer image : additionalImages) {
                 temp = imageProductRepo.findById(image);
                 if (temp.isPresent()) {
-                    temp.get().setIdProduct(product.getId());
+                    temp.get().setIdProduct(savedProduct.getId());
                     imageProductRepo.save(temp.get());
                 }
             }
         }
 
-        return productsRepo.save(product);
+        return savedProduct;
     }
 }
 
