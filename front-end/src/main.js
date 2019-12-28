@@ -15,7 +15,7 @@ Vue.use(VueCurrencyInput, pluginOptions)
 Vue.config.productionTip = false;
 
 const routes = [
-  { path: '/product/:id', name: 'product', component: Product },
+  { path: '/product', name: 'product', component: Product },
   { path: '/', name: 'products', component: Products },
   { path: '/categories', name: 'categories', compoment: Categories }
 ];

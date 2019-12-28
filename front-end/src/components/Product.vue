@@ -37,13 +37,14 @@ export default {
   },
   mounted() {
     // eslint-disable-next-line no-console
-    console.log(this.$route.params.id);
-    axios.get("http://localhost:8080/products/" + this.$route.params.id).then(response => {
+    console.log(this.$route.params.link);
+    axios.get(this.$route.params.link).then(response => {
       this.product = response.data;
+      axios
+              .get(response.data._links.branch.href)
+              .then(response => { this.tree = response.data; });
     });
-    axios
-      .get("http://localhost:8080/products/branch/" + this.$route.params.id)
-      .then(response => { this.tree = response.data; });
+
   },
   methods: {
     emitProducts(id) {

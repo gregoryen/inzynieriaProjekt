@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     emitProducts () {
-      axios.get('http://localhost:8080/products/search/findByMainCategoryId?categoryId=' + this.root.category.id).then(response => bus.$emit('products', response.data._embedded.products));
+      axios.get('http://localhost:8080/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=' + this.root.category.id).then(response => bus.$emit('products', response.data._embedded.products));
     }
   }
 };

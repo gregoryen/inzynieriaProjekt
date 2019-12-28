@@ -15,7 +15,7 @@
                                             <b-col cols="1"/>
                                             <b-col cols="5" class="nameFont" align-self="center">{{product.name}}</b-col>
                                             <b-col cols="2" class="nameFont" align-self="end">
-                                                <router-link :to="{name: 'product', params: {id: product.id}}" id="product">
+                                                <router-link :to="{name: 'product', params: {link: product._links.self.href}}">
                                                     <b-button variant="success">Zobacz szczegóły</b-button>
                                                 </router-link>
                                                 Cena:
