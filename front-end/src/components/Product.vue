@@ -4,7 +4,7 @@
     <div class="grid-container">
       <div class="item1">
         <img
-          :src="'http://localhost:8080/images/downloadAdditionalImage?idImage=' + product.mainImage"
+          :src="product._links.mainImage.href"
         />
       </div>
       <div class="item2">
@@ -26,18 +26,19 @@
 import axios from "axios";
 import { bus } from "../main.js";
 
+const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
 export default {
   name: "Product",
+    props: {
+        baseurl: String
+    },
   data: () => {
     return {
       product: null,
-      tree: null,
-      image: null,
+      tree: null
     };
   },
   mounted() {
-    // eslint-disable-next-line no-console
-    console.log(this.$route.params.link);
     axios.get(this.$route.params.link).then(response => {
       this.product = response.data;
       axios
@@ -49,9 +50,7 @@ export default {
   methods: {
     emitProducts(id) {
       axios
-        .get(
-          "http://localhost:8080/products/search/findByMainCategoryId?categoryId=" +
-            id
+        .get( this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id
         )
         .then(response =>
           bus.$emit("products", response.data._embedded.products)

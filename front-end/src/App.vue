@@ -1,20 +1,25 @@
 <template>
   <div id="app">
-    <Categories />
-    <router-view />
+    <Categories :baseurl="this.baseurl"/>
+  <router-view :baseurl="this.baseurl" />
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import Categories from './components/Categories.vue'
+import Categories from "./components/Categories";
 
 export default {
   components: {
     Categories
   },
-  name: "app"
+  name: "app",
+  data() {
+    return {
+      baseurl: "http://localhost:8080"
+    }
+  }
 };
 </script>
 

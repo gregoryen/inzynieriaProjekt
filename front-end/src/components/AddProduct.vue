@@ -225,7 +225,7 @@
 
     export default {
         props: {
-            baseUrl: String
+            baseurl: String
         },
         data() {
             return {
@@ -303,10 +303,10 @@
                             'content-type': 'application/json'
                         },
                     };
-                    axios.post(this.baseUrl + PRODUCTS, this.form, config)
+                    axios.post(this.baseurl + PRODUCTS, this.form, config)
                         .then(res => {
                             if (res.status === 200) {
-                                axios.post(this.baseUrl + WAREHOUSE, {
+                                axios.post(this.baseurl + WAREHOUSE, {
                                     productId: res.id,
                                     measure: 'UNIT',
                                 }, config)
@@ -364,7 +364,7 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
-                axios.post(this.baseUrl + UPLOAD_IMAGE, formData, config)
+                axios.post(this.baseurl + UPLOAD_IMAGE, formData, config)
                     .then(res => {
                         if (res.status === 200) {
                             this.form.product.mainImage = res.data.id;
@@ -401,7 +401,7 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
-                axios.post(this.baseUrl + UPLOAD_MULTIPLE_IMAGE, formData, config)
+                axios.post(this.baseurl + UPLOAD_MULTIPLE_IMAGE, formData, config)
                     .then(res => {
                         if (res.status === 200) {
                             for (let temp of res.data) {
@@ -430,7 +430,7 @@
                     'content-type': 'application/json'
                 }
             };
-            axios.get(this.baseUrl + CATEGORIES_WITH_ID, config)
+            axios.get(this.baseurl + CATEGORIES_WITH_ID, config)
                 .then(res => {
                         if (res.status === 200) {
                             for (let temp of res.data._embedded.categories) {

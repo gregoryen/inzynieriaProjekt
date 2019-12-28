@@ -9,17 +9,17 @@
                                     <b-container class="bv-example-row bv-example-row-flex-cols">
                                         <b-row>
                                             <b-col cols="4" align-self="start">
-                                                <img :src="this.imageUrl + this.product.mainImage" width="300"
+                                                <img :src="this.productHeader._links.mainImage.href" width="300"
                                                      height="220">
                                             </b-col>
                                             <b-col cols="1"/>
-                                            <b-col cols="5" class="nameFont" align-self="center">{{product.name}}</b-col>
+                                            <b-col cols="5" class="nameFont" align-self="center">{{productHeader.name}}</b-col>
                                             <b-col cols="2" class="nameFont" align-self="end">
-                                                <router-link :to="{name: 'product', params: {link: product._links.self.href}}">
+                                                <router-link :to="{name: 'product', params: {link: productHeader._links.self.href, baseurl: this.baseurl}}">
                                                     <b-button variant="success">Zobacz szczegóły</b-button>
                                                 </router-link>
                                                 Cena:
-                                                <br/>  {{product.price}} PLN
+                                                <br/> {{productHeader.price}} PLN
                                             </b-col>
                                         </b-row>
                                     </b-container>
@@ -37,13 +37,8 @@
     export default {
         name: "ProductHeader",
         props: {
-            product: Object
-        },
-        data: () => {
-            return {
-                imageUrl: "http://localhost:8080/images/downloadAdditionalImage?idImage=",
-                image: null
-            };
+            productHeader: Object,
+            baseurl: String
         }
     };
 </script>

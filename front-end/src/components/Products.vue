@@ -1,8 +1,8 @@
 <template>
   <div id="productContainer">
-    <p id="emptyProductsMessage" v-if="products === null || products.length === 0">BRAK PRODUKTÓW</p>
+    <p id="emptyProductsMessage" v-if="productsHeader === null || productsHeader.length === 0">BRAK PRODUKTÓW</p>
     <ul v-else>
-      <ProductHeader v-for="product in products" v-bind:key="product.name" :product="product" />
+      <ProductHeader v-for="productHeader in productsHeader" v-bind:key="productHeader.name" :productHeader="productHeader" :baseurl="baseurl" />
     </ul>
   </div>
 </template>
@@ -12,38 +12,43 @@ import axios from "axios";
 import { bus } from "../main.js";
 import ProductHeader from "./ProductHeader.vue";
 
+const UPLOAD_ALL_ACTIVE_HEADER_PRODUCTS = "/products/search/findAllByActiveIsTrue?projection=header";
+
 export default {
   components: { ProductHeader },
   name: "Products",
   props: {
-    baseUrl: String
+    baseurl: String
   },
   data: () => {
     return {
-      products: null
+      productsHeader: null
     };
   },
   mounted() {
     bus.$on("products", products => {
-      this.products = products;
+      axios
+              .get(products)
+              .then(response => {
+                this.productsHeader = response.data._embedded.products;
+              });
+      this.productsHeader = products;
     });
   },
   created() {
-    bus.$on("products", products => {
-      if (products === null) {
+      if (this.productsHeader === null) {
         axios
           .get(
-            "http://localhost:8080/products/search/findAllByActiveIsTrue?projection=header"
+            this.baseurl + UPLOAD_ALL_ACTIVE_HEADER_PRODUCTS
           )
           .then(response => {
-            this.products = response.data._embedded.products;
+            this.productsHeader = response.data._embedded.products;
           });
       }
-    });
   },
   methods: {
     getProducts(event) {
-      this.products = event;
+      this.productsHeader = event;
     }
   }
 };
