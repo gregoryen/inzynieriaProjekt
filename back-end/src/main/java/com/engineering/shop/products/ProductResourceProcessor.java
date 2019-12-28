@@ -22,11 +22,11 @@ import java.util.Objects;
 
 
 @Configuration
-public class Processor {
+public class ProductResourceProcessor {
     ImageProductRepo imageProductRepo;
 
     @Autowired
-    public Processor(ImageProductRepo imageProductRepo) {
+    public ProductResourceProcessor(ImageProductRepo imageProductRepo) {
         this.imageProductRepo = imageProductRepo;
     }
 
@@ -34,7 +34,6 @@ public class Processor {
     public RepresentationModelProcessor<EntityModel<Product>> productProcessor() {
 
         return new RepresentationModelProcessor<EntityModel<Product>>() {
-
             @Override
             public EntityModel<Product> process(EntityModel<Product> resource) {
                 try {
@@ -59,5 +58,6 @@ public class Processor {
                     return resource;
             }
         };
+
     }
 }
