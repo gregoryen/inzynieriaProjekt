@@ -1,18 +1,17 @@
 <template>
   <div id="app">
-    <Categories :baseurl="this.baseurl"/>
-  <router-view :baseurl="this.baseurl" />
+    <AddCategory :baseurl="this.baseurl"/>
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import Categories from "./components/Categories";
+import AddCategory from "./components/AddCategory";
 
 export default {
   components: {
-    Categories
+    AddCategory
   },
   name: "app",
   data() {
