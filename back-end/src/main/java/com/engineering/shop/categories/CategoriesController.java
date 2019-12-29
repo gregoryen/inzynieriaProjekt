@@ -24,7 +24,7 @@ public class CategoriesController {
     }
 
     @GetMapping("/children")
-    public Optional<Category> getChildren(@RequestParam Integer parentId) {
+    public Iterable<Category> getChildren(@RequestParam Integer parentId) {
         return categoriesRepo.findByParentId(parentId);
     }
 

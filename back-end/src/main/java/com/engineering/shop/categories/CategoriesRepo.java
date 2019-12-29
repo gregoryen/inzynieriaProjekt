@@ -12,7 +12,7 @@ public interface CategoriesRepo extends CrudRepository<Category, Integer> {
 
     Optional<Category> findById(Integer id);
 
-    Optional<Category> findByParentId(Integer parentId);
+    Iterable<Category> findByParentId(Integer parentId);
 
     Iterable<Category> findAllByParentId(Integer parentId);
 
