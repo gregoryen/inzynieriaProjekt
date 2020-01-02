@@ -50,15 +50,25 @@
                     id="positionCategory"
                     label="Wybierz pozycje nowej kategorii: "
                     label-for="searcher">
-            <b-form-select  :options="supported.positions"
-                           :value="supported.selectedPosition" @change="changeDisplay"></b-form-select>
+                <b-form-select :options="supported.positions"
+                               :value="supported.selectedPosition" @change="changeDisplay"></b-form-select>
             </b-form-group>
 
             <b-list-group>
-                <b-list-group-item v-for="category in supported.childrenCategories" :key="category.value" :variant="category.variant">{{category.text}}</b-list-group-item>
+                <b-list-group-item v-for="category in supported.childrenCategories" :key="category.value"
+                                   :variant="category.variant">{{category.text}}
+                </b-list-group-item>
             </b-list-group>
 
-
+            <treeselect
+                    :options="this.supported.treeCategories"
+                    v-model="form.parentId"
+                    :searchable="false"
+                    :show-count="true"
+                    @input="getChildren"
+                    :default-expand-level="1"
+            >
+            </treeselect>
 
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger">Reset</b-button>
@@ -71,15 +81,18 @@
 
 <script>
     import axios from 'axios';
+    // import the component
+    import Treeselect from '@riophae/vue-treeselect'
+    // import the styles
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-/*    const PRODUCTS = '/products';
-    const UPLOAD_IMAGE = '/images/uploadImage';
-    const UPLOAD_MULTIPLE_IMAGE = '/images/uploadMultipleImages';*/
     const CATEGORIES_WITH_ID = '/categories?projection=withId';
     const CATEGORIES_CHILDREN = '/categories/children';
-/*    const WAREHOUSE = '/stock_amounts/add_empty';*/
+    const CATEGORIES_TREE = '/categories/tree';
 
     export default {
+        // register the component
+        components: {Treeselect},
         props: {
             baseurl: String
         },
@@ -93,6 +106,7 @@
                 },
                 show: true,
                 supported: {
+                    treeCategories: [],
                     allCategories: [],
                     childrenCategories: [],
                     selectedPosition: 1,
@@ -127,14 +141,14 @@
                 let oldValue = this.supported.selectedPosition;
                 let newValue = val;
                 this.supported.selectedPosition = newValue;
-                if(oldValue!=null){
-                    this.supported.childrenCategories.splice(oldValue-1, 1);
+                if (oldValue != null) {
+                    this.supported.childrenCategories.splice(oldValue - 1, 1);
                 }
-                this.supported.childrenCategories.splice(newValue-1, 0,this.newCategory);
+                this.supported.childrenCategories.splice(newValue - 1, 0, this.newCategory);
             },
             getChildren() {
-                this.supported.childrenCategories=[];
-                this.supported.positions=[];
+                this.supported.childrenCategories = [];
+                this.supported.positions = [];
                 const config = {
                     params: {
                         parentId: this.form.parentId
@@ -146,22 +160,37 @@
                 axios.get(this.baseurl + CATEGORIES_CHILDREN, config)
                     .then(res => {
                             if (res.status === 200) {
-                                for (let i=0;i<res.data.length;i++) {
+                                for (let i = 0; i < res.data.length; i++) {
                                     let item = {
                                         value: res.data[i].id,
                                         text: res.data[i].name,
                                         variant: null
                                     };
-                                    this.supported.positions.push(i+1);
+                                    this.supported.positions.push(i + 1);
                                     this.supported.childrenCategories.push(item);
                                 }
-                                this.supported.positions.push(this.supported.positions.length+1);
-                                this.supported.childrenCategories.splice(this.supported.selectedPosition-1, 0,this.newCategory);
-                                this.supported.selectedPosition=1;
+                                this.supported.positions.push(this.supported.positions.length + 1);
+                                this.supported.childrenCategories.splice(this.supported.selectedPosition - 1, 0, this.newCategory);
+                                this.supported.selectedPosition = 1;
                             }
                         }
                     );
             },
+            createBranch: function (oldBranch) {
+                let newBranch = [];
+                for (let e of oldBranch) {
+                    let temp = {
+                        id: e.category.id,
+                        label: e.category.name,
+                    };
+                    let children = this.createBranch(e.children);
+                    if (children.length > 0) {
+                        temp.children = children;
+                    }
+                    newBranch.push(temp);
+                }
+                return newBranch;
+            }
         },
         created() {
             const config = {
@@ -179,6 +208,14 @@
                                 };
                                 this.supported.allCategories.push(item);
                             }
+                        }
+                    }
+                );
+
+            axios.get(this.baseurl + CATEGORIES_TREE, config)
+                .then(res => {
+                        if (res.status === 200) {
+                            this.supported.treeCategories = this.createBranch(res.data);
                         }
                     }
                 );
