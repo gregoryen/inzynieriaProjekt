@@ -25,7 +25,14 @@ public class CategoriesController {
 
     @GetMapping("/children")
     public Iterable<Category> getChildren(@RequestParam Integer parentId) {
-        return categoriesRepo.findByParentId(parentId);
+        ArrayList<Category> children = new ArrayList<>();
+        Optional<Category> next = categoriesRepo.findByParentIdAndPreviousCategoryIdIsNull(parentId);
+        while (next.isPresent()) {
+            Category category = next.get();
+            children.add(category);
+            next = categoriesRepo.findByParentIdAndPreviousCategoryId(parentId, category.getId());
+        }
+        return children;
     }
 
     @Cacheable("categoriesTree")
