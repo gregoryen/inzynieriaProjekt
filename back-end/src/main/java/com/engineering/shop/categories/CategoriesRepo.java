@@ -18,6 +18,8 @@ public interface CategoriesRepo extends CrudRepository<Category, Integer> {
 
     Iterable<Category> findAllByParentId(Integer parentId);
 
+    Iterable<Category> findAllByParentIdIsNull();
+
     @Override
     <S extends Category> Iterable<S> saveAll(Iterable<S> iterable);
 
