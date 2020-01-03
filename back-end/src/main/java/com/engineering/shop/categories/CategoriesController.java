@@ -1,14 +1,20 @@
 package com.engineering.shop.categories;
 
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsRepo;
+import com.google.common.collect.Iterables;
 import lombok.Data;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,10 +23,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/categories")
 public class CategoriesController {
     private CategoriesRepo categoriesRepo;
+    private CategoryValidator categoryValidator;
+    private ProductsRepo productsRepo;
 
     @Autowired
-    public CategoriesController(CategoriesRepo categoriesRepo) {
+    public CategoriesController(CategoriesRepo categoriesRepo, CategoryValidator categoryValidator, ProductsRepo productsRepo) {
         this.categoriesRepo = categoriesRepo;
+        this.categoryValidator = categoryValidator;
+        this.productsRepo = productsRepo;
     }
 
     @GetMapping("/children")
@@ -66,6 +76,39 @@ public class CategoriesController {
         childNodes.forEach(node -> this.buildTree(node, categories));
     }
 
+    @DeleteMapping
+    public ResponseEntity<Object> deleteCategory(@RequestParam Integer id) {
+        Optional<Category> optionalCategory = categoriesRepo.findById(id);
+        if (optionalCategory.isEmpty()) {
+            return new ResponseEntity<>(
+                   new DeleteCategoryMessage("Taka kategoria nie istniej"),
+                    HttpStatus.BAD_REQUEST);
+        }
+        Iterable<Product> products = productsRepo.findByMainCategoryId(id);
+        if (Iterables.size(products) > 0) {
+            return new ResponseEntity<>(
+                    new DeleteCategoryMessage("Do tej kategorii sa przypisane produkty"),
+                    HttpStatus.BAD_REQUEST);
+        }
+        categoriesRepo.deleteById(id);
+         return new ResponseEntity<>(
+                 new DeleteCategoryMessage("Kategoria została usunieta"),
+                HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @PostMapping
+    public Category addCategory(@RequestBody @Validated Category category) {
+        Optional<Category> optionalCategoryToModify = categoriesRepo.findByParentIdAndPreviousCategoryId(category.getParentId(), category.getPreviousCategoryId());
+        Category toReturn = categoriesRepo.save(category);
+        if (optionalCategoryToModify.isPresent()) {
+            Category categoryToModify = optionalCategoryToModify.get();
+            categoryToModify.setPreviousCategoryId(toReturn.getId());
+            categoriesRepo.save(categoryToModify);
+        }
+        return toReturn;
+    }
+
     @Data
     private class TreeNode {
         Category category;
@@ -75,5 +118,23 @@ public class CategoriesController {
             this.category = category;
             this.children = new ArrayList<>();
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+    @InitBinder("category")
+    private void initBinder(WebDataBinder binder) {
+        binder.setValidator(categoryValidator);
     }
 }

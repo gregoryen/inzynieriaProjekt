@@ -2,6 +2,7 @@ package com.engineering.shop.categories;
 
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
@@ -11,7 +12,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-@Component("beforeCreateCategoryValidator")
+//@Component("beforeCreateCategoryValidator")
+@Configuration
 public class CategoryValidator implements Validator {
     private CategoriesRepo categoriesRepo;
 
