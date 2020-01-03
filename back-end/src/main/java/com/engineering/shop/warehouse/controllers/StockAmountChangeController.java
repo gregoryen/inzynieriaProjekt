@@ -30,6 +30,4 @@ public class StockAmountChangeController {
         LocalDateTime end = LocalDateTime.parse(endDateTime, formatter);
         return stockAmountChangeRepository.findAllByChangeDateTimeBetween(start, end);
     }
-
-
 }

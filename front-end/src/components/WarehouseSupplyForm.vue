@@ -37,7 +37,7 @@
 
             <form>
                 <div class="row">
-                    <div  v-if="clicked === false" class="col-sm-6">
+                    <div v-if="clicked === false" class="col-sm-6">
                         <select
 
                                 class="form-control"
@@ -50,26 +50,27 @@
                             <option style="color: darkgray" disabled value="">Wybierz firmę</option>
                         </select>
                     </div>
-                    <div v-if="clicked === false"  class="col-sm-6">
+                    <div v-if="clicked === false" class="col-sm-6">
                         <button v-on:click="clicked = true" class="form-control">
                             Dodaj nową firmę
                         </button>
                     </div>
-                    <div  class="col-sm-4" v-if="clicked === true">
+                    <div class="col-sm-4" v-if="clicked === true">
                         <input
                                 minlength="3"
                                 class="form-control"
                                 v-model="company"
                         >
                     </div>
-                    <div  class="col-sm-4">
-                        <button :disabled='(company.length < 3 || company === "")' v-if="clicked === true" v-on:click="addNewCompany()" class="form-control">
+                    <div class="col-sm-4">
+                        <button :disabled='(company.length < 3 || company === "")' v-if="clicked === true"
+                                v-on:click="addNewCompany()" class="form-control">
                             Zatwierdź
                         </button>
                     </div>
                     <div class="col-sm-4">
-                        <button  v-if="clicked === true" v-on:click="clicked = false" class="form-control">
-                            Wróóóć
+                        <button v-if="clicked === true" v-on:click="clicked = false" class="form-control">
+                            Wróć
                         </button>
                     </div>
                 </div>
@@ -97,7 +98,7 @@
         <table id="supply-products" align="center" class="container">
             <thead>
             <tr>
-                <td><strong>Id produktu</strong></td>
+                <td><strong>Nazwa</strong></td>
                 <td><strong>Ilość</strong></td>
                 <td><strong>Jednostka</strong></td>
                 <td></td>
@@ -105,7 +106,20 @@
             </thead>
             <tbody>
             <tr v-for="(product, index) in products" v-bind:item="product" v-bind:key="index">
-                <td><input class="form-control" type="text" v-model="product.productId"></td>
+                <td>
+                    <select
+
+                            class="form-control"
+                            id="input-product-name"
+                            v-model="product.name"
+                    >
+                        <option v-for="(product, index) in allProducts" v-bind:item="product" v-bind:key="index">
+                            <!--                                <input class="form-control" type="text">-->
+                            {{product.name}}
+                        </option>
+                        <option style="color: darkgray" disabled value="">Wybierz produkt</option>
+                    </select>
+                </td>
                 <td><input class="form-control" type="text" v-model="product.amount"></td>
                 <td>
                     <select
@@ -121,7 +135,7 @@
                     </select>
                 </td>
                 <td>
-                    <button :disabled="(product.productId === '' || product.amount === '' || product.measure === '') && (index === products.length - 1)"
+                    <button :disabled="(product.name === '' || product.amount === '' || product.measure === '') && (index === products.length - 1)"
                             class="form-control" v-if="index === products.length-1" v-on:click="addProduct"
                             style="cursor: pointer">+
                     </button>
@@ -149,12 +163,15 @@
         created() {
             this.getAllCompanies();
             this.getAllMeasures();
+            this.getAllProducts();
         },
         props: {},
         data: function () {
             return {
+                url: 'http://localhost:8100',
                 companies: [],
                 measures: Set,
+                allProducts: [],
                 date: "",
                 time: "",
                 deliveryDateTime: "",
@@ -167,6 +184,7 @@
                 products: [
                     {
                         productId: "",
+                        name: "",
                         measure: "",
                         amount: ""
                     }
@@ -185,8 +203,18 @@
                     alert("Taka firma już istnieje na liście");
                 }
             },
+            getAllProducts: function () {
+                axios.get(this.url + '/products/search/findAllByActiveIsTrue?projection=header', {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                }).then((response) => {
+                    this.allProducts = response.data._embedded.products;
+                    // eslint-disable-next-line no-console
+                    console.log(response)
+                });
+            },
             getAllCompanies: function () {
-                axios.get('http://localhost:8081/suppliers/companies', {
+                axios.get(this.url + '/suppliers/companies', {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 }).then((response) => {
@@ -196,7 +224,7 @@
                 });
             },
             getAllMeasures: function () {
-                axios.get('http://localhost:8081/stock_amounts/measures', {
+                axios.get(this.url + '/stock_amounts/measures', {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 }).then((response) => {
@@ -209,6 +237,7 @@
                 document.createElement('tr');
                 this.products.push({
                     productId: "",
+                    name: "",
                     measure: "",
                     amount: ""
                 });
@@ -239,7 +268,7 @@
                     correct = false;
                 } else {
                     for (let idx = 0; idx < this.products.length - 1; idx++) {
-                        if (this.products[idx].productId == "" ||
+                        if (this.products[idx].name == "" ||
                             this.products[idx].measure == "" ||
                             this.products[idx].amount == "") {
                             // eslint-disable-next-line no-console
@@ -262,8 +291,31 @@
             acceptDelivery: function () {
                 this.deliveryDateTime = this.date + "T" + this.time + ":00";
                 let stockAmounts = this.products.slice();
+                let products = this.allProducts.slice();
+
                 stockAmounts.pop();
-                axios.post('http://localhost:8081/supplies/accept_delivery', {
+
+
+                for (let i = 0; i < stockAmounts.length; i++) {
+                    let productName = stockAmounts[i].name;
+
+                    // eslint-disable-next-line no-console
+                    console.log(productName);
+
+                    // eslint-disable-next-line no-console
+                    console.log(products.filter(p => (p.name === productName)));
+
+                    let productId = products.filter(p => (p.name === productName))[0].id;
+                    stockAmounts[i].productId = productId;
+                }
+
+                stockAmounts.forEach(function (item) {
+                    delete item.name
+                });
+
+                // eslint-disable-next-line no-console
+                console.log(stockAmounts)
+                axios.post(this.url + '/supplies/accept_delivery', {
                     supplier: {
                         firstname: this.supplier.firstname,
                         lastname: this.supplier.lastname,

@@ -110,9 +110,4 @@ public class ReportController {
         }
         return "Exported";
     }
-
-    @PostMapping("/import")
-    public String importToDatabaseFromCSVFile(@RequestBody Report report) {
-        return "Imported";
-    }
 }

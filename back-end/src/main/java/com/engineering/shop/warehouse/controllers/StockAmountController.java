@@ -72,6 +72,7 @@ public class StockAmountController {
         return stockAmounts;
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path = "/add")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody

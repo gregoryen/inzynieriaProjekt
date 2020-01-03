@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface ReportRepository extends CrudRepository<Report, Integer> {
-
     Optional<Report> findByReportId(Integer reportId);
 }

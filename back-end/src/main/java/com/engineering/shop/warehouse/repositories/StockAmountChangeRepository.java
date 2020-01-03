@@ -8,6 +8,5 @@ import java.time.LocalDateTime;
 
 @Repository
 public interface StockAmountChangeRepository extends CrudRepository<StockAmountChange, Integer> {
-
     public Iterable<StockAmountChange> findAllByChangeDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }

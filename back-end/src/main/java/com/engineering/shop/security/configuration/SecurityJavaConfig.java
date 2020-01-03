@@ -67,7 +67,10 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8081"));
+//        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8081"));
+//        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8100"));
+        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
+
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With","Origin","Content-Type","Accept","Authorization"));
 
@@ -102,10 +105,10 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/cart", "/cart/**").permitAll()
                 .antMatchers("/images/**", "/products/**").permitAll()
                 .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**").permitAll()
-                //.anyRequest().authenticated()
                 .antMatchers("/images/**", "/downloadFile/**").permitAll()
                 .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
+                .antMatchers("/suppliers/**", "/stock_amounts/**", "/supplies/**").permitAll()
                 //.anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()

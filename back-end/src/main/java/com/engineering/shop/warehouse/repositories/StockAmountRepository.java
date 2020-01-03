@@ -9,11 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface StockAmountRepository extends CrudRepository<StockAmount, Integer> {
-
     Optional<StockAmount> findStockAmountByStockAmountId(Integer stockAmountId);
-
     Iterable<StockAmount> findAllByAvailable(Boolean available);
-
     Boolean existsStockAmountByProductId(Integer productId);
     Optional<StockAmount> findStockAmountByProductId(Integer productId);
 }
