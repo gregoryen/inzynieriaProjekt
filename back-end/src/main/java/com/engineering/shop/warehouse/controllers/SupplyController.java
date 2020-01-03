@@ -81,33 +81,13 @@ public class SupplyController {
                         list.stream().max(Comparator.comparingInt(StockAmount::getStockAmountId)).get();
 
                 s.setAmount(s.getAmount() + stockAmountWithMaxId.getAmount());
+                s.setAvailable(s.getAmount() > 0.0 ? true : false);
+                s.setMeasure(stockAmountWithMaxId.getMeasure());
             }
         }
 
         supplyRepository.save(supply);
 
         return "Saved";
-    }
-
-    private void saveStockAmounts(List<StockAmount> stockAmounts) {
-        for (StockAmount stockAmount : stockAmounts) {
-//            stockAmount.setAvailable(stockAmount.getAmount() > 0.0 ? true : false);
-            boolean existsByProductId = stockAmountRepository.existsStockAmountByProductId(stockAmount.getProductId());
-            System.out.println(existsByProductId);
-//            if (existsByProductId) {
-//                updateExistingStockAmount(stockAmount);
-//            } else {
-            stockAmountRepository.save(stockAmount);
-//            }
-        }
-    }
-
-    private void updateExistingStockAmount(StockAmount stockAmount) {
-        StockAmount existing = stockAmountRepository.findStockAmountByProductId(stockAmount.getProductId()).orElseThrow();
-        existing.setAmount(existing.getAmount() + stockAmount.getAmount());
-        existing.setAvailable(stockAmount.getAvailable());
-        stockAmount = existing;
-        // measure i product_id nie jest aktualizowane, bo i nie powinno
-        // measure, jesli pomylone, moze bedzie zmieniane, a moze i nie
     }
 }
