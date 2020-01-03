@@ -15,7 +15,7 @@ public class StockAmount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stockAmountId;
 
-//    @OneToOne(cascade = CascadeType.ALL))
+//    @OneToOne
     @NotNull
     private Integer productId;
 

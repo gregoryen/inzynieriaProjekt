@@ -239,7 +239,8 @@
                     productId: "",
                     name: "",
                     measure: "",
-                    amount: ""
+                    amount: "",
+                    available: false
                 });
                 // eslint-disable-next-line no-console
                 console.log(this.products);
@@ -307,6 +308,7 @@
 
                     let productId = products.filter(p => (p.name === productName))[0].id;
                     stockAmounts[i].productId = productId;
+                    stockAmounts[i].available = true;
                 }
 
                 stockAmounts.forEach(function (item) {

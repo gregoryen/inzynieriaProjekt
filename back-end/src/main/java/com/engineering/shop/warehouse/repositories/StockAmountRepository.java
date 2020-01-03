@@ -13,4 +13,5 @@ public interface StockAmountRepository extends CrudRepository<StockAmount, Integ
     Iterable<StockAmount> findAllByAvailable(Boolean available);
     Boolean existsStockAmountByProductId(Integer productId);
     Optional<StockAmount> findStockAmountByProductId(Integer productId);
+    Iterable<StockAmount> findAllByProductId(Integer productId);
 }
