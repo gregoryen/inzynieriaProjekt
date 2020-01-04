@@ -58,17 +58,23 @@
             <b-form-group
                     v-if="supported.childrenCategories.length"
                     id="positionCategory"
-                    label="Wybierz pozycje nowej kategorii: "
+                    label="Wybierz pozycję nowej kategorii: "
                     label-for="searcher">
                 <b-form-select :options="supported.positions"
                                :value="supported.selectedPosition" @change="changeDisplay"></b-form-select>
             </b-form-group>
 
+            <b-form-group
+                    id="viewPositionCategory"
+                    label="Animacja przedstawia pozycję nowej kategorii na tle już isniejących: "
+                    label-for="searcher"
+                    v-if="supported.childrenCategories.length">
             <b-list-group>
                 <b-list-group-item v-for="category in supported.childrenCategories" :key="category.value"
                                    :variant="category.variant">{{category.text}}
                 </b-list-group-item>
             </b-list-group>
+            </b-form-group>
 
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger">Reset</b-button>
@@ -86,10 +92,10 @@
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
-    const CATEGORIES_WITH_ID = '/categories?projection=withId';
     const CATEGORIES_CHILDREN = '/categories/children';
     const CATEGORIES_TREE = '/categories/tree';
-    const CATEGORIES_MAIN = '/categories/search/findAllByParentIdIsNull?projection=withId';
+    const CATEGORIES_MAIN = '/categories/mainCategories';
+    const ADD_CATEGORIES = '/categories';
 
     export default {
         // register the component
@@ -108,7 +114,6 @@
                 show: true,
                 supported: {
                     treeCategories: [],
-                    allCategories: [],
                     childrenCategories: [],
                     selectedPosition: 1,
                     positions: [],
@@ -122,17 +127,33 @@
             }
         },
         methods: {
-            onSubmit(evt) {
-                evt.preventDefault()
-                alert(JSON.stringify(this.form))
+            onSubmit() {
+                const config = {
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                };
+                axios.post(this.baseurl + ADD_CATEGORIES, this.form, config)
+                    .then(res => {
+                        if (res.status === 200) {
+                            //       this.showSuccessModal();
+                        } else {
+                            //    this.showFailModal();
+                        }
+                    });
             },
-            onReset(evt) {
-                evt.preventDefault()
+            onReset() {
                 // Reset our form values
                 this.form.name = '';
                 this.form.description = '';
                 this.form.parentId = null;
                 this.form.previousCategoryId = null;
+
+                this.supported.childrenCategories = [];
+                this.supported.selectedPosition = 1;
+                this.supported.positions = [];
+                this.supported.mainCategory = false;
+
                 // Trick to reset/clear native browser form validation state
                 this.show = false;
                 this.$nextTick(() => {
@@ -150,7 +171,7 @@
                 if (newValue === 1) {
                     this.form.previousCategoryId = null;
                 } else {
-                    this.form.previousCategoryId =  this.supported.childrenCategories[newValue-2].value;
+                    this.form.previousCategoryId = this.supported.childrenCategories[newValue - 2].value;
                 }
             },
             getChildren() {
@@ -194,10 +215,10 @@
                 axios.get(this.baseurl + CATEGORIES_MAIN, config)
                     .then(res => {
                             if (res.status === 200) {
-                                for (let i = 0; i < res.data._embedded.categories.length; i++) {
+                                for (let i = 0; i < res.data.length; i++) {
                                     let item = {
-                                        value: res.data._embedded.categories[i].id,
-                                        text: res.data._embedded.categories[i].name,
+                                        value: res.data[i].id,
+                                        text: res.data[i].name,
                                         variant: null
                                     };
                                     this.supported.positions.push(i + 1);
@@ -243,19 +264,6 @@
                     'content-type': 'application/json'
                 }
             };
-            axios.get(this.baseurl + CATEGORIES_WITH_ID, config)
-                .then(res => {
-                        if (res.status === 200) {
-                            for (let temp of res.data._embedded.categories) {
-                                let item = {
-                                    value: temp.id,
-                                    text: temp.name
-                                };
-                                this.supported.allCategories.push(item);
-                            }
-                        }
-                    }
-                );
 
             axios.get(this.baseurl + CATEGORIES_TREE, config)
                 .then(res => {
@@ -264,18 +272,6 @@
                         }
                     }
                 );
-        },
-        computed: {
-            filteredMainCategoriesId: function () {
-                return this.supported.allCategories.filter((category) => {
-                    return category.text.match(this.supported.searchMainCategories);
-                })
-            },
-            filteredAdditionalCategoriesId: function () {
-                return this.supported.allCategories.filter((category) => {
-                    return category.text.match(this.supported.searchAdditionalCategories);
-                })
-            }
         },
     }
 </script>

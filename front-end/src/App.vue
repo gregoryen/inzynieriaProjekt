@@ -1,17 +1,18 @@
 <template>
   <div id="app">
-    <DeleteCategory :baseurl="this.baseurl"/>
+    <AddCategory :baseurl="this.baseurl"/>
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import DeleteCategory from "./components/DeleteCategory";
+
+import AddCategory from "./components/AddCategory";
 
 export default {
   components: {
-      DeleteCategory,
+      AddCategory,
   },
   name: "app",
   data() {
