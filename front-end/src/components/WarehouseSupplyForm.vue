@@ -113,9 +113,11 @@
                             id="input-product-name"
                             v-model="product.name"
                     >
-                        <option v-for="(product, index) in allProducts" v-bind:item="product" v-bind:key="index">
-                            <!--                                <input class="form-control" type="text">-->
-                            {{product.name}}
+                        <option :disabled="products.filter(p => (p.name === prod.name)).length > 0"
+                                v-for="(prod, index) in allProducts" v-bind:item="product" v-bind:key="index">
+                            <strong>
+                                {{prod.name}}
+                            </strong>
                         </option>
                         <option style="color: darkgray" disabled value="">Wybierz produkt</option>
                     </select>

@@ -81,13 +81,12 @@ public class SupplyController {
                         list.stream().max(Comparator.comparingInt(StockAmount::getStockAmountId)).get();
 
                 s.setAmount(s.getAmount() + stockAmountWithMaxId.getAmount());
-                s.setAvailable(s.getAmount() > 0.0 ? true : false);
                 s.setMeasure(stockAmountWithMaxId.getMeasure());
             }
+            s.setAvailable(s.getAmount() > 0.0 ? true : false);
         }
-
         supplyRepository.save(supply);
-
         return "Saved";
     }
+
 }

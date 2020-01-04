@@ -11,7 +11,8 @@ import OrderSummary from './components/OrderSummary'
 import AddProduct from "./components/AddProduct";
 import Home from './components/Home'
 import AdminPanel from './components/AdminPanel'
-import WarehouseSupplyForm from "./components/WarehouseSupplyForm";
+import WarehouseSupplyForm from './components/WarehouseSupplyForm';
+import StockAmounts from './components/StockAmounts';
 
 const pluginOptions = {
   globalOptions: { currency: 'PLN' }
@@ -51,6 +52,10 @@ const router = new VueRouter({
     {
       path: '/warehouseSupplyForm',
       component: WarehouseSupplyForm
+    },
+    {
+      path: '/StockAmounts',
+      component: StockAmounts
     }
   ]
 })

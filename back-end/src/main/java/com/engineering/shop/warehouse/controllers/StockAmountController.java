@@ -10,7 +10,8 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -167,5 +168,35 @@ public class StockAmountController {
     public Measure[] getAllMeasures() {
         Measure[] measures = Measure.class.getEnumConstants();
         return measures;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path = "/last_updated")
+    public List<StockAmount> getAllLastUpdated() {
+        Iterable<StockAmount> iterable = stockAmountRepository.findAll();
+        List<StockAmount> stocks = getIterableAsList(iterable);
+
+//        Set<Integer> productsIds = stocks.stream().map(StockAmount::getProductId).collect(Collectors.toSet());
+        Map<Integer, List<StockAmount>> groupedStocks =
+                stocks.stream().collect(Collectors.groupingBy(StockAmount::getProductId));
+
+        List<StockAmount> lastUpdated = new ArrayList<>();
+        groupedStocks.forEach(
+                (key, list) -> lastUpdated.add(
+                        list.stream().max(
+                                Comparator.comparingInt(
+                                        StockAmount::getStockAmountId
+                                )
+                        ).get()
+                )
+        );
+        return lastUpdated;
+    }
+
+    private List<StockAmount> getIterableAsList(Iterable<StockAmount> iterable) {
+        Iterator<StockAmount> iterator = iterable.iterator();
+        List<StockAmount> list = new ArrayList<>();
+        iterator.forEachRemaining(list::add);
+        return list;
     }
 }
