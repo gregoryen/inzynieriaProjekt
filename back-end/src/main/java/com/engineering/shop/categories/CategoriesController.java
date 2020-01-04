@@ -47,6 +47,18 @@ public class CategoriesController {
         return children;
     }
 
+    @GetMapping("/mainCategories")
+    public Iterable<Category> getMainCategories() {
+        ArrayList<Category> mainCategories = new ArrayList<>();
+        Optional<Category> next = categoriesRepo.findByParentIdIsNullAndPreviousCategoryIdIsNull();
+        while (next.isPresent()) {
+            Category category = next.get();
+            mainCategories.add(category);
+            next = categoriesRepo.findByParentIdIsNullAndPreviousCategoryId(category.getId());
+        }
+        return mainCategories;
+    }
+
     @GetMapping("/withoutProducts")
     public Iterable<Category> getCategoriesWithoutProducts() {
         Iterable<Category> allCategories = categoriesRepo.findAll();

@@ -39,4 +39,8 @@ public interface CategoriesRepo extends CrudRepository<Category, Integer> {
     void deleteAll();
 
     Optional<Category> findByPreviousCategoryId(Integer previousCategoryId);
+
+    Optional<Category> findByParentIdIsNullAndPreviousCategoryIdIsNull();
+
+    Optional<Category> findByParentIdIsNullAndPreviousCategoryId(Integer previousCategoryId);
 }
