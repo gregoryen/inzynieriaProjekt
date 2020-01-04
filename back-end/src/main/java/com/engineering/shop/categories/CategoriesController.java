@@ -78,17 +78,11 @@ public class CategoriesController {
 
     @DeleteMapping
     public ResponseEntity<Object> deleteCategory(@RequestParam Integer id) {
-        Optional<Category> optionalCategory = categoriesRepo.findById(id);
-        if (optionalCategory.isEmpty()) {
-            return new ResponseEntity<>(
-                   new DeleteCategoryMessage("Taka kategoria nie istniej"),
-                    HttpStatus.BAD_REQUEST);
-        }
         Iterable<Product> products = productsRepo.findByMainCategoryId(id);
         if (Iterables.size(products) > 0) {
             return new ResponseEntity<>(
                     new DeleteCategoryMessage("Do tej kategorii sa przypisane produkty"),
-                    HttpStatus.BAD_REQUEST);
+                    HttpStatus.FORBIDDEN);
         }
         categoriesRepo.deleteById(id);
          return new ResponseEntity<>(
