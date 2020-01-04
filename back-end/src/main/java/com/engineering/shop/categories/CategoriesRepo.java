@@ -24,22 +24,19 @@ public interface CategoriesRepo extends CrudRepository<Category, Integer> {
     <S extends Category> Iterable<S> saveAll(Iterable<S> iterable);
 
     @Override
-    @CachePut("categoriesTree")
     <S extends Category> S save(S s);
 
     @Override
-    @CacheEvict("categoriesTree")
     void deleteById(Integer integer);
 
     @Override
-    @CacheEvict("categoriesTree")
     void delete(Category category);
 
     @Override
-    @CacheEvict("categoriesTree")
     void deleteAll(Iterable<? extends Category> iterable);
 
     @Override
-    @CacheEvict("categoriesTree")
     void deleteAll();
+
+    Optional<Category> findByPreviousCategoryId(Integer previousCategoryId);
 }

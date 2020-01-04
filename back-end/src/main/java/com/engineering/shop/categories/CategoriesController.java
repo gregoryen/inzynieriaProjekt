@@ -64,7 +64,6 @@ public class CategoriesController {
         return categories;
     }
 
-    @Cacheable("categoriesTree")
     @GetMapping("/tree")
     public Iterable<TreeNode> getCategoriesTree() {
         Iterable<Category> allCategories = categoriesRepo.findAll();
@@ -103,7 +102,16 @@ public class CategoriesController {
                     new DeleteCategoryMessage("Do tej kategorii sa przypisane produkty"),
                     HttpStatus.FORBIDDEN);
         }
-        categoriesRepo.deleteById(id);
+        Optional<Category> optionalDeletCategory = categoriesRepo.findById(id);
+        if (optionalDeletCategory.isPresent()) {
+            Optional<Category> optionalCategory = categoriesRepo.findByPreviousCategoryId(id);
+            if (optionalCategory.isPresent()) {
+                Category category = optionalCategory.get();
+                category.setPreviousCategoryId(optionalDeletCategory.get().getPreviousCategoryId());
+                categoriesRepo.save(category);
+            }
+            categoriesRepo.deleteById(id);
+        }
          return new ResponseEntity<>(
                  new DeleteCategoryMessage("Kategoria została usunieta"),
                 HttpStatus.OK);
