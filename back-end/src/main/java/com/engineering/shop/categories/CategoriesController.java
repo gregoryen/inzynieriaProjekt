@@ -17,7 +17,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/categories")
@@ -43,6 +45,23 @@ public class CategoriesController {
             next = categoriesRepo.findByParentIdAndPreviousCategoryId(parentId, category.getId());
         }
         return children;
+    }
+
+    @GetMapping("/withoutProducts")
+    public Iterable<Category> getCategoriesWithoutProducts() {
+        Iterable<Category> allCategories = categoriesRepo.findAll();
+        List<Category> categories = IteratorUtils.toList(allCategories.iterator());
+
+        Iterable<Product> allProducts = productsRepo.findAll();
+        List<Product> products = IteratorUtils.toList(allProducts.iterator());
+
+        List<Integer> idUsedCategories = products.stream().map(Product::getMainCategoryId).distinct().collect(Collectors.toList());
+
+        idUsedCategories.forEach( e -> {
+            categories.removeIf((element) -> element.getId().equals(e));
+        });
+
+        return categories;
     }
 
     @Cacheable("categoriesTree")
