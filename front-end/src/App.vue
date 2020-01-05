@@ -1,18 +1,17 @@
 <template>
   <div id="app">
-    <AddCategory :baseurl="this.baseurl"/>
+    <QuickSearcher :baseurl="this.baseurl"/>
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-
-import AddCategory from "./components/AddCategory";
+import QuickSearcher from "./components/QuickSearcher";
 
 export default {
   components: {
-      AddCategory,
+    QuickSearcher
   },
   name: "app",
   data() {
