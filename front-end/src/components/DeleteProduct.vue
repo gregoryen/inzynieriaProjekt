@@ -1,7 +1,5 @@
 <template>
     <div>
-        <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-
             <b-form-group
                     id="mainCategory"
                     label="Wybierz kategorię z której chcesz usunąć produkty: "
@@ -17,28 +15,17 @@
                 >
                 </treeselect>
             </b-form-group>
-
-            <div id="productContainer">
-                <p id="emptyProductsMessage" v-if="productsHeader === null || productsHeader.length === 0">BRAK PRODUKTÓW</p>
-                <ul v-else>
-                    <ProductHeader v-for="productHeader in productsHeader" v-bind:key="productHeader.name" :productHeader="productHeader" :baseurl="baseurl"></ProductHeader>
-                </ul>
+        <div id="productContainer">
+            <div v-if="productsHeader !== null && productsHeader.length !== 0" class="products" id="products">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.name">
+                            <DeleteProductHeader :productHeader="productHeader" :baseurl="baseurl"/>
+                        </div>
+                    </div>
+                </div>
             </div>
-
-            <b-modal ref="successCreate" id="successModal" title="Usunięto kategorię">
-                <p class="my-4">{{respondMessage}}</p>
-            </b-modal>
-
-            <b-modal ref="failCreate" id="failModal" title="NIE usunięto kategorii">
-                <p class="my-4">{{respondMessage}}</p>
-            </b-modal>
-
-            <b-button type="submit" variant="primary">Submit</b-button>
-            <b-button type="reset" variant="danger">Reset</b-button>
-        </b-form>
-        <b-card class="mt-3" header="Form Data Result">
-            <pre class="m-0">{{ categoryId }}</pre>
-        </b-card>
+        </div>
     </div>
 </template>
 
@@ -48,14 +35,12 @@
     import Treeselect from '@riophae/vue-treeselect'
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
-    import ProductHeader from "./ProductHeader.vue";
-
+    import DeleteProductHeader from "./DeleteProductHeader.vue";
 
     const CATEGORIES_TREE = '/categories/tree';
     const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
-    const CATEGORIES = '/categories';
     export default {
-        components: {Treeselect, ProductHeader},
+        components: {Treeselect, DeleteProductHeader},
         props: {
             baseurl: String
         },
@@ -64,49 +49,9 @@
                 categoryId: null,
                 productsHeader: [],
                 treeCategories: [],
-                show: true,
-                respondMessage: "",
-                es: null
             }
         },
         methods: {
-            showSuccessModal() {
-                this.$refs["successCreate"].show()
-            },
-            showFailModal() {
-                this.$refs["failCreate"].show()
-            },
-            onSubmit(evt) {
-                evt.preventDefault()
-                const config = {
-                    params: {
-                        id: this.categoryId
-                    },
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                };
-                axios.delete(this.baseurl + CATEGORIES, config)
-                    .then(res => {
-                            // eslint-disable-next-line no-console
-                            console.log(res);
-                            this.respondMessage = res.data.message;
-                            this.showSuccessModal();
-                        }
-                    ).catch(res => {
-                    // eslint-disable-next-line no-console
-                    console.log(res);
-                    this.es = res;
-                    this.showFailModal();
-                });
-            },
-            onReset(evt) {
-                evt.preventDefault();
-                this.show = false;
-                this.$nextTick(() => {
-                    this.show = true
-                })
-            },
             createBranch: function (oldBranch) {
                 let newBranch = [];
                 for (let e of oldBranch) {

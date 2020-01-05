@@ -7,7 +7,6 @@
             <div class="d-flex justify-content-between">
                 <h5 class="card-title">{{productHeader.name}}</h5>
                 <h6 class="card-price">{{productHeader.price}} PLN</h6>
-
             </div>
 
             <router-link :to="{name: 'product', params: {link: productHeader._links.self.href, baseurl: this.baseurl}}">
@@ -25,8 +24,9 @@
         props: {
             productHeader: Object,
             baseurl: String
-        }
+        },
     };
+
 </script>
 <style scoped>
     .card {
