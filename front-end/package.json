@@ -16,6 +16,7 @@
     "core-js": "^3.4.3",
     "jquery": "^3.4.1",
     "popper.js": "^1.16.0",
+    "v-show-slide": "^1.8.3",
     "vue": "^2.6.10",
     "vue-blu": "^0.1.9",
     "vue-currency-input": "^1.14.2",

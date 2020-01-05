@@ -3,9 +3,42 @@
     <h1>{{product.name}}</h1>
     <div class="grid-container">
       <div class="item1">
-        <img
-          :src="product._links.mainImage.href"
-        />
+        <b-carousel
+                id="carousel-1"
+                v-model="slide"
+                :interval="4000"
+                controls
+                indicators
+                background="#ababab"
+                img-width="1024"
+                img-height="480"
+                style="text-shadow: 1px 1px 2px #333;"
+        >
+          <b-carousel-slide>
+            <template v-slot:img>
+              <img
+                      class="d-block img-fluid w-100"
+                      width="800"
+                      height="480"
+                      :src="product._links.mainImage.href"
+                      alt="image slot"
+              >
+            </template>
+          </b-carousel-slide>
+
+          <b-carousel-slide v-for="image in product._links.additionalImages" v-bind:key="image">
+            <template v-slot:img>
+              <img
+                      class="d-block img-fluid w-100"
+                      width="1024"
+                      height="480"
+                      :src="image.href"
+                      alt="image slot"
+              >
+            </template>
+          </b-carousel-slide>
+
+        </b-carousel>
       </div>
       <div class="item2">
         <div id="price">Cena: {{product.price}} PLN</div>
