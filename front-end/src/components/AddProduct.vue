@@ -91,38 +91,32 @@
                                     id="mainCategory"
                                     label="Wybierz kategorię główną: "
                                     label-for="searcher">
-                                <b-form-input
-                                        id="searcher"
-                                        v-model="supported.searchMainCategories"
-                                        type="text"
-                                        placeholder="Wpisz szukaną kategorię"
-                                ></b-form-input>
-                                <div>
-                                    <b-form-select v-model="form.product.mainCategoryId"
-                                                   :options="filteredMainCategoriesId" :select-size="4"
-                                                   required></b-form-select>
-                                    <div v-if="form.product.mainCategoryId" class="mt-3">Wybrana kategoria: <strong>{{
-                                        form.product.mainCategoryId }}</strong></div>
-                                </div>
+                                <treeselect
+                                        :options="supported.treeCategories"
+                                        v-model="form.product.mainCategoryId"
+                                        :searchable="false"
+                                        :show-count="true"
+                                        :default-expand-level="1"
+                                        placeholder="Kategoria główna"
+                                >
+                                </treeselect>
                             </b-form-group>
 
                             <b-form-group
                                     id="additionalCategory"
                                     label="Wybierz kategorię dodatkowe: "
                                     label-for="searcher">
-                                <b-form-input
-                                        id="searcher"
-                                        v-model="supported.searchAdditionalCategories"
-                                        type="text"
-                                        placeholder="Wpisz szukaną kategorie"
-                                ></b-form-input>
-                                <div>
-                                    <b-form-select v-model="form.product.categories"
-                                                   :options="filteredAdditionalCategoriesId" :select-size="4"
-                                                   multiple></b-form-select>
-                                    <div class="mt-3">Wybrane kategorie: <strong>{{ form.product.categories }}</strong>
-                                    </div>
-                                </div>
+                                <treeselect
+                                        :options="supported.treeCategories"
+                                        v-model="form.product.categories"
+                                        :flat="true"
+                                        :searchable="false"
+                                        :show-count="true"
+                                        :default-expand-level="1"
+                                        :multiple="true"
+                                        placeholder="Kategorie dodatkowe"
+                                >
+                                </treeselect>
                             </b-form-group>
 
                             <b-form-group id="price"
@@ -191,8 +185,8 @@
                                 <b v-else>Niedostępny</b>
                             </b-form-group>
 
-                            <b-button type="submit" variant="primary">Submit</b-button>
-                            <b-button type="reset" variant="danger">Reset</b-button>
+                            <b-button type="submit" variant="primary">Dodaj</b-button>
+                            <b-button type="reset" variant="danger">Zresetuj</b-button>
                         </b-form>
                     </b-card-text>
                 </b-col>
@@ -216,14 +210,18 @@
 
 <script>
     import axios from 'axios';
+    import Treeselect from '@riophae/vue-treeselect'
+    // import the styles
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 
     const PRODUCTS = '/products';
     const UPLOAD_IMAGE = '/images/uploadImage';
     const UPLOAD_MULTIPLE_IMAGE = '/images/uploadMultipleImages';
-    const CATEGORIES_WITH_ID = '/categories?projection=withId';
     const WAREHOUSE = '/stock_amounts/add_empty';
+    const CATEGORIES_TREE = '/categories/tree';
 
     export default {
+        components: {Treeselect},
         props: {
             baseurl: String
         },
@@ -248,19 +246,13 @@
                 mainImageFile: null,
                 show: true,
                 supported: {
+                    treeCategories: [],
                     mainImageURL: null,
                     additionalImagesURL: null,
-                    allCategories: [],
-                    searchedMainCategories: [],
-                    searchedAdditionalCategories: [],
-                    searchMainCategories: '',
-                    searchAdditionalCategories: '',
                 },
                 status: {
                     mainImageSend: true,
                     additionalImagesSend: true,
-                    mainCategoryIdSelected: false,
-                    additionalCategoriesIdSelected: false
                 }
             }
         },
@@ -410,18 +402,21 @@
                             this.status.additionalImagesSend = true;
                         }
                     });
-            }
-        },
-        computed: {
-            filteredMainCategoriesId: function () {
-                return this.supported.allCategories.filter((category) => {
-                    return category.text.match(this.supported.searchMainCategories);
-                })
             },
-            filteredAdditionalCategoriesId: function () {
-                return this.supported.allCategories.filter((category) => {
-                    return category.text.match(this.supported.searchAdditionalCategories);
-                })
+            createBranch: function (oldBranch) {
+                let newBranch = [];
+                for (let e of oldBranch) {
+                    let temp = {
+                        id: e.category.id,
+                        label: e.category.name,
+                    };
+                    let children = this.createBranch(e.children);
+                    if (children.length > 0) {
+                        temp.children = children;
+                    }
+                    newBranch.push(temp);
+                }
+                return newBranch;
             }
         },
         created() {
@@ -430,16 +425,10 @@
                     'content-type': 'application/json'
                 }
             };
-            axios.get(this.baseurl + CATEGORIES_WITH_ID, config)
+            axios.get(this.baseurl + CATEGORIES_TREE, config)
                 .then(res => {
                         if (res.status === 200) {
-                            for (let temp of res.data._embedded.categories) {
-                                let item = {
-                                    value: temp.id,
-                                    text: temp.name
-                                };
-                                this.supported.allCategories.push(item);
-                            }
+                            this.supported.treeCategories = this.createBranch(res.data);
                         }
                     }
                 );

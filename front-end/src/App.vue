@@ -1,17 +1,17 @@
 <template>
   <div id="app">
-    <QuickSearcher :baseurl="this.baseurl"/>
+    <AddProduct :baseurl="this.baseurl"/>
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import QuickSearcher from "./components/QuickSearcher";
+import AddProduct from "./components/AddProduct";
 
 export default {
   components: {
-    QuickSearcher
+    AddProduct,
   },
   name: "app",
   data() {
