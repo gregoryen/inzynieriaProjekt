@@ -15,7 +15,7 @@ public interface ProductsRepo extends JpaRepository<Product, Integer> {
 
     Iterable<Product> findByMainCategoryId(Integer categoryId);
 
-    Iterable<ProductHeaderProjection> findAllByNameContainingIgnoreCaseAndActiveIsTrue(String name);
+    Iterable<Product> findAllByNameContainingIgnoreCaseAndActiveIsTrue(String name);
 
     List<Product> findAllByActiveIsTrue();
 
