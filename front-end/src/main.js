@@ -21,11 +21,11 @@ Vue.config.productionTip = false;
 const routes = [
   { path: '/product', name: 'product', component: Product },
   { path: '/', name: 'products', component: Products },
-  { path: '/categories', name: 'categories', compoment: Categories },
-  { path: '/addCategory', name: 'addCategory', compoment: AddCategory},
-  { path: '/addProduct', name: 'addProduct', compoment: AddProduct },
-  { path: '/deleteCategory', name: 'deleteCategory', compoment: DeleteCategory },
-  { path: '/deleteProduct', name: 'deleteProduct', compoment: DeleteProduct },
+  { path: '/categories', name: 'categories', component: Categories },
+  { path: '/addCategory', name: 'addCategory', component: AddCategory},
+  { path: '/addProduct', name: 'addProduct', component: AddProduct },
+  { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
+  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct },
 ];
 
 const pluginOptions = { globalOptions: { currency: 'PLN' } };

@@ -56,6 +56,7 @@
             onReset() {
                 this.productsHeader = [];
                 this.getCategories();
+                this.categoryId = null;
             },
             createBranch: function (oldBranch) {
                 let newBranch = [];
