@@ -18,16 +18,25 @@
                 </treeselect>
             </b-form-group>
 
-            <b-modal ref="successCreate" id="successModal" title="Usunięto kategorię">
-                <p class="my-4">Kategoria została usunięta</p>
+            <b-modal ref="successDelete" hide-footer title="Usunięto kategorię">
+                <div class="d-block text-center">
+                    <h3>Kategoria została usunięta</h3>
+                </div>
+                <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
             </b-modal>
 
-            <b-modal ref="failCreate" id="failModal" title="NIE usunięto kategorii">
-                <p class="my-4">Usunięcie kategorii nie powiodło się</p>
+            <b-modal ref="failDelete" hide-footer title="NIE usunięto kategorii">
+                <div class="d-block text-center">
+                    <h3>Usunięcie kategorii nie powiodło się</h3>
+                </div>
+                <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
             </b-modal>
 
-            <b-modal ref="categoryNotSelected" id="failModal" title="Nie wybrano kategorii">
-                <p class="my-4">Wybierz kategorię</p>
+            <b-modal ref="categoryNotSelected" hide-footer title="Nie wybrano kategorii">
+                <div class="d-block text-center">
+                    <h3>Wybierz kategorię</h3>
+                </div>
+                <b-button class="mt-3" variant="danger" block @click="hideSelectModal">OK</b-button>
             </b-modal>
 
             <b-button type="submit" variant="primary">Usuń</b-button>
@@ -57,13 +66,24 @@
         },
         methods: {
             showSuccessModal() {
-                this.$refs["successCreate"].show()
+                this.$refs["successDelete"].show()
             },
             showFailModal() {
-                this.$refs["failCreate"].show()
+                this.$refs["failDelete"].show()
             },
             showSelectModal() {
                 this.$refs["categoryNotSelected"].show()
+            },
+            hideSuccessModal() {
+                this.$refs["successDelete"].hide();
+                this.onReset();
+            },
+            hideFailModal() {
+                this.$refs["failDelete"].hide();
+                this.onReset();
+            },
+            hideSelectModal() {
+                this.$refs["categoryNotSelected"].hide()
             },
             onSubmit(evt) {
                 evt.preventDefault();
@@ -87,6 +107,11 @@
                     this.showSelectModal();
                 }
             },
+            onReset() {
+                this.categoryId= null;
+                this.treeCategories= [];
+                this.getTree();
+            },
             createBranch: function (oldBranch, categoriesWithoutProducts) {
                 let newBranch = [];
                 for (let e of oldBranch) {
@@ -103,33 +128,34 @@
                     newBranch.push(temp);
                 }
                 return newBranch;
+            },
+            getTree() {
+                const config = {
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                };
+                let categoriesWithoutProducts = [];
+                axios.get(this.baseurl + CATEGORIES_WITHOUT_PRODUCTS, config)
+                    .then(res => {
+                            if (res.status === 200) {
+                                for (let temp of res.data) {
+                                    categoriesWithoutProducts.push(temp.id);
+                                }
+                                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                                    .then(res => {
+                                            if (res.status === 200) {
+                                                this.treeCategories = this.createBranch(res.data, categoriesWithoutProducts);
+                                            }
+                                        }
+                                    );
+                            }
+                        }
+                    );
             }
-
         },
         created() {
-            const config = {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            };
-            let categoriesWithoutProducts = [];
-            axios.get(this.baseurl + CATEGORIES_WITHOUT_PRODUCTS, config)
-                .then(res => {
-                        if (res.status === 200) {
-                            for (let temp of res.data) {
-                                categoriesWithoutProducts.push(temp.id);
-                            }
-                            axios.get(this.baseurl + CATEGORIES_TREE, config)
-                                .then(res => {
-                                        if (res.status === 200) {
-                                            this.treeCategories = this.createBranch(res.data, categoriesWithoutProducts);
-                                        }
-                                    }
-                                );
-                        }
-                    }
-                );
-
+            this.getTree();
         },
     }
 </script>
