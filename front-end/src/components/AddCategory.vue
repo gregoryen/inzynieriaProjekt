@@ -79,6 +79,22 @@
             <b-button type="submit" variant="primary">Submit</b-button>
             <b-button type="reset" variant="danger">Reset</b-button>
         </b-form>
+
+
+        <b-modal ref="successCreate" hide-footer title="Utworzono nową kategorię">
+            <div class="d-block text-center">
+                <h3>Nowa kategoria zostala dodany do sklepu</h3>
+            </div>
+            <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="failCreate" hide-footer title="NIE stworzono nowej kategorii">
+            <div class="d-block text-center">
+                <h3>Utworzenie nowegej kategorii nie udało się</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
+        </b-modal>
+
         <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
         </b-card>
@@ -127,20 +143,32 @@
             }
         },
         methods: {
-            onSubmit() {
+            showSuccessModal() {
+                this.$refs["successCreate"].show()
+            },
+            showFailModal() {
+                this.$refs["failCreate"].show()
+            },
+            hideSuccessModal() {
+                this.$refs["successCreate"].hide()
+                this.onReset();
+            },
+            hideFailModal() {
+                this.$refs["failCreate"].hide()
+            },
+            onSubmit(evt) {
+                evt.preventDefault();
                 const config = {
                     headers: {
                         'content-type': 'application/json'
                     },
                 };
                 axios.post(this.baseurl + ADD_CATEGORIES, this.form, config)
-                    .then(res => {
-                        if (res.status === 200) {
-                            //       this.showSuccessModal();
-                        } else {
-                            //    this.showFailModal();
-                        }
-                    });
+                    .then(() => {
+                        this.showSuccessModal()
+                    }).catch(() => {
+                    this.showFailModal()
+                });
             },
             onReset() {
                 // Reset our form values
@@ -154,11 +182,13 @@
                 this.supported.positions = [];
                 this.supported.mainCategory = false;
 
+                this.getCategories();
+
                 // Trick to reset/clear native browser form validation state
                 this.show = false;
                 this.$nextTick(() => {
                     this.show = true
-                })
+                });
             },
             changeDisplay: function (val) {
                 let oldValue = this.supported.selectedPosition;
@@ -256,22 +286,25 @@
                     newBranch.push(temp);
                 }
                 return newBranch;
+            },
+            getCategories() {
+                const config = {
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                };
+
+                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                    .then(res => {
+                            if (res.status === 200) {
+                                this.supported.treeCategories = this.createBranch(res.data);
+                            }
+                        }
+                    );
             }
         },
-        created() {
-            const config = {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            };
-
-            axios.get(this.baseurl + CATEGORIES_TREE, config)
-                .then(res => {
-                        if (res.status === 200) {
-                            this.supported.treeCategories = this.createBranch(res.data);
-                        }
-                    }
-                );
+        mounted() {
+            this.getCategories();
         },
     }
 </script>
