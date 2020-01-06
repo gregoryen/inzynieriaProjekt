@@ -197,12 +197,25 @@
             <pre class="m-0">{{ form }}</pre>
         </b-card>
 
-        <b-modal ref="successCreate" id="successModal" title="Utworzono nowy produkt">
-            <p class="my-4">Nowy produkt zostal dodany do sklepu</p>
+        <b-modal ref="successCreate" hide-footer title="Utworzono nowy produkt">
+            <div class="d-block text-center">
+                <h3>Nowa produkt został dodany do sklepu</h3>
+            </div>
+            <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
         </b-modal>
 
-        <b-modal ref="failCreate" id="failModal" title="NIE stworzono nowego produktu">
-            <p class="my-4">Utworzenie nowego produktu nie udało się</p>
+        <b-modal ref="failCreate" hide-footer title="NIE stworzono nowego produktu">
+            <div class="d-block text-center">
+                <h3>Utworzenie nowego produktu nie udało się</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="waitCreate" hide-footer title="Zdjęcia nie zostały jeszcze wysłane">
+            <div class="d-block text-center">
+                <h3>Proszę odczekać chwilę i spróbować zatwierdzić dodanie nowego produktu ponownie</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideWaitModal">OK</b-button>
         </b-modal>
 
     </div>
@@ -263,6 +276,20 @@
             showFailModal() {
                 this.$refs["failCreate"].show()
             },
+            waitModal() {
+                this.$refs["waitCreate"].show();
+            },
+            hideSuccessModal() {
+                this.$refs["successCreate"].hide();
+                this.onReset();
+            },
+            hideFailModal() {
+                this.$refs["failCreate"].hide();
+                this.onReset();
+            },
+            hideWaitModal() {
+                this.$refs["waitCreate"].hide();
+            },
             resetMainImage() {
                 this.$refs['mainImage'].reset();
                 this.mainImageFile = null;
@@ -277,14 +304,15 @@
                 this.supported.additionalImagesURL = null;
                 this.status.additionalImagesSend = true;
             },
-            onSubmit() {
+            onSubmit(evt) {
+                evt.preventDefault();
                 if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
                     if (this.form.additionalImages === null) {
                         this.form.additionalImages = []
                     }
                     this.form.additionalImages.push(this.form.product.mainImage);
                     if (this.form.product.categories === null) {
-                        this.form.product.categories  = []
+                        this.form.product.categories = []
                     }
                     if (this.form.product.categories.indexOf(this.form.product.mainCategoryId)) {
                         this.form.product.categories.push(this.form.product.mainCategoryId);
@@ -296,12 +324,16 @@
                     };
                     axios.post(this.baseurl + PRODUCTS, this.form, config)
                         .then((res) => {
-                                axios.post(this.baseurl + WAREHOUSE, {
-                                    productId: res.id,
-                                    measure: 'UNIT',
-                                }, config);
-                                this.showSuccessModal();
-                            }).catch(() => { this.showFailModal();});
+                            axios.post(this.baseurl + WAREHOUSE, {
+                                productId: res.id,
+                                measure: 'UNIT',
+                            }, config);
+                            this.showSuccessModal();
+                        }).catch(() => {
+                        this.showFailModal();
+                    });
+                } else {
+                    this.waitModal();
                 }
                 },
             onReset() {
@@ -319,6 +351,8 @@
                 //Reset form images
                 this.resetMainImage();
                 this.resetAdditionalImages();
+
+                this.getTree();
 
                 //Reset all view
                 this.resetView()
@@ -410,21 +444,24 @@
                     newBranch.push(temp);
                 }
                 return newBranch;
+            },
+            getTree() {
+                const config = {
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                };
+                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                    .then(res => {
+                            if (res.status === 200) {
+                                this.supported.treeCategories = this.createBranch(res.data);
+                            }
+                        }
+                    );
             }
         },
         created() {
-            const config = {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            };
-            axios.get(this.baseurl + CATEGORIES_TREE, config)
-                .then(res => {
-                        if (res.status === 200) {
-                            this.supported.treeCategories = this.createBranch(res.data);
-                        }
-                    }
-                );
+            this.getTree();
         }
     }
 </script>

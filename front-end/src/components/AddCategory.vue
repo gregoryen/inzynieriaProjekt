@@ -150,11 +150,12 @@
                 this.$refs["failCreate"].show()
             },
             hideSuccessModal() {
-                this.$refs["successCreate"].hide()
+                this.$refs["successCreate"].hide();
                 this.onReset();
             },
             hideFailModal() {
-                this.$refs["failCreate"].hide()
+                this.$refs["failCreate"].hide();
+                this.onReset();
             },
             onSubmit(evt) {
                 evt.preventDefault();
