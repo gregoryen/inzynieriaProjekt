@@ -8,7 +8,7 @@
                 :interval="4000"
                 controls
                 indicators
-                img-width="1024"
+                img-width="800"
                 img-height="480"
                 style="text-shadow: 1px 1px 2px #333;"
         >
@@ -19,7 +19,7 @@
                       width="800"
                       height="480"
                       :src="product._links.mainImage.href"
-                      alt="image slot"
+                      alt="Zdjęcie główne"
               >
             </template>
           </b-carousel-slide>
@@ -28,10 +28,10 @@
             <template v-slot:img>
               <img
                       class="d-block img-fluid w-100"
-                      width="1024"
+                      width="800"
                       height="480"
                       :src="image.href"
-                      alt="image slot"
+                      alt="Zdjęcie produktu"
               >
             </template>
           </b-carousel-slide>
