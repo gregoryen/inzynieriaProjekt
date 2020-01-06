@@ -12,12 +12,18 @@
             <b-button variant="danger"  v-on:click="this.delete" >Usuń</b-button>
         </div>
 
-        <b-modal ref="successCreate" id="successModal" title="Usunięto produkt">
-            <p class="my-4">Produkt został usunięty</p>
+        <b-modal ref="successDelete" hide-footer title="Usunięto produkt">
+            <div class="d-block text-center">
+                <h3>Produkt został usunięty</h3>
+            </div>
+            <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
         </b-modal>
 
-        <b-modal ref="failCreate" id="failModal" title="NIE usunięto produktu">
-            <p class="my-4">Produkt NIE został usunięty</p>
+        <b-modal ref="failDelete" hide-footer title="NIE usunięto produktu">
+            <div class="d-block text-center">
+                <h3>Produkt NIE został usunięty</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
         </b-modal>
     </div>
 </template>
@@ -25,6 +31,7 @@
 <script>
     const PRODUCTS = '/products/';
     import axios from 'axios';
+    import { bus } from '../main'
 
     export default {
         name: "DeleteProductHeader",
@@ -34,10 +41,20 @@
         },
         methods: {
             showSuccessModal() {
-                this.$refs["successCreate"].show()
+                this.$refs["successDelete"].show()
             },
             showFailModal() {
-                this.$refs["failCreate"].show()
+                this.$refs["failDelete"].show()
+            },
+            hideSuccessModal() {
+                this.$refs["successDelete"].hide();
+                this.emitDeleteProduct();
+            },
+            hideFailModal() {
+                this.$refs["failDelete"].hide();
+            },
+            emitDeleteProduct () {
+                bus.$emit('deleteProduct');
             },
             delete() {
                 const config = {

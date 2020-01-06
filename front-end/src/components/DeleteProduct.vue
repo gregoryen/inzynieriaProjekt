@@ -19,7 +19,7 @@
             <div v-if="productsHeader !== null && productsHeader.length !== 0" class="products" id="products">
                 <div class="container">
                     <div class="row">
-                        <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.name">
+                        <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.id">
                             <DeleteProductHeader :productHeader="productHeader" :baseurl="baseurl"/>
                         </div>
                     </div>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+    import { bus } from '../main'
     import axios from 'axios';
     // import the component
     import Treeselect from '@riophae/vue-treeselect'
@@ -52,6 +53,10 @@
             }
         },
         methods: {
+            onReset() {
+                this.productsHeader = [];
+                this.getCategories();
+            },
             createBranch: function (oldBranch) {
                 let newBranch = [];
                 for (let e of oldBranch) {
@@ -68,29 +73,38 @@
                 return newBranch;
             },
             getProducts: function () {
-                axios
-                    .get(
-                        this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.categoryId
-                    )
-                    .then(response => {
-                        this.productsHeader = response.data._embedded.products;
-                    });
-
+                if (this.categoryId) {
+                    axios
+                        .get(
+                            this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.categoryId
+                        )
+                        .then(response => {
+                            this.productsHeader = response.data._embedded.products;
+                        });
+                }
+            },
+            getCategories() {
+                const config = {
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                };
+                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                    .then(res => {
+                            if (res.status === 200) {
+                                this.treeCategories = this.createBranch(res.data);
+                            }
+                        }
+                    );
             }
         },
+        mounted() {
+            bus.$on('deleteProduct', () => {
+                this.onReset();
+            });
+        },
         created() {
-            const config = {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            };
-            axios.get(this.baseurl + CATEGORIES_TREE, config)
-                .then(res => {
-                        if (res.status === 200) {
-                            this.treeCategories = this.createBranch(res.data);
-                        }
-                    }
-                );
+            this.getCategories();
         },
     }
 </script>
