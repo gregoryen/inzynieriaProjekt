@@ -65,7 +65,7 @@
                                     <b-row>
                                         <b-col v-for="imageURL in supported.additionalImagesURL"
                                                v-bind:key="imageURL.id">
-                                            <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.id"></b-img>
+                                            <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.name"></b-img>
                                         </b-col>
                                     </b-row>
                                 </b-container>
@@ -233,7 +233,7 @@
                         description: '',
                         mainCategoryId: null,
                         categories: null,
-                        price: '',
+                        price: null,
                         reference: '',
                         isbn: '',
                         ean13: '',
@@ -277,8 +277,7 @@
                 this.supported.additionalImagesURL = null;
                 this.status.additionalImagesSend = true;
             },
-            onSubmit(evt) {
-                evt.preventDefault();
+            onSubmit() {
                 if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
                     if (this.form.additionalImages === null) {
                         this.form.additionalImages = []
@@ -296,28 +295,22 @@
                         },
                     };
                     axios.post(this.baseurl + PRODUCTS, this.form, config)
-                        .then(res => {
-                            if (res.status === 200) {
+                        .then((res) => {
                                 axios.post(this.baseurl + WAREHOUSE, {
                                     productId: res.id,
                                     measure: 'UNIT',
-                                }, config)
+                                }, config);
                                 this.showSuccessModal();
-                            } else {
-                                this.showFailModal();
-                            }
-                        });
-                    this.onReset();
+                            }).catch(() => { this.showFailModal();});
                 }
                 },
-            onReset(evt) {
-                evt.preventDefault();
+            onReset() {
                 // Reset  form.products
                 this.form.product.name = '';
                 this.form.product.description = '';
                 this.form.product.mainCategoryId = null;
                 this.form.product.categories = null;
-                this.form.product.price = '';
+                this.form.product.price = null;
                 this.form.product.reference = '';
                 this.form.product.isbn = '';
                 this.form.product.ean13 = '';
