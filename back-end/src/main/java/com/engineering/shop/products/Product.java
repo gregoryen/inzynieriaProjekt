@@ -18,7 +18,10 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class Product extends RepresentationModel<Product> {
     @Singular
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "CATEGORIES_PRODUCTS",
+            joinColumns = {@JoinColumn(name = "product_id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id")})
     private Set<Category> categories;
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
