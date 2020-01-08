@@ -5,6 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import com.engineering.shop.warehouse.models.StockAmount;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Repository
@@ -14,4 +15,5 @@ public interface StockAmountRepository extends CrudRepository<StockAmount, Integ
     Boolean existsStockAmountByProductId(Integer productId);
     Optional<StockAmount> findStockAmountByProductId(Integer productId);
     Iterable<StockAmount> findAllByProductId(Integer productId);
+    Iterable<StockAmount> findAllByDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }

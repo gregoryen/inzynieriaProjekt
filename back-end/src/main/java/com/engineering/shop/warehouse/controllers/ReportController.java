@@ -3,55 +3,53 @@ package com.engineering.shop.warehouse.controllers;
 import com.engineering.shop.warehouse.models.Report;
 import com.engineering.shop.warehouse.models.StockAmount;
 import com.engineering.shop.warehouse.repositories.ReportRepository;
+import com.engineering.shop.warehouse.repositories.StockAmountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/reports")
 public class ReportController {
 
     ReportRepository reportRepository;
+    StockAmountRepository stockAmountRepository;
 
     @Autowired
-    public ReportController(ReportRepository reportRepository) {
+    public ReportController(ReportRepository reportRepository,
+                            StockAmountRepository stockAmountRepository) {
         this.reportRepository = reportRepository;
+        this.stockAmountRepository = stockAmountRepository;
     }
 
-//    @PostMapping("/create")
-//    public String create(@RequestBody Map<String, String> dateTimes) {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        LocalDateTime start = LocalDateTime.parse(dateTimes.get("startDateTime"), formatter);
-//        LocalDateTime end = LocalDateTime.parse(dateTimes.get("endDateTime"), formatter);
-//        Iterable<StockAmountChange> stockAmountChanges = stockAmountChangeRepository.findAllByChangeDateTimeBetween(start, end);
-//        List<StockAmountChange> stockAmountChangesList = new ArrayList<StockAmountChange>();
-//        for (StockAmountChange stockAmountChange : stockAmountChanges) {
-//            stockAmountChangesList.add(stockAmountChange);
-//        }
-//        String returnStatement;
-//        if (stockAmountChangesList != null) {
-//            Report report = new Report();
-//            report.setCreationDateTime(LocalDateTime.now());
-//            report.setStartDateTime(start);
-//            report.setEndDateTime(end);
-//            report.setStockAmountChanges(stockAmountChangesList);
-//            reportRepository.save(report);
-//            returnStatement = "Report created";
-//        } else {
-//            // jakis wyjatek czy HTTP blad
-//            returnStatement = "There are not any stock amount changes to include in report.";
-//        }
-//        return returnStatement;
-//    }
-//
+    @PostMapping("/create")
+    public String create(@RequestParam String startDateTime, @RequestParam String endDateTime) {
+        String result = "";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss");
+        LocalDateTime start = LocalDateTime.parse(startDateTime, formatter);
+        LocalDateTime end = LocalDateTime.parse(endDateTime, formatter);
+        Iterable<StockAmount> stockAmounts = stockAmountRepository.findAllByDateTimeBetween(start, end);
+        String info = "";
+        for (StockAmount s : stockAmounts) {
+            info += s.getStockAmountId() + ";";
+        }
+        System.out.print(info);
+        if (!info.contentEquals("")) {
+            Report report = new Report();
+            report.setCreationDateTime(LocalDateTime.now());
+            report.setStartDateTime(start);
+            report.setEndDateTime(end);
+            report.setInfo(info);
+            reportRepository.save(report);
+            result = "created";
+        } else {
+            result = "failed";
+        }
+        return result;
+    }
+
 //    @PostMapping("/export")
 //    public String exportToCSVFileFromDatabase(@RequestBody Map<String, String> filepathAndReportId) {
 //        try {

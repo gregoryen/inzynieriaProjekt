@@ -24,14 +24,19 @@ public class Report {
     @NotNull
     private LocalDateTime endDateTime;
 
+    @NotNull
+    private String info;
+
     public Report() {
     }
 
     public Report(Integer reportId, LocalDateTime creationDateTime,
-                  LocalDateTime startDateTime, LocalDateTime endDateTime) {
+                  LocalDateTime startDateTime, LocalDateTime endDateTime,
+                  String info) {
         this.reportId = reportId;
         this.creationDateTime = creationDateTime;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.info = info;
     }
 }
