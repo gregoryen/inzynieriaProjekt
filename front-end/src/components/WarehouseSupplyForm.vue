@@ -25,12 +25,10 @@
             <div class="form-group row">
                 <label for="input-phone" class="col-sm-2 col-form-label">Tel.:</label>
                 <input
-                        type="tel"
-                        pattern="^\d{3}-\d{3}-\d{3}$" required
+                        maxlength=9
                         class="form-control"
+                        placeholder="000000000"
                         id="input-phone"
-                        maxlength=11
-                        placeholder="000-000-000"
                         v-model="supplier.phoneNumber"
                 >
             </div>
@@ -122,7 +120,7 @@
                         <option style="color: darkgray" disabled value="">Wybierz produkt</option>
                     </select>
                 </td>
-                <td><input class="form-control" type="text" v-model="product.amount"></td>
+                <td><input id="input-amount" type="number" class="form-control" v-model="product.amount"></td>
                 <td>
                     <select
                             class="form-control"
@@ -137,7 +135,10 @@
                     </select>
                 </td>
                 <td>
-                    <button :disabled="(product.name === '' || product.amount === '' || product.measure === '') && (index === products.length - 1)"
+                    <button
+                            :disabled=
+                            "(product.name === '' || product.amount === '' || product.measure === '') &&
+                            (index === products.length - 1)"
                             class="form-control" v-if="index === products.length-1" v-on:click="addProduct"
                             style="cursor: pointer">+
                     </button>
@@ -162,12 +163,31 @@
     import axios from 'axios';
 
     export default {
+        mounted() {
+            document.getElementById('input-phone').addEventListener('keydown', function (e) {
+                const regex = RegExp('[0-9]');
+                if (!regex.test(e.key) && (e.key != 'Backspace' && e.key != 'Control' && e.key != 'ArrowRight' && e.key != 'ArrowLeft')) {
+                    e.preventDefault();
+                }
+            });
+            document.getElementById('input-firstname').addEventListener('keydown', function (e) {
+                const regex = RegExp("^[A-Za-z]*$");
+                if (!regex.test(e.key) && (e.key != 'Backspace' && e.key != 'Control' && e.key != 'ArrowRight' && e.key != 'ArrowLeft')) {
+                    e.preventDefault();
+                }
+            });
+            document.getElementById('input-lastname').addEventListener('keydown', function (e) {
+                const regex = RegExp("^[A-Za-z]*$");
+                if (!regex.test(e.key) && (e.key != 'Backspace' && e.key != 'Control' && e.key != 'ArrowRight' && e.key != 'ArrowLeft')) {
+                    e.preventDefault();
+                }
+            });
+        },
         created() {
             this.getAllCompanies();
             this.getAllMeasures();
             this.getAllProducts();
         },
-        props: {},
         data: function () {
             return {
                 url: 'http://localhost:8100',
@@ -188,7 +208,8 @@
                         productId: "",
                         name: "",
                         measure: "",
-                        amount: ""
+                        amount: "",
+                        dateTime: ""
                     }
                 ],
                 clicked: false,
@@ -196,6 +217,7 @@
             };
         },
         methods: {
+
             addNewCompany: function () {
                 this.clicked = false;
                 let companiesLowerCased = this.companies.slice().map(v => v.toLowerCase());
@@ -224,7 +246,8 @@
                     // eslint-disable-next-line no-console
                     console.log(response)
                 });
-            },
+            }
+            ,
             getAllMeasures: function () {
                 axios.get(this.url + '/stock_amounts/measures', {
                     "Access-Control-Allow-Origin": "*",
@@ -242,6 +265,7 @@
                     name: "",
                     measure: "",
                     amount: "",
+                    dateTime: "",
                     available: false
                 });
                 // eslint-disable-next-line no-console
@@ -253,41 +277,41 @@
             submit: function () {
                 if (this.isFormCorrect() == true) {
                     this.acceptDelivery();
-                } else {
-                    alert("POPRAWNE DANE TO NIE SĄ");
+                    window.location.reload(false);
+                    this.getAllCompanies();
                 }
             },
             isFormCorrect: function () {
                 let correct = true;
-                if (this.supplier.company == "" ||
-                    this.supplier.firstname == "" ||
-                    this.supplier.lastname == "" ||
-                    this.supplier.phoneNumber == "" ||
-                    this.date == "" ||
-                    this.time == "") {
-                    correct = false;
+                let info = [];
+                if (this.supplier.company == "") {
+                    info.push("niepodana nazwa firmy");
+                }
+                if (this.date == "") {
+                    info.push("niepodana data");
+                }
+                if (this.time == "") {
+                    info.push("niepodany czas");
                 }
                 if (this.products.length == 1) {
+                    info.push("liczba produktów (co najmniej jeden produkt)");
+                }
+                if (this.supplier.phoneNumber.length !== 9) {
+                    info.push("nr telefonu (9 cyfer)");
+                }
+                if (this.supplier.firstname.length < 3) {
+                    info.push("imię (co najmniej 3 litery)");
+                }
+                if (this.supplier.lastname.length < 3) {
+                    info.push("nazwisko (co najmniej 3 litery)");
+                }
+                if (info.length > 0) {
                     correct = false;
-                } else {
-                    for (let idx = 0; idx < this.products.length - 1; idx++) {
-                        if (this.products[idx].name == "" ||
-                            this.products[idx].measure == "" ||
-                            this.products[idx].amount == "") {
-                            // eslint-disable-next-line no-console
-                            console.log(this.products.length);
-                            correct = false;
-                        }
+                    let msg = "Niepoprawne dane:\n";
+                    for (let i = 0; i < info.length; i++) {
+                        msg += info[i] + "\n";
                     }
-                }
-                if (!this.supplier.phoneNumber.match("[0-9]{3}-[0-9]{3}-[0-9]{3}")) {
-                    alert("niepoprawny numer telefonu");
-                }
-                if (!this.supplier.firstname.match("[A-Z]{1}[a-z]")) {
-                    alert("niepoprawne imię");
-                }
-                if (!this.supplier.lastname.match("[A-Z]{1}[a-z]")) {
-                    alert("niepoprawne nazwisko");
+                    alert(msg);
                 }
                 return correct;
             },
@@ -301,13 +325,6 @@
 
                 for (let i = 0; i < stockAmounts.length; i++) {
                     let productName = stockAmounts[i].name;
-
-                    // eslint-disable-next-line no-console
-                    console.log(productName);
-
-                    // eslint-disable-next-line no-console
-                    console.log(products.filter(p => (p.name === productName)));
-
                     let productId = products.filter(p => (p.name === productName))[0].id;
                     stockAmounts[i].productId = productId;
                     stockAmounts[i].available = true;
@@ -340,7 +357,8 @@
                 });
             }
         }
-    };
+    }
+    ;
 </script>
 
 <style scoped>

@@ -64,7 +64,7 @@ public class SupplyController {
     @PostMapping(path = "/accept_delivery")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
-    String addAllSupplies(@RequestBody Supply supply) {
+    String insertSupply(@RequestBody Supply supply) {
         Supplier supplier = supply.getSupplier();
         supplierRepository.save(supplier);
 
@@ -84,9 +84,9 @@ public class SupplyController {
                 s.setMeasure(stockAmountWithMaxId.getMeasure());
             }
             s.setAvailable(s.getAmount() > 0.0 ? true : false);
+            s.setDateTime(LocalDateTime.now());
         }
         supplyRepository.save(supply);
         return "Saved";
     }
-
 }

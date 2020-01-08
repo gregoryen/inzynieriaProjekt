@@ -176,7 +176,6 @@ public class StockAmountController {
         Iterable<StockAmount> iterable = stockAmountRepository.findAll();
         List<StockAmount> stocks = getIterableAsList(iterable);
 
-//        Set<Integer> productsIds = stocks.stream().map(StockAmount::getProductId).collect(Collectors.toSet());
         Map<Integer, List<StockAmount>> groupedStocks =
                 stocks.stream().collect(Collectors.groupingBy(StockAmount::getProductId));
 
