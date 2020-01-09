@@ -13,8 +13,6 @@
 </template>
 
 <script>
-//import { bus } from '../main'
-
 const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
 
 export default {

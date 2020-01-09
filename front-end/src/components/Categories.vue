@@ -9,7 +9,6 @@
 
 <script>
 import axios from "axios";
-//import { bus } from '../main';
 import Category from "./Category.vue";
 
 export default {
