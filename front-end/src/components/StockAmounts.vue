@@ -88,7 +88,7 @@
             }
         },
         methods: {
-            createReport: function () {
+            createReport: async function () {
                 if (Date.parse(this.dateTimes.startDateTime.toString()) >=
                     Date.parse(this.dateTimes.endDateTime.toString())) {
                     alert("data poczatkowa musi byc mniejsza niz koncowa");
@@ -99,22 +99,21 @@
                     end = end.replace("T", "");
                     start += ":00";
                     end += ":00";
-                    axios.post(URL + CREATE_REPORT + "?startDateTime=" + start + "&endDateTime=" + end, {
-                        // dateTimes: {
-                        //     startDateTime: start,
-                        //     endDateTime: end
-                        // }
-                    }, {
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "application/json"
-                    }).then(response => {
-                        // eslint-disable-next-line no-console
-                        console.log(response)
-                    }).catch(error => {
-                        // eslint-disable-next-line no-console
-                        console.log(error.response)
-                    });
+
+                    let res = await this.postReport(start, end);
+
+                    if (res.data !== "created") {
+                        alert("Raport nie został utworzony, brak stanów magazynowych w podanym zakresie")
+                    } else {
+                        alert("Raport utworzono");
+                    }
                 }
+            },
+            postReport: async function (start, end) {
+                return await axios.post(URL + CREATE_REPORT + "?startDateTime=" + start + "&endDateTime=" + end, {}, {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                });
             },
             getStocks: async function () {
                 const _stocks = await axios.get(URL + STOCKS, {
