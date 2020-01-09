@@ -5,10 +5,14 @@ import com.engineering.shop.warehouse.models.StockAmount;
 import com.engineering.shop.warehouse.repositories.ReportRepository;
 import com.engineering.shop.warehouse.repositories.StockAmountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/reports")
@@ -24,9 +28,16 @@ public class ReportController {
         this.stockAmountRepository = stockAmountRepository;
     }
 
+    @GetMapping("/all")
+    public Iterable<Report> getReports() {
+        return reportRepository.findAll();
+    }
+
     @PostMapping("/create")
-    public String create(@RequestParam String startDateTime, @RequestParam String endDateTime) {
-        String result = "";
+    public Map<String, String> create(@RequestParam String startDateTime, @RequestParam String endDateTime) {
+//        String result = "";
+        Map<String, String> result = new HashMap<>();
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss");
         LocalDateTime start = LocalDateTime.parse(startDateTime, formatter);
         LocalDateTime end = LocalDateTime.parse(endDateTime, formatter);
@@ -43,9 +54,18 @@ public class ReportController {
             report.setEndDateTime(end);
             report.setInfo(info);
             reportRepository.save(report);
-            result = "created";
+
+            DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
+
+            result.put("status", "created");
+            result.put("reportId", Integer.toString(report.getReportId()));
+            result.put("creationDateTime", report.getCreationDateTime().format(f));
+            result.put("startDateTime", report.getStartDateTime().format(f));
+            result.put("endDateTime", report.getEndDateTime().format(f));
+            result.put("info", report.getInfo());
         } else {
-            result = "failed";
+//            result = new ResponseEntity(HttpStatus.BAD_REQUEST);
+            result.put("status", "failed");
         }
         return result;
     }

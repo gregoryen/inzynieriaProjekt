@@ -72,14 +72,17 @@
     const STOCKS = '/stock_amounts/last_updated';
     const PRODUCTS = '/products/search/findAllByActiveIsTrue?projection=header';
     const CREATE_REPORT = '/reports/create';
+    const GET_REPORTS = '/reports/all';
     export default {
         created: async function () {
             const _stocks = await this.getStocks();
             const products = await this.getProducts();
+            this.getReports();
             this.mergeStocksWithProducts(_stocks, products);
         },
         data: function () {
             return {
+                reports: [],
                 dateTimes: {
                     startDateTime: "",
                     endDateTime: ""
@@ -88,6 +91,16 @@
             }
         },
         methods: {
+            getReports: async function () {
+                const reports = await axios.get(URL + GET_REPORTS, {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                });
+
+                this.reports = reports.data;
+                // eslint-disable-next-line no-console
+                console.log(this.reports);
+            },
             createReport: async function () {
                 if (Date.parse(this.dateTimes.startDateTime.toString()) >=
                     Date.parse(this.dateTimes.endDateTime.toString())) {
@@ -101,11 +114,24 @@
                     end += ":00";
 
                     let res = await this.postReport(start, end);
+                    // eslint-disable-next-line no-console
+                    console.log(res);
 
-                    if (res.data !== "created") {
+                    if (res.data.status === "failed") {
                         alert("Raport nie został utworzony, brak stanów magazynowych w podanym zakresie")
-                    } else {
+                    } else if (res.data.status === "created") {
                         alert("Raport utworzono");
+                        this.reports.push(
+                            {
+                                reportId: res.data.reportId,
+                                creationDateTime: res.data.creationDateTime,
+                                startDateTime: res.data.startDateTime,
+                                endDateTime: res.data.endDateTime,
+                                info: res.data.info
+                            }
+                        );
+                        // eslint-disable-next-line no-console
+                        console.log(this.reports);
                     }
                 }
             },
