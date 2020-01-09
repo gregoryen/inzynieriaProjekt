@@ -95,6 +95,13 @@
             <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
         </b-modal>
 
+        <b-modal ref="selectCategory" hide-footer title="Wybierz kategorię nadrzędną">
+            <div class="d-block text-center">
+                <h3>Proszę wybrać kategorię nadrzędną</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideSelectCategoryModal">OK</b-button>
+        </b-modal>
+
         <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
         </b-card>
@@ -149,6 +156,9 @@
             showFailModal() {
                 this.$refs["failCreate"].show()
             },
+            showSelectCategoryModal() {
+                this.$refs["selectCategory"].show()
+            },
             hideSuccessModal() {
                 this.$refs["successCreate"].hide();
                 this.onReset();
@@ -157,19 +167,27 @@
                 this.$refs["failCreate"].hide();
                 this.onReset();
             },
+            hideSelectCategoryModal() {
+                this.$refs["selectCategory"].hide();
+            },
             onSubmit(evt) {
                 evt.preventDefault();
-                const config = {
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                };
-                axios.post(this.baseurl + ADD_CATEGORIES, this.form, config)
-                    .then(() => {
-                        this.showSuccessModal()
-                    }).catch(() => {
-                    this.showFailModal()
-                });
+                if (this.form.parentId || this.supported.mainCategory) {
+                    const config = {
+                        headers: {
+                            'content-type': 'application/json'
+                        },
+                    };
+                    axios.post(this.baseurl + ADD_CATEGORIES, this.form, config)
+                        .then(() => {
+                            this.showSuccessModal()
+                        }).catch(() => {
+                        this.showFailModal()
+                    });
+                } else {
+                    this.showSelectCategoryModal();
+                }
+
             },
             onReset() {
                 // Reset our form values
