@@ -15,11 +15,7 @@
 </template>
 
 <script>
-    import axios from "axios";
-    import {bus} from "../main.js";
     import ProductHeader from "./ProductHeader.vue";
-
-    const UPLOAD_ALL_ACTIVE_HEADER_PRODUCTS = "/products/search/findAllByActiveIsTrue?projection=header";
 
     export default {
         components: {ProductHeader},
@@ -27,35 +23,9 @@
         props: {
             baseurl: String
         },
-        data: () => {
-            return {
-                productsHeader: null
-            };
-        },
-        mounted() {
-            bus.$on("products", products => {
-                axios
-                    .get(products)
-                    .then(response => {
-                        this.productsHeader = response.data._embedded.products;
-                    });
-                this.productsHeader = products;
-            });
-        },
-        created() {
-            if (this.productsHeader === null) {
-                axios
-                    .get(
-                        this.baseurl + UPLOAD_ALL_ACTIVE_HEADER_PRODUCTS
-                    )
-                    .then(response => {
-                        this.productsHeader = response.data._embedded.products;
-                    });
-            }
-        },
-        methods: {
-            getProducts(event) {
-                this.productsHeader = event;
+        computed: {
+            productsHeader() {
+                return this.$store.getters.productsHeader;
             }
         }
     };

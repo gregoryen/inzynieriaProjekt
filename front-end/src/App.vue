@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <AddProduct :baseurl="this.baseurl"/>
+    <Categories :baseurl="this.baseurl"/>
+    <router-view :baseurl="this.baseurl"></router-view>
   </div>
 </template>
 
 <script>
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
-import AddProduct from "./components/AddProduct";
+import Categories from "./components/Categories";
+
 
 export default {
   components: {
-    AddProduct,
+    Categories,
   },
   name: "app",
   data() {

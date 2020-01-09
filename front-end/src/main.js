@@ -11,6 +11,7 @@ import AddCategory from "./components/AddCategory";
 import AddProduct from "./components/AddProduct";
 import DeleteCategory from "./components/DeleteCategory";
 import DeleteProduct from "./components/DeleteProduct";
+import {store} from './store';
 
 Vue.use(VueRouter)
 Vue.use(BootstrapVue)
@@ -37,4 +38,5 @@ export const bus = new Vue();
 new Vue({
   router,
   render: h => h(App),
+  store,
 }).$mount('#app')

@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { bus } from '../main'
+//import { bus } from '../main'
 
 const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
 
@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     emitProducts () {
-      bus.$emit('products', this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.root.category.id);
+      this.$store.dispatch('productsHeader', this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.root.category.id);
     }
   }
 };

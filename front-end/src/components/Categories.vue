@@ -9,7 +9,7 @@
 
 <script>
 import axios from "axios";
-import { bus } from '../main';
+//import { bus } from '../main';
 import Category from "./Category.vue";
 
 export default {
@@ -30,8 +30,7 @@ export default {
   },
   methods: {
     emitAllProducts() {
-      bus.$emit('products', this.baseurl + "/products/search/findAllByActiveIsTrue?projection=header");
-      this.$router.push('/');
+      this.$store.dispatch('productsHeader',  this.baseurl + "/products/search/findAllByActiveIsTrue?projection=header");
     }
   }
 };

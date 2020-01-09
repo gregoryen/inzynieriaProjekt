@@ -12,19 +12,8 @@
                 img-height="480"
                 style="text-shadow: 1px 1px 2px #333;"
         >
-          <b-carousel-slide>
-            <template v-slot:img>
-              <img
-                      class="d-block img-fluid w-100"
-                      width="800"
-                      height="480"
-                      :src="product._links.mainImage.href"
-                      alt="Zdjęcie główne"
-              >
-            </template>
-          </b-carousel-slide>
 
-          <b-carousel-slide v-for="image in product._links.additionalImages" v-bind:key="image">
+          <b-carousel-slide v-for="(image, index) in product._links.additionalImages" v-bind:key="index">
             <template v-slot:img>
               <img
                       class="d-block img-fluid w-100"
@@ -55,7 +44,6 @@
 
 <script>
 import axios from "axios";
-import { bus } from "../main.js";
 
 const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
 export default {
@@ -76,16 +64,10 @@ export default {
               .get(response.data._links.branch.href)
               .then(response => { this.tree = response.data; });
     });
-
   },
   methods: {
-    emitProducts(id) {
-      axios
-        .get( this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id
-        )
-        .then(response =>
-          bus.$emit("products", response.data._embedded.products)
-        );
+    emitProducts (id) {
+      this.$store.dispatch('productsHeader',  this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id);
     }
   }
 };
