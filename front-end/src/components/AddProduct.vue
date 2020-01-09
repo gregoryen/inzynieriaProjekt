@@ -94,6 +94,7 @@
                                 <treeselect
                                         :options="supported.treeCategories"
                                         v-model="form.product.mainCategoryId"
+                                        :required="true"
                                         :searchable="false"
                                         :show-count="true"
                                         :default-expand-level="1"
@@ -140,7 +141,6 @@
                                         id="reference"
                                         v-model="form.product.reference"
                                         type="text"
-                                        required
                                         placeholder="Podaj kod REFERENCE produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -154,7 +154,6 @@
                                         id="isbn"
                                         v-model="form.product.isbn"
                                         type="text"
-                                        required
                                         placeholder="Podaj kod ISBN produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -168,7 +167,6 @@
                                         id="ean13"
                                         v-model="form.product.ean13"
                                         type="text"
-                                        required
                                         placeholder="Podaj kod EAN13 produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -216,6 +214,13 @@
                 <h3>Proszę odczekać chwilę i spróbować zatwierdzić dodanie nowego produktu ponownie</h3>
             </div>
             <b-button class="mt-3" variant="danger" block @click="hideWaitModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="selectCategory" hide-footer title="Wybierz kategorię główną">
+            <div class="d-block text-center">
+                <h3>Proszę wybrać kategorię główną</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideSelectCategoryModal">OK</b-button>
         </b-modal>
 
     </div>
@@ -279,6 +284,9 @@
             waitModal() {
                 this.$refs["waitCreate"].show();
             },
+            selectCategoryModal() {
+                this.$refs["selectCategory"].show();
+            },
             hideSuccessModal() {
                 this.$refs["successCreate"].hide();
                 this.onReset();
@@ -289,6 +297,9 @@
             },
             hideWaitModal() {
                 this.$refs["waitCreate"].hide();
+            },
+            hideSelectCategoryModal() {
+                this.$refs["selectCategory"].hide();
             },
             resetMainImage() {
                 this.$refs['mainImage'].reset();
@@ -306,36 +317,40 @@
             },
             onSubmit(evt) {
                 evt.preventDefault();
-                if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
-                    if (this.form.additionalImages === null) {
-                        this.form.additionalImages = []
+                if (this.form.product.mainCategoryId) {
+                    if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
+                        if (this.form.additionalImages === null) {
+                            this.form.additionalImages = []
+                        }
+                        this.form.additionalImages.push(this.form.product.mainImage);
+                        if (this.form.product.categories === null) {
+                            this.form.product.categories = []
+                        }
+                        if (this.form.product.categories.indexOf(this.form.product.mainCategoryId)) {
+                            this.form.product.categories.push(this.form.product.mainCategoryId);
+                        }
+                        const config = {
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                        };
+                        axios.post(this.baseurl + PRODUCTS, this.form, config)
+                            .then((res) => {
+                                axios.post(this.baseurl + WAREHOUSE, {
+                                    productId: res.id,
+                                    measure: 'UNIT',
+                                }, config);
+                                this.showSuccessModal();
+                            }).catch(() => {
+                            this.showFailModal();
+                        });
+                    } else {
+                        this.waitModal();
                     }
-                    this.form.additionalImages.push(this.form.product.mainImage);
-                    if (this.form.product.categories === null) {
-                        this.form.product.categories = []
-                    }
-                    if (this.form.product.categories.indexOf(this.form.product.mainCategoryId)) {
-                        this.form.product.categories.push(this.form.product.mainCategoryId);
-                    }
-                    const config = {
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                    };
-                    axios.post(this.baseurl + PRODUCTS, this.form, config)
-                        .then((res) => {
-                            axios.post(this.baseurl + WAREHOUSE, {
-                                productId: res.id,
-                                measure: 'UNIT',
-                            }, config);
-                            this.showSuccessModal();
-                        }).catch(() => {
-                        this.showFailModal();
-                    });
                 } else {
-                    this.waitModal();
+                    this.selectCategoryModal();
                 }
-                },
+            },
             onReset() {
                 // Reset  form.products
                 this.form.product.name = '';
