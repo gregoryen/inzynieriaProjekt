@@ -23,7 +23,7 @@ public class Order {
 
     @NotNull
     private Integer userId;
-    // Zakladalismy przekazanie klasy CustomerDetails
+// Zakladalismy przekazanie klasy CustomerDetails
 //    @NotNull
 //    private Customer customerDetails;
     @NotNull

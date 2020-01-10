@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BucketRepo extends CrudRepository<Bucket, Integer> {
 
-    //Iterable<Bucket> findBucketById (Integer id);
+    // Metoda szukajaca elementu w repo po id pozycji
+    // Metoda szukajaca elementu w repo po id produktu ?
+
 }

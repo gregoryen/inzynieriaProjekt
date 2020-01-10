@@ -14,13 +14,23 @@ import java.util.Optional;
 public class OrderController {
 
     private OrderRepo orderRepo;
+    private OrderPOJOtoOrder orderPOJOtoOrder;
 
     @Autowired
-    public OrderController(OrderRepo orderRepo) {
+    public OrderController(OrderRepo orderRepo, OrderPOJOtoOrder orderPOJOtoOrder) {
         this.orderRepo = orderRepo;
+        this.orderPOJOtoOrder = orderPOJOtoOrder;
     }
 
+
     // Repo methods implementation
+
+    @PostMapping
+    public void addOrder(@RequestBody OrderPOJO orderPOJO){
+        Order order = orderPOJOtoOrder.transform(orderPOJO);
+        orderRepo.save(order);
+    }
+
     @GetMapping("/all")
     public Iterable<Order> getAll(){
         return orderRepo.findAll();
@@ -31,9 +41,11 @@ public class OrderController {
         return orderRepo.findById(id);
     }
 
-    @PostMapping
-    public Order addBucketPosition(Order order){
-        return orderRepo.save(order);
+    @PutMapping("update/{id}")
+    public void updateOrder(@PathVariable("id") Integer id
+                                            ,@RequestBody OrderPOJO orderPOJO) {
+       Order order = orderPOJOtoOrder.transform(orderPOJO);
+       orderRepo.save(order);
     }
 
     @DeleteMapping(path = "{id}")

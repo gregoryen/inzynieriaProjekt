@@ -27,7 +27,7 @@ public class BucketPOJOtoBucket implements Transformer<BucketPOJO, Bucket> {
     @Override
     public Bucket transform(BucketPOJO pojo) {
         return Bucket.builder()
-                .bucketList(getPositions(pojo.getBucketList()))
+                .positions(getPositions(pojo.getBucketPositions()))
                 .totalValue(pojo.getTotalValue())
                 .build();
     }

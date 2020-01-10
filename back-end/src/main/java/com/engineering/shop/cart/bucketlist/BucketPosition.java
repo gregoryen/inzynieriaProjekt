@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Builder(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
-@Table(name="BucketPosition")
+@Table(name="bucket_position")
 @AllArgsConstructor
 public class BucketPosition extends RepresentationModel<BucketPosition> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,12 +22,13 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
     private Integer id;
     @ManyToOne
     private Product product;
-    @NotNull
+   // @NotNull
     private String productName;
     @NotNull
     private BigDecimal productPrice;
     @NotNull
     private int productQuantity;
+
     @ManyToOne
     @JoinColumn(name="bucket_id", nullable = false)
     private Bucket bucket;
@@ -36,18 +37,15 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
 
     }
 
-    public BucketPosition( Product product, int productQuantity, BigDecimal price) {
+    public BucketPosition( Product product, int productQuantity, Bucket bucket) {
 
         this.product = product;
+        this.productName = product.getName();
         this.productQuantity = productQuantity;
-        this.productPrice = price;
+        this.productPrice = product.getPrice();
+        this.bucket = bucket;
 
     }
 
-    public void decreaseProductQuantity(){
-        if (this.productQuantity > 0 ) {
-            this.productQuantity-=1;
-        }
-    }
 
 }

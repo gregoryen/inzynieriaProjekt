@@ -19,7 +19,17 @@ public class BucketController {
     }
 
     // Repo methods implementation
+    @CrossOrigin
+    @PostMapping("/add")
+    public void createBucket() {
 
+    }
+
+    // dodanie do istniejacego koszyka
+    @PostMapping("/add/{bucketId}/{bucketPositionId}")
+    public void addToBucket(){
+
+    }
     @GetMapping("/all")
     public Iterable<Bucket> getAll() {
         return bucketRepo.findAll();
@@ -30,20 +40,20 @@ public class BucketController {
         return bucketRepo.findById(id);
     }
 
+    // usuniecie koszyka
     @DeleteMapping("delete/{id}")
     public void deleteById(@PathVariable("id") Integer id) {
         bucketRepo.deleteById(id);
     }
 
+    // usuniecie elementu z koszyka po id
+    @DeleteMapping("delete/product/{id}")
+    public void deletePositionById(@PathVariable("id") Integer id) {
+
+    }
+
     // utworzenie nowego koszyka
-    @PostMapping("/add")
-    public void createBucket() {
-    }
-
-    // dodanie do istniejacego koszyka
-    @PostMapping("/add/{id}")
-    public void addToBucket(){
-
-    }
+    // Pobranie ciala POJO, wywolanie transformera, dodanie produktu do listy i zapisanie go w bazie danych
+    // aktualizacja wartosci koszyka na postawie danych z bucketposition
 
 }
