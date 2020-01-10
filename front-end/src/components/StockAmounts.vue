@@ -55,13 +55,12 @@
             </tr>
             </tbody>
         </table>
-        <!--        "dateTimes": {-->
-        <!--        "startDateTime": "2019-12-11 19:15:16",-->
-        <!--        "endDateTime": "2019-12-11 19:15:16",-->
-        <!--        }-->
-        <div>
-            <input type="file">
-        </div>
+<!--        <div>-->
+<!--            <input type="file">-->
+<!--        </div>-->
+        <ul v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
+            <li align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">{{change}}</li>
+        </ul>
     </div>
 </template>
 
@@ -73,11 +72,12 @@
     const PRODUCTS = '/products/search/findAllByActiveIsTrue?projection=header';
     const CREATE_REPORT = '/reports/create';
     const GET_REPORTS = '/reports/all';
+
     export default {
         created: async function () {
             const _stocks = await this.getStocks();
             const products = await this.getProducts();
-            this.getReports();
+            await this.getReports();
             this.mergeStocksWithProducts(_stocks, products);
         },
         data: function () {
@@ -87,7 +87,8 @@
                     startDateTime: "",
                     endDateTime: ""
                 },
-                stocks: []
+                stocks: [],
+                reportsToDisplay: []
             }
         },
         methods: {
@@ -96,7 +97,8 @@
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 });
-
+                // let tmp = reports.data.changes.split(',');
+                // reports.data.changes = tmp;
                 this.reports = reports.data;
                 // eslint-disable-next-line no-console
                 console.log(this.reports);
@@ -121,13 +123,14 @@
                         alert("Raport nie został utworzony, brak stanów magazynowych w podanym zakresie")
                     } else if (res.data.status === "created") {
                         alert("Raport utworzono");
+                        let tmp = res.data.changes.split(';');
                         this.reports.push(
                             {
                                 reportId: res.data.reportId,
                                 creationDateTime: res.data.creationDateTime,
                                 startDateTime: res.data.startDateTime,
                                 endDateTime: res.data.endDateTime,
-                                info: res.data.info
+                                changes: tmp
                             }
                         );
                         // eslint-disable-next-line no-console

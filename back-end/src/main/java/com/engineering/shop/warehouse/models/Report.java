@@ -6,6 +6,8 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,18 +27,19 @@ public class Report {
     private LocalDateTime endDateTime;
 
     @NotNull
-    private String info;
+    @ElementCollection(targetClass=String.class)
+    private List<String> changes;
 
     public Report() {
     }
 
     public Report(Integer reportId, LocalDateTime creationDateTime,
                   LocalDateTime startDateTime, LocalDateTime endDateTime,
-                  String info) {
+                  List<String> changes) {
         this.reportId = reportId;
         this.creationDateTime = creationDateTime;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.info = info;
+        this.changes = changes;
     }
 }
