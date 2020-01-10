@@ -9,9 +9,9 @@ import java.util.Optional;
 @Repository
 public interface BucketPositionRepo extends CrudRepository<BucketPosition, Integer> {
 
-    Iterable<BucketPosition> findByBucketIndex(String id);
+//    Iterable<BucketPosition> findByBucketIndex(String id);
 
-    void deleteByBucketIndexAndProductId(String bucketIndex, Integer productId);
-    Optional<BucketPosition> findByBucketIndexAndProductId(String bucketIndex, Integer productId);
+//    void deleteByBucketIndexAndProductId(String bucketIndex, Integer productId);
+//    Optional<BucketPosition> findByBucketIndexAndProductId(String bucketIndex, Integer productId);
 
 }

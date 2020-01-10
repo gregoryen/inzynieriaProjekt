@@ -3,15 +3,18 @@ package com.engineering.shop.cart.order;
 
 
 import com.sun.istack.NotNull;
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 
 @Entity
+@Builder(access = AccessLevel.PUBLIC)
+@Getter
+@Setter
 @Table(name="User_Order")
-
+@AllArgsConstructor
 public class Order {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,26 +24,21 @@ public class Order {
     @NotNull
     private Integer userId;
     // Zakladalismy przekazanie klasy CustomerDetails
+//    @NotNull
+//    private Customer customerDetails;
     @NotNull
-    private Integer customerId;
+    private String firstName;
+    @NotNull
+    private String lastName;
+    @NotNull
+    private  String adress;
+    @NotNull
+    private String phoneNumber;
     @NotNull
     private Integer orderBucketId;
     @NotNull
     private BigDecimal orderValue;
-    private String isPaid;
+    private Boolean isPaid;
     //private PaymentType paymentType;
-
-    public Order(){
-
-    }
-
-    public Order(Integer userId,Integer customerId, Integer orderBucketId, BigDecimal orderValue) {
-        this.userId = userId;
-        this.customerId = customerId;
-        this.orderBucketId = orderBucketId;
-        this.orderValue = orderValue;
-    }
-
-
 
 }
