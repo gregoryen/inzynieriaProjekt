@@ -15,11 +15,13 @@ public interface ProductsRepo extends JpaRepository<Product, Integer> {
 
     Iterable<Product> findByMainCategoryId(Integer categoryId);
 
-    Iterable<ProductHeaderProjection> findAllByNameContainingIgnoreCaseAndActiveIsTrue(String name);
+    Iterable<Product> findAllByNameContainingIgnoreCaseAndActiveIsTrue(String name);
 
     List<Product> findAllByActiveIsTrue();
 
     List<Product> findAllByIdIn(List<Integer> ids);
+
+    Iterable<Product> findByMainCategoryIdAndActiveIsTrue(Integer categoryId);
 
     @Override
     @RestResource(exported = false)

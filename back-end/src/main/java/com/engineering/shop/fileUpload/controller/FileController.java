@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,7 +58,7 @@ public class FileController {
 
 
     @GetMapping("/downloadAdditionalImage")
-    public ResponseEntity<Resource> downloadFileById(@RequestParam Integer idImage, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadAdditionalImage(@RequestParam Integer idImage, HttpServletRequest request) {
 
         Optional<ImageProduct>  image = imageProductRepo.findById(idImage);
         if(image.isEmpty()) {
@@ -67,7 +68,7 @@ public class FileController {
     }
 
     @GetMapping("/downloadMainImage")
-    public ResponseEntity<Resource> downloadFile(@RequestParam Integer idProduct, HttpServletRequest request) {
+    public ResponseEntity<Resource> downloadMainImage(@RequestParam Integer idProduct, HttpServletRequest request) {
         Optional<Product> product = productsRepo.findById(idProduct);
         if(product.isEmpty()) {
             throw new MyFileNotFoundException("Product with id:  " + idProduct + "not found");

@@ -26,7 +26,7 @@ public class BucketProductController {
         Optional<Product> productcOptional = Optional.ofNullable(productRepo.findById(id).orElseThrow());
         Product product = productcOptional.get();
         Bucket bucket = new Bucket();
-        BucketPosition p = new BucketPosition(product,
+        BucketPosition p = new BucketPosition(product.getId(),
                 1, product.getPrice());
 
         bucketPositionRepo.save(p);

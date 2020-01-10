@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 
 @Projection(name = "header", types = {Product.class})
 public interface ProductHeaderProjection {
+    Integer getId();
+
     String getName();
 
     BigDecimal getPrice();

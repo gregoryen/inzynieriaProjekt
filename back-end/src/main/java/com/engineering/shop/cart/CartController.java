@@ -46,7 +46,7 @@ public class CartController {
         Optional<Product> productcOptional = Optional.ofNullable(productRepo.findById(id).orElseThrow());
         Product product = productcOptional.get();
         int q = quantity;
-        BucketPosition p = new BucketPosition(product,
+        BucketPosition p = new BucketPosition(product.getId(),
                 q, product.getPrice());
 
         bucketPositionRepo.save(p);
@@ -71,7 +71,7 @@ public class CartController {
         Product product = productcOptional.get();
         int q = quantity;
 
-        BucketPosition pos = new BucketPosition(product,
+        BucketPosition pos = new BucketPosition(product.getId(),
                 q, product.getPrice());
 
         bucketPositionRepo.save(pos);

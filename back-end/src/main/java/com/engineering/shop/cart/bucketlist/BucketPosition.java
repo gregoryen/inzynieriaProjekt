@@ -1,29 +1,24 @@
 package com.engineering.shop.cart.bucketlist;
 
-import com.engineering.shop.products.Product;
 import com.sun.istack.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
 @Table(name="BucketPosition")
 public class BucketPosition extends RepresentationModel<BucketPosition> {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
-
     @NotNull
-    @ManyToOne
-    private Product product;
-
+    private Integer productId;
     private String bucketIndex;
     @NotNull
     private int productQuantity;
@@ -34,14 +29,14 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
 
     }
 
-    public BucketPosition( Product product, int productQuantity, BigDecimal price) {
+    public BucketPosition( Integer productId, int productQuantity, BigDecimal price) {
 
-        this.product = product;
+        this.productId = productId;
         this.productQuantity = productQuantity;
         this.productPrice = price;
 
     }
-/*
+
     public void setBucketIndex(String bucketIndex) {
         this.bucketIndex = bucketIndex;
     }
@@ -66,10 +61,6 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
         return productQuantity;
     }
 
-    public BigDecimal getProductPrice() {
-        return productPrice;
-    } */
-
     public void increaseProductQuantity(){
         this.productQuantity+=1;
     }
@@ -78,5 +69,9 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
         if (this.productQuantity > 0 ) {
             this.productQuantity-=1;
         }
+    }
+
+    public BigDecimal getProductPrice() {
+        return productPrice;
     }
 }
