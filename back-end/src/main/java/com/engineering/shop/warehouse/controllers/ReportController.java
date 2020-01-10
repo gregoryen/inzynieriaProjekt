@@ -117,7 +117,7 @@ public class ReportController {
         for (StockAmount s : stockAmounts) {
             info = "Produkt: " + productsRepo.findById(s.getProductId()).get().getName() + ", " +
                     s.getAmount() + " " + s.getMeasure() + ", " +
-                    "aktualizacja: " + s.getDateTime().toString().replace("T", " ").substring(0, 15);
+                    "aktualizacja: " + s.getDateTime().toString().replace("T", " ").substring(0, 16);
             changes.add(info);
         }
 

@@ -55,17 +55,45 @@
             </tr>
             </tbody>
         </table>
-<!--        <div>-->
-<!--            <input type="file">-->
-<!--        </div>-->
-        <ul v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
-            <li align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">{{change}}</li>
-        </ul>
+        <!--        <div>-->
+        <!--            <input type="file">-->
+        <!--        </div>-->
+        <h3>Raporty</h3>
+        <div v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
+            <strong>{{report.disabled}}</strong>
+
+            <table align="center" class="container">
+                <thead>
+                <tr>
+                    <td>Utworzony:</td>
+                    <td>Czas początkowy:</td>
+                    <td>Czas końcowy:</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>{{report.creationDateTime}}</td>
+                    <td>{{report.startDateTime}}</td>
+                    <td>{{report.endDateTime}}</td>
+                    <td><input type="file"></td>
+                    <td>
+                        <button @click="disable(index)">pokaż</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <ul v-if="report.disabled === true">
+                <li align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">{{change}}<li/>
+            </ul>
+        </div>
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+    import Vue from 'vue';
 
     const URL = 'http://localhost:8100';
     const STOCKS = '/stock_amounts/last_updated';
@@ -74,6 +102,7 @@
     const GET_REPORTS = '/reports/all';
 
     export default {
+
         created: async function () {
             const _stocks = await this.getStocks();
             const products = await this.getProducts();
@@ -87,21 +116,37 @@
                     startDateTime: "",
                     endDateTime: ""
                 },
-                stocks: [],
-                reportsToDisplay: []
+                stocks: []
             }
         },
         methods: {
+            disable: function (index) {
+                Vue.set(this.reports[index], 'disabled', !this.reports[index].disabled);
+                this.reports = this.reports.slice();
+            },
             getReports: async function () {
                 const reports = await axios.get(URL + GET_REPORTS, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 });
-                // let tmp = reports.data.changes.split(',');
-                // reports.data.changes = tmp;
+
                 this.reports = reports.data;
+
+                for (let i = 0; i < this.reports.length; i++) {
+                    this.reports[i].creationDateTime = this.parseLocalDateTime(this.reports[i].creationDateTime);
+                    this.reports[i].startDateTime = this.parseLocalDateTime(this.reports[i].startDateTime);
+                    this.reports[i].endDateTime = this.parseLocalDateTime(this.reports[i].endDateTime);
+                    this.reports[i].disabled = true;
+                }
+
                 // eslint-disable-next-line no-console
                 console.log(this.reports);
+            },
+            parseLocalDateTime(dateTime) {
+                let res = dateTime;
+                res = res.replace("T", " ");
+                res = res.substr(0, 16);
+                return res;
             },
             createReport: async function () {
                 if (Date.parse(this.dateTimes.startDateTime.toString()) >=
