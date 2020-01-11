@@ -33,7 +33,7 @@
         <li class="nav-item">
           <a href="/profile" class="nav-link">
             <font-awesome-icon icon="user" />
-            {{currentUser.userName}}
+            {{userFirstName}} {{userLastName}}
           </a>
         </li>
         <li class="nav-item">
@@ -70,6 +70,13 @@ export default {
 
       return false;
     }
+  },
+  data() {
+	return {
+	userFirstName: this.$store.state.auth.user.firstName,
+	userLastName: this.$store.state.auth.user.lastName
+	}
+		
   },
   methods: {
     logOut() {
