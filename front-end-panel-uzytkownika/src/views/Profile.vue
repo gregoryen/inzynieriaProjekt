@@ -2,8 +2,9 @@
   <div class="container">
     <header class="jumbotron">
       <h3>
-        <strong>Profil uzytkownika {{currentUser.userName}}</strong>
+        <strong>Profil uzytkownika {{currentUser.firstName}} {{currentUser.lastName}}</strong>
       </h3>
+      <button class="btn btn-primary" @click="modify">Edytuj dane</button>
     </header>
     <p>
       <strong>Token:</strong>
@@ -29,6 +30,11 @@ export default {
     currentUser() {
 
       return this.$store.state.auth.user;
+    }
+  },
+  methods: {
+    modify() {
+    this.$router.push('/modify')
     }
   },
   mounted() {
