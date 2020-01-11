@@ -8,20 +8,6 @@
       />
       <form name="form" @submit.prevent="handleRegister">
         <div v-if="!successful">
-          <!--<div class="form-group">
-            <label for="username">Username</label>
-            <input
-              type="text"
-              class="form-control"
-              name="username"
-              v-model="user.username"
-              v-validate="'required|min:3|max:20'"
-            />
-            <div
-              class="alert-danger"
-              v-if="submitted && errors.has('username')"
-            >{{errors.first('username')}}</div>
-          </div>-->
           <div class="form-group">
             <label for="email">Email</label>
             <input
@@ -36,7 +22,7 @@
               v-if="submitted && errors.has('email')"
             >{{errors.first('email')}}</div>
           </div>
-			<div class="form-group">
+          <div class="form-group">
             <label for="firstname">Imię</label>
             <input
               type="text"
@@ -50,7 +36,7 @@
               v-if="submitted && errors.has('firstname')"
             >{{errors.first('firstname')}}</div>
           </div>
-			<div class="form-group">
+          <div class="form-group">
             <label for="lastname">Nazwisko</label>
             <input
               type="text"
@@ -78,9 +64,6 @@
               v-if="submitted && errors.has('password')"
             >{{errors.first('password')}}</div>
           </div>
-
-          <!-- TRZEBA DODAĆ JESZCZE POLA NA IMIĘ I NAZWISKO -->
-          
           <div class="form-group">
             <button class="btn btn-primary btn-block">Sign Up</button>
           </div>
