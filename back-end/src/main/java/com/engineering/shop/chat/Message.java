@@ -24,4 +24,6 @@ public class Message {
     private String text;
 
     private final Date date = new Date();
+
+    private boolean displayed = false;
 }

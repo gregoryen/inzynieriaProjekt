@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 public class MessageController {
 
     private MessageRepository messageRepository;
+    private MessageValidator messageValidator;
 
     @Autowired
-    public MessageController(MessageRepository messageRepository) {
+    public MessageController(MessageRepository messageRepository, MessageValidator messageValidator) {
         this.messageRepository = messageRepository;
+        this.messageValidator = messageValidator;
     }
 
     @PostMapping
@@ -32,7 +34,9 @@ public class MessageController {
         else
             message.setSender(email);
 
-        return messageRepository.save(message);
+        if( messageValidator.validate(message))
+            return messageRepository.save(message);
+        return null;
     }
 
     @GetMapping
@@ -42,6 +46,9 @@ public class MessageController {
         Iterable<Message> messagesFromUser = messageRepository.getAllBySender(id);
         List<Message> messages = new ArrayList<>();
         messagesToUser.forEach(messages::add);
+        messagesToUser.forEach(message -> message.setDisplayed(true));
+        messagesToUser.forEach(message -> messageRepository.save(message));
+
         messagesFromUser.forEach(messages::add);
 
         messages.sort(Comparator.comparing(Message::getDate));
