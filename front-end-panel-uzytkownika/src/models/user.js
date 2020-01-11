@@ -8,5 +8,6 @@ export default class User {
 		this.email = email;
 		this.firstname = firstname;
 		this.lastname = lastname;
+		this.id=0;
     }
   }
