@@ -13,6 +13,6 @@ import java.util.Set;
 public interface BucketPositionRepo extends CrudRepository<BucketPosition, Integer> {
 
     // Metoda zwracajaca wszystkie produktu po id koszyka
-
+    Iterable<BucketPosition> findByBucket (Bucket bucket);
 
 }

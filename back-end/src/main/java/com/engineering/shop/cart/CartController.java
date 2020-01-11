@@ -21,6 +21,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.swing.text.StyledEditorKit;
 import java.math.BigDecimal;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/cart")
@@ -86,17 +87,39 @@ public class CartController {
         return bucketRepo.findById(id);
     }
 
+    // usuwanie calego koszyka
     @DeleteMapping("/delete/{id}")
     public void deleteBucket (@PathVariable("id") Integer id){
-        // dodac usuwanie pozycji rowniez jak usuwam koszyk
         bucketRepo.deleteById(id);
     }
 
     @PutMapping("/update/{bucketId}/{positionId}/{quantity}")
-    public void updatePosition(){
-        // update
+    public @ResponseBody String updatePosition(@PathVariable("positionId") Integer positionId
+                                                , @PathVariable("bucketId") Integer bucketId
+                                                , @PathVariable("quantity") Integer quantity){
+
+        Optional<BucketPosition> optPosition = Optional.ofNullable(bucketPositionRepo.findById(positionId)).orElseThrow();
+        BucketPosition position = optPosition.get();
+
+        Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findById(bucketId)).orElseThrow();
+        Bucket bucket = optBucket.get();
+        position.setProductQuantity(quantity);
+        Iterable<BucketPosition> productList = bucketPositionRepo.findByBucket(bucket);
+        BigDecimal total = new BigDecimal(0);
+        BigDecimal temp = new BigDecimal(0);
+
+        for(BucketPosition itr: productList) {
+            temp = itr.getProductPrice().multiply(new BigDecimal(itr.getProductQuantity()));
+            total = total.add(temp);
+        }
+
+        bucket.setTotalValue(total);
+
+        bucketRepo.save(bucket);
+        return "Updated";
     }
 
+    // usuwanie pozycji
     @DeleteMapping("/deletePosition/{bucketId}/{positionId}")
     public @ResponseBody String deletePosition(@PathVariable("positionId") Integer positionId
                                 , @PathVariable("bucketId") Integer bucketId){
@@ -112,15 +135,8 @@ public class CartController {
         bucket.removeFromPositions(position);
         bucketRepo.save(bucket);
         bucketPositionRepo.delete(position);
-        String text = "";
-        text+=bucket.getTotalValue().toString();
 
-
-        // znalezc obiekt o podanym id
-        // zmienic total koszyka
-        // usunac z listy koszyka
-        // usunac z bazy danych
-        //bucketPositionRepo.deleteById(id);
-        return text;
+        return "Position deleted";
     }
+
 }
