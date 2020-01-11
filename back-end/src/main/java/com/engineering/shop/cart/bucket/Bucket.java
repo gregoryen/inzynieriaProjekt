@@ -46,10 +46,13 @@ public class Bucket {
     }
 
     public boolean substructFromTotalValue (BigDecimal value) {
-        if (this.totalValue.subtract(value).equals(new BigDecimal(0))) {
+        System.out.println(value);
+        if (this.totalValue.subtract(value).compareTo(new BigDecimal(0)) >= 0) {
             this.totalValue = totalValue.subtract(value);
+            System.out.println("Odejmowanie" + this.totalValue);
             return true;
         } else {
+            System.out.println("Nie da rady odjac");
             return false;
         }
     }

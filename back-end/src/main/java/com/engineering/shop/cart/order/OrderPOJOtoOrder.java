@@ -22,7 +22,7 @@ public class OrderPOJOtoOrder implements Transformer<OrderPOJO, Order> {
                 .lastName(pojo.getLastName())
                 .adress(pojo.getAdress())
                 .phoneNumber(pojo.getPhoneNumber())
-                .orderBucketId(pojo.getOrderBucketId())
+                .orderBucketId(pojo.getOrderBucketId()) // dodac metode
                 .orderValue(pojo.getOrderValue())
                 .isPaid(pojo.getIsPaid())
                 .build();

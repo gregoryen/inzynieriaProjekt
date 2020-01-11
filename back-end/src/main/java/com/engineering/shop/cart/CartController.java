@@ -13,9 +13,11 @@ import com.engineering.shop.cart.order.OrderRepo;
 
 import com.engineering.shop.products.ProductsRepo;
 
+import org.hibernate.service.spi.OptionallyManageable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.swing.text.StyledEditorKit;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -79,14 +81,46 @@ public class CartController {
         return bucketRepo.findAll();
     }
 
+    @GetMapping("/getBucketById/{bucketId}")
+    public Optional<Bucket> findAll (@PathVariable("id") Integer id) {
+        return bucketRepo.findById(id);
+    }
+
     @DeleteMapping("/delete/{id}")
     public void deleteBucket (@PathVariable("id") Integer id){
         // dodac usuwanie pozycji rowniez jak usuwam koszyk
         bucketRepo.deleteById(id);
     }
 
-    @DeleteMapping("/deletePosition/{positionId}")
-    public void deletePosition(@PathVariable("id") Integer id){
-        bucketPositionRepo.deleteById(id);
+    @PutMapping("/update/{bucketId}/{positionId}/{quantity}")
+    public void updatePosition(){
+        // update
+    }
+
+    @DeleteMapping("/deletePosition/{bucketId}/{positionId}")
+    public @ResponseBody String deletePosition(@PathVariable("positionId") Integer positionId
+                                , @PathVariable("bucketId") Integer bucketId){
+
+        Optional<BucketPosition> optPosition = Optional.ofNullable(bucketPositionRepo.findById(positionId)).orElseThrow();
+        BucketPosition position = optPosition.get();
+
+        Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findById(bucketId)).orElseThrow();
+        Bucket bucket = optBucket.get();
+        BigDecimal value = position.getProductPrice();
+        value = value.multiply(new BigDecimal(position.getProductQuantity()));
+        bucket.substructFromTotalValue(value);
+        bucket.removeFromPositions(position);
+        bucketRepo.save(bucket);
+        bucketPositionRepo.delete(position);
+        String text = "";
+        text+=bucket.getTotalValue().toString();
+
+
+        // znalezc obiekt o podanym id
+        // zmienic total koszyka
+        // usunac z listy koszyka
+        // usunac z bazy danych
+        //bucketPositionRepo.deleteById(id);
+        return text;
     }
 }

@@ -12,7 +12,7 @@ public class OrderPOJO {
     private Integer userId;
     private String firstName;
     private String lastName;
-    private  String adress;
+    private String adress;
     private String phoneNumber;
     private Integer orderBucketId;
     private BigDecimal orderValue;
