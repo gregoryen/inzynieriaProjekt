@@ -16,11 +16,13 @@ public class MessageController {
 
     private MessageRepository messageRepository;
     private MessageValidator messageValidator;
+    private Notification notification;
 
     @Autowired
-    public MessageController(MessageRepository messageRepository, MessageValidator messageValidator) {
+    public MessageController(MessageRepository messageRepository, MessageValidator messageValidator, Notification notification) {
         this.messageRepository = messageRepository;
         this.messageValidator = messageValidator;
+        this.notification = notification;
     }
 
     @PostMapping
@@ -29,8 +31,10 @@ public class MessageController {
         String email = token.getName();
         Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
 
-        if (roles.contains(UserRoleType.ADMIN.name()))
+        if (roles.contains(UserRoleType.ADMIN.name())) {
             message.setSender(null);
+            notification.sendNotification(message.getReceiver());
+        }
         else
             message.setSender(email);
 
