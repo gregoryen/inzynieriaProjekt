@@ -10,6 +10,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BucketPOJO {
 
+    private Integer bucketId;
     private Set<Integer> bucketPositions;
     private BigDecimal totalValue;
 
