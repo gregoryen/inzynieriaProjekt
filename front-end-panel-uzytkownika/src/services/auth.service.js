@@ -18,7 +18,6 @@ const API_URL = 'http://localhost:8080/';
 class AuthService {
 
   login(user) {
-	
     return axios.post(API_URL + 'logIn', {
 		password: user.password,
         email: user.email
@@ -45,6 +44,16 @@ class AuthService {
 		email: user.email,
 		firstName: user.firstname,
 		lastName: user.lastname,
+    });
+  }
+  
+  modify(user) {
+    return axios.put(API_URL + 'modify', {
+		password: user.password,
+		email: user.email,
+		firstName: user.firstname,
+		lastName: user.lastname,
+		id: user.id,
     });
   }
 
