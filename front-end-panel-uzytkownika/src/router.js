@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Login from './views/Login.vue';
 import Register from './views/Register.vue';
+import Modify from './views/Modify.vue';
 
 Vue.use(Router);
 
@@ -25,6 +26,10 @@ export const router = new Router({
     {
       path: '/register',
       component: Register
+    },
+    {
+      path: '/modify',
+      component: Modify
     },
     {
       path: '/profile',
