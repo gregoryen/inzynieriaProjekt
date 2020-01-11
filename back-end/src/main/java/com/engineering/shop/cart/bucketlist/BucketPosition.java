@@ -2,8 +2,11 @@ package com.engineering.shop.cart.bucketlist;
 
 import com.engineering.shop.cart.bucket.Bucket;
 import com.engineering.shop.products.Product;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import lombok.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.hateoas.RepresentationModel;
@@ -20,7 +23,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class BucketPosition extends RepresentationModel<BucketPosition> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "position_id")
     private Integer id;
     @ManyToOne
@@ -34,8 +37,9 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
 
     @ManyToOne
     @JoinColumn(name="bucket_id")
-  //@OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Bucket bucket;
+
     public BucketPosition(){
     }
 

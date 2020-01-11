@@ -69,8 +69,6 @@ public class CartController {
         bucket.addToPositions(position);
         bucketRepo.save(bucket);
         position.setBucket(bucket);
-        bucketPositionRepo.save(position);
-
 
         // można by było jednak tu generowac id koszyka i zwracac
         return "save";
@@ -82,8 +80,13 @@ public class CartController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public void delete (@PathVariable("id") Integer id){
+    public void deleteBucket (@PathVariable("id") Integer id){
         // dodac usuwanie pozycji rowniez jak usuwam koszyk
         bucketRepo.deleteById(id);
+    }
+
+    @DeleteMapping("/deletePosition/{positionId}")
+    public void deletePosition(@PathVariable("id") Integer id){
+        bucketPositionRepo.deleteById(id);
     }
 }
