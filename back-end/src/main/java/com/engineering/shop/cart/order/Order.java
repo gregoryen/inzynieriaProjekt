@@ -2,6 +2,7 @@ package com.engineering.shop.cart.order;
 
 
 
+import com.engineering.shop.cart.bucket.Bucket;
 import com.sun.istack.NotNull;
 import lombok.*;
 
@@ -35,7 +36,10 @@ public class Order {
     @NotNull
     private String phoneNumber;
     @NotNull
-    private Integer orderBucketId;
+    //private Integer orderBucketId;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bucket_id")
+    private Bucket bucket;
     @NotNull
     private BigDecimal orderValue;
     private Boolean isPaid;

@@ -46,19 +46,9 @@ public class BucketPositionController {
 
     @PutMapping("/update/{id}/{quantity}")
     public void changeQuantity(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity){
-    //public void changeQuantity(@PathVariable("id") Integer id, @PathVariable("quantity") Double quantity){
 
         Optional<BucketPosition> bucketPositionOptional = Optional.ofNullable((bucketPositionRepo.findById(id))).orElseThrow();
         BucketPosition bucketPosition = bucketPositionOptional.get();
-
-//        try {
-//
-//        } catch () {
-//
-//        }
-
-        // Trzeba sprawdzic czy wartosc jest wieksza od zera
-        // Czy zadana ilosc jest w magazynie
 
         bucketPosition.setProductQuantity(quantity);
 

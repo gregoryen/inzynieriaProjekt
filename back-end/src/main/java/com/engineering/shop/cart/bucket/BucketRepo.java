@@ -10,7 +10,4 @@ import java.util.Set;
 @Repository
 public interface BucketRepo extends CrudRepository<Bucket, Integer> {
 
-    // Metoda szukajaca elementu w repo po id pozycji
-    // Metoda szukajaca elementu w repo po id produktu ?
-
 }
