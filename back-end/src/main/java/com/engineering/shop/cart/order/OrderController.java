@@ -1,6 +1,7 @@
 package com.engineering.shop.cart.order;
 
 
+import com.engineering.shop.cart.Exceptions.BucketException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.web.bind.annotation.*;
@@ -22,9 +23,6 @@ public class OrderController {
         this.orderPOJOtoOrder = orderPOJOtoOrder;
     }
 
-
-    // Repo methods implementation
-
     @PostMapping
     public void addOrder(@RequestBody OrderPOJO orderPOJO){
         Order order = orderPOJOtoOrder.transform(orderPOJO);
@@ -37,8 +35,9 @@ public class OrderController {
     }
 
     @GetMapping(path="{id}")
-    public Optional<Order> getById(@PathVariable("id") Integer id) {
-        return orderRepo.findById(id);
+    public Order getById(@PathVariable("id") Integer id) {
+        Optional<Order> optOrder = Optional.ofNullable(orderRepo.findById(id)).orElseThrow(()-> new BucketException("Order not found with provided  id"));
+        return optOrder.get();
     }
 
     @PutMapping("update/{id}")

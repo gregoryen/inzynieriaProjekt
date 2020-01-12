@@ -1,5 +1,6 @@
 package com.engineering.shop.cart.bucketlist;
 
+import com.engineering.shop.cart.Exceptions.BucketException;
 import com.engineering.shop.cart.bucketlist.BucketPosition;
 import com.engineering.shop.cart.bucketlist.BucketPositionRepo;
 import com.engineering.shop.products.ProductPOJO;
@@ -24,11 +25,6 @@ public class BucketPositionController {
     }
 
     @CrossOrigin
-    // metoda testowa
-    @GetMapping("/test")
-    public @ResponseBody String test(){
-        return "Request Done";
-    }
     @PostMapping("/add")
     public @ResponseBody String addProduct(@RequestBody BucketPositionPOJO position){
        BucketPosition  bucketPosition = bucketPositionPOJOtoBucketPosition.transform(position);
@@ -47,7 +43,7 @@ public class BucketPositionController {
     @PutMapping("/update/{id}/{quantity}")
     public void changeQuantity(@PathVariable("id") Integer id, @PathVariable("quantity") Integer quantity){
 
-        Optional<BucketPosition> bucketPositionOptional = Optional.ofNullable((bucketPositionRepo.findById(id))).orElseThrow();
+        Optional<BucketPosition> bucketPositionOptional = Optional.ofNullable((bucketPositionRepo.findById(id))).orElseThrow(()-> new BucketException("Bucket not found with provided  id"));
         BucketPosition bucketPosition = bucketPositionOptional.get();
 
         bucketPosition.setProductQuantity(quantity);
