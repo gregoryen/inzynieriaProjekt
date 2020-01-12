@@ -107,6 +107,13 @@ public class User implements Serializable {
 		return string;
 	}*/
     
+    public String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append("User [id=").append(id).append(", firstName=").append(firstName).append(", lastName=").append(lastName).append(", email=").append(email).append(", password=").append(password)
+                .append(", roles=").append(roles).append("]");
+        return builder.toString();
+    }
+    
 }
 
 
