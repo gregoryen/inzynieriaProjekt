@@ -40,12 +40,13 @@ public class BucketController {
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
     }
 
-    // Wysylam Jsona
+//     Wysylam Jsona
 //    {
 //        "product" : 1,
-//            "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
-//            "productPrice": null,
-//            "productQuantity": 1
+//        "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
+//        "productPrice": null,
+//        "productQuantity": 1,
+//        "bucket": 1
 //    }
 
     @PostMapping("addProduct")
