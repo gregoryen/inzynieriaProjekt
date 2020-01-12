@@ -160,7 +160,7 @@ public class CategoriesController {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach((error) -> {
             String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getDefaultMessage();
+            String errorMessage = error.getCode();
             errors.put(fieldName, errorMessage);
         });
         return errors;
