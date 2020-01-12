@@ -80,7 +80,6 @@ public class JwtUtil implements Serializable {
         String privileges = getUserPrivilegesFromToken(token);
         Collection<String> authStrings = authorities.stream().map(Objects::toString).collect(Collectors.toList());
         String authString = StringUtils.join(authStrings, ',');
-
         return authString.equals(privileges);
     }
 
