@@ -20,10 +20,9 @@ public class Order {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private long orderId;
-
+    private Integer orderId;
     @NotNull
-    private Integer userId;
+    private String userId;
 // Zakladalismy przekazanie klasy CustomerDetails
 //    @NotNull
 //    private Customer customerDetails;
@@ -40,9 +39,13 @@ public class Order {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bucket_id")
     private Bucket bucket;
-    @NotNull
     private BigDecimal orderValue;
     private Boolean isPaid;
     //private PaymentType paymentType;
+
+    public Order(){
+
+    }
+
 
 }

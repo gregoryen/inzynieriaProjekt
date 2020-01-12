@@ -23,7 +23,7 @@ public class OrderController {
         this.orderPOJOtoOrder = orderPOJOtoOrder;
     }
 
-    @PostMapping
+    @PostMapping("/addOrder")
     public void addOrder(@RequestBody OrderPOJO orderPOJO){
         Order order = orderPOJOtoOrder.transform(orderPOJO);
         orderRepo.save(order);
@@ -47,7 +47,7 @@ public class OrderController {
        orderRepo.save(order);
     }
 
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteById(@PathVariable("id") Integer id){
         orderRepo.deleteById(id);
     }
