@@ -21,9 +21,10 @@ import java.util.Set;
 //@RequiredArgsConstructor Sprawdzic czy POJO nadal bedzise sie z tym gryzlo
 public class Bucket {
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="bucket_id")
     private Integer bucketId;
+    private String token;
     private BigDecimal totalValue;
  //   @OneToMany(mappedBy = "bucket")
     @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -34,8 +35,8 @@ public class Bucket {
 
     }
 
-    public Bucket(int bucketId) {
-        this.bucketId = bucketId;
+    public Bucket(String token) {
+        this.token = token;
         this.totalValue = new BigDecimal(0);
         this.positions = new ArrayList<>(); //new HashSet<>();
     }

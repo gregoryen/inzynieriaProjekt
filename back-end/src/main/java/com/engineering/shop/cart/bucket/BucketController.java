@@ -52,18 +52,19 @@ public class BucketController {
     public @ResponseBody String addProductById (@RequestBody BucketPositionPOJO bucketPositionPOJO) {
 
         Integer productId = bucketPositionPOJO.getProduct();
-        Integer bucketId = bucketPositionPOJO.getBucket();
+        String token = bucketPositionPOJO.getBucket();
 
-        Boolean isInBase = bucketRepo.existsById(bucketId);
+        Boolean isInBase = bucketRepo.existsByToken(token);
 
         Bucket bucket;
         BucketPosition position;
         BigDecimal total;
 
         if (isInBase) {
-            bucket = getBucketById(bucketId);
+            bucket = getBucketByToken(token);
         } else {
-            bucket = new Bucket(bucketId);
+            bucket = new Bucket(token);
+            bucketRepo.save(bucket);
         }
 
         Boolean isInBucket = bucketPositionRepo.existsByProductIdAndBucket(productId, bucket);
@@ -95,22 +96,23 @@ public class BucketController {
     }
 
     @GetMapping("/getBucketById/{bucketId}")
-    public Optional<Bucket> findAll (@PathVariable("id") Integer id) {
-        return bucketRepo.findById(id);
+    public Optional<Bucket> findAll (@PathVariable("id") String token) {
+        return bucketRepo.findByToken(token);
     }
 
     // usuwanie calego koszyka
     @DeleteMapping("/delete/{id}")
-    public void deleteBucket (@PathVariable("id") Integer id){
-        bucketRepo.deleteById(id);
+    public void deleteBucket (@PathVariable("id") String token){
+        Bucket bucket = getBucketByToken(token);
+        bucketRepo.delete(bucket);
     }
 
     @PutMapping("/update/{bucketId}/{productId}/{quantity}")
     public @ResponseBody String updatePosition(@PathVariable("productId") Integer productId
-                                                , @PathVariable("bucketId") Integer bucketId
+                                                , @PathVariable("bucketId") String token
                                                 , @PathVariable("quantity") Integer quantity){
 
-        Bucket bucket = getBucketById(bucketId);
+        Bucket bucket = getBucketByToken(token);
         BucketPosition position = getBucketPositionByProductId(productId, bucket);
 
         position.setProductQuantity(quantity);
@@ -132,8 +134,8 @@ public class BucketController {
     // usuwanie pozycji
     @DeleteMapping("/deletePosition/{bucketId}/{productId}")
     public @ResponseBody String deletePosition(@PathVariable("productId") Integer productId
-                                , @PathVariable("bucketId") Integer bucketId){
-        Bucket bucket = getBucketById(bucketId);
+                                , @PathVariable("bucketId") String token){
+        Bucket bucket = getBucketByToken(token);
         BucketPosition position = getBucketPositionByProductId(productId,bucket);
 
         BigDecimal value = position.getProductPrice();
@@ -146,8 +148,8 @@ public class BucketController {
         return "Position deleted";
     }
 
-    public Bucket getBucketById(Integer id) {
-        Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findById(id)).orElseThrow(()-> new BucketException("Bucket not found with provided  id"));
+    public Bucket getBucketByToken(String token) {
+        Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findByToken(token)).orElseThrow(()-> new BucketException("Bucket not found with provided  token"));
         Bucket bucket = optBucket.get();
         return bucket;
     }
