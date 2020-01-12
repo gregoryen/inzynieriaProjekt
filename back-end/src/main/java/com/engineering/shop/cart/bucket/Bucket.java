@@ -1,5 +1,6 @@
 package com.engineering.shop.cart.bucket;
 
+import com.engineering.shop.cart.Exceptions.BucketException;
 import com.engineering.shop.cart.bucketlist.BucketPosition;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -28,6 +29,7 @@ public class Bucket {
     @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<BucketPosition> positions;
 
+
     public Bucket(){
 
     }
@@ -46,13 +48,13 @@ public class Bucket {
     }
 
     public boolean substructFromTotalValue (BigDecimal value) {
-        System.out.println(value);
+        //System.out.println(value);
         if (this.totalValue.subtract(value).compareTo(new BigDecimal(0)) >= 0) {
             this.totalValue = totalValue.subtract(value);
-            System.out.println("Odejmowanie" + this.totalValue);
+            //System.out.println("Odejmowanie" + this.totalValue);
             return true;
         } else {
-            System.out.println("Nie da rady odjac");
+           // System.out.println("Nie da rady odjac");
             return false;
         }
     }

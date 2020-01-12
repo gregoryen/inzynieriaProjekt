@@ -27,6 +27,7 @@ public class BucketPositionPOJOtoBucketPosition implements Transformer<BucketPos
     public BucketPosition transform(BucketPositionPOJO pojo) {
         return BucketPosition.builder()
                 .product(getProduct(pojo.getProduct()))
+               // .productId(pojo.getProduct())
                 .productName(getProduct(pojo.getProduct()).getName())
                 .productPrice(getProduct((pojo.getProduct())).getPrice())
                 .productQuantity(pojo.getProductQuantity())
@@ -49,7 +50,6 @@ public class BucketPositionPOJOtoBucketPosition implements Transformer<BucketPos
         } else {
             bucket = new Bucket(id);
         }
-
         return bucket;
     }
 }

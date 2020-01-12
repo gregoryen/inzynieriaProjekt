@@ -29,6 +29,7 @@ public class BucketPosition extends RepresentationModel<BucketPosition> {
     @ManyToOne
     private Product product;
    // @NotNull
+//    private Integer productId;
     private String productName;
     @NotNull
     private BigDecimal productPrice;
