@@ -13,12 +13,10 @@
                 <b-button variant="success">Zobacz szczegóły</b-button>
             </router-link>
         </div>
-
     </div>
 </template>
 
-<script>
-
+<script>    
     export default {
         name: "ProductHeader",
         props: {

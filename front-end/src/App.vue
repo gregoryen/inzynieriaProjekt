@@ -1,21 +1,21 @@
 <template>
   <div id="app">
-    <Communicator/>
+    <!-- <Communicator/> -->
     <Categories :baseurl="this.baseurl"/>
     <router-view :baseurl="this.baseurl"></router-view>
   </div>
 </template>
 
 <script>
-import Communicator from "./components/Communicator";
+// import Communicator from "./components/Communicator";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap-vue/dist/bootstrap-vue.css";
 import Categories from "./components/Categories";
 
 export default {
   components: {
-    Communicator
-    Categories,
+    // Communicator,
+    Categories
   },
   name: "app",
   data() {

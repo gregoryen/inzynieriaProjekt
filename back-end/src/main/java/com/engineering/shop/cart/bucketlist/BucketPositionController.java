@@ -35,6 +35,7 @@ public class BucketPositionController {
     public Iterable<BucketPosition> getAll(){
         return bucketPositionRepo.findAll();
     }
+
     @DeleteMapping("/delete/{id}")
     public void deletePositionById(@PathVariable("id") Integer id){
         bucketPositionRepo.deleteById(id);

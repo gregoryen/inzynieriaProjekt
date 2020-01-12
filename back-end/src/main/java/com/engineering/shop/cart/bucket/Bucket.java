@@ -41,6 +41,10 @@ public class Bucket {
         this.positions = new ArrayList<>(); //new HashSet<>();
     }
 
+    public int getUniqueItemsNumber () {
+        return this.positions.size();
+    }
+
     public void addToTotalValue (BigDecimal value) {
         System.out.println(this.totalValue);
         this.totalValue = this.totalValue.add(value);
@@ -64,9 +68,13 @@ public class Bucket {
         positions.add(pos);
     }
 
-    public void removeFromPositions(BucketPosition pos){
+    public boolean removeFromPositions(BucketPosition pos){
         for (BucketPosition it : positions){
-            positions.remove(it);
+            if (it == pos) {
+                positions.remove(it);
+                return true;
+            }
         }
+        return false;
     }
 }

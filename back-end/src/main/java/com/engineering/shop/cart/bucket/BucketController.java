@@ -42,14 +42,14 @@ public class BucketController {
 
 //     Wysylam Jsona
 //    {
-//        "product" : 1,
+//        "productId" : 1,
 //        "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
 //        "productPrice": null,
 //        "productQuantity": 1,
 //        "bucket": 1
 //    }
 
-    @PostMapping("addProduct")
+    @PostMapping("/addProduct")
     public @ResponseBody String addProductById (@RequestBody BucketPositionPOJO bucketPositionPOJO) {
 
         Integer productId = bucketPositionPOJO.getProduct();
@@ -95,6 +95,12 @@ public class BucketController {
     public Iterable<Bucket> findAll () {
         return bucketRepo.findAll();
     }
+
+    @GetMapping("/itemNumber/{token}")
+    public int getItemNumber(@PathVariable("token") String token) {
+        return getBucketByToken(token).getUniqueItemsNumber();
+    }
+
 
     @GetMapping("/getBucketById/{token}")
     public Bucket findByToken (@PathVariable("token") String token) {
@@ -148,6 +154,8 @@ public class BucketController {
 
         return "Position deleted";
     }
+
+
 
     public Bucket getBucketByToken(String token) {
         Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findByToken(token)).orElseThrow(()-> new BucketException("Bucket not found with provided  token"));
