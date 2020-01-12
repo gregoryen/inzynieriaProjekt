@@ -32,7 +32,9 @@
                                         :state="Boolean(mainImageFile)"
                                         placeholder="Przeciągnij i upuść plik tutaj"
                                         drop-placeholder="Upouść plik tutaj..."
+
                                         required
+
                                         accept="image/*"
                                         @change="onMainImagePicked"
                                 ></b-form-file>
@@ -66,6 +68,7 @@
                                         <b-col v-for="imageURL in supported.additionalImagesURL"
                                                v-bind:key="imageURL.id">
                                             <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.name"></b-img>
+
                                         </b-col>
                                     </b-row>
                                 </b-container>
@@ -107,6 +110,7 @@
                                     id="additionalCategory"
                                     label="Wybierz kategorię dodatkowe: "
                                     label-for="searcher">
+
                                 <treeselect
                                         :options="supported.treeCategories"
                                         v-model="form.product.categories"
@@ -154,6 +158,7 @@
                                         id="isbn"
                                         v-model="form.product.isbn"
                                         type="text"
+
                                         placeholder="Podaj kod ISBN produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -167,6 +172,7 @@
                                         id="ean13"
                                         v-model="form.product.ean13"
                                         type="text"
+
                                         placeholder="Podaj kod EAN13 produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -183,8 +189,10 @@
                                 <b v-else>Niedostępny</b>
                             </b-form-group>
 
+
                             <b-button type="submit" variant="primary">Dodaj</b-button>
                             <b-button type="reset" variant="danger">Zresetuj</b-button>
+
                         </b-form>
                     </b-card-text>
                 </b-col>
@@ -228,6 +236,7 @@
 
 <script>
     import axios from 'axios';
+
     import Treeselect from '@riophae/vue-treeselect'
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
@@ -245,6 +254,7 @@
         },
         data() {
             return {
+
                 form: {
                     product: {
                         name: '',
@@ -264,6 +274,7 @@
                 mainImageFile: null,
                 show: true,
                 supported: {
+
                     treeCategories: [],
                     mainImageURL: null,
                     additionalImagesURL: null,
@@ -271,10 +282,12 @@
                 status: {
                     mainImageSend: true,
                     additionalImagesSend: true,
+
                 }
             }
         },
         methods: {
+
             showSuccessModal() {
                 this.$refs["successCreate"].show()
             },
@@ -362,7 +375,6 @@
                 this.form.product.isbn = '';
                 this.form.product.ean13 = '';
                 this.form.product.active = true;
-
                 //Reset form images
                 this.resetMainImage();
                 this.resetAdditionalImages();
@@ -398,7 +410,9 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
+
                 axios.post(this.baseurl + UPLOAD_IMAGE, formData, config)
+
                     .then(res => {
                         if (res.status === 200) {
                             this.form.product.mainImage = res.data.id;
@@ -412,6 +426,7 @@
                 this.form.additionalImages = [];
                 const files = event.target.files;
                 this.supported.additionalImagesURL = [];
+
 
                 for (let i = 0; i < files.length; i++) {
                     const fileReader = new FileReader();
@@ -435,7 +450,9 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
+
                 axios.post(this.baseurl + UPLOAD_MULTIPLE_IMAGE, formData, config)
+
                     .then(res => {
                         if (res.status === 200) {
                             for (let temp of res.data) {
@@ -480,3 +497,4 @@
         }
     }
 </script>
+

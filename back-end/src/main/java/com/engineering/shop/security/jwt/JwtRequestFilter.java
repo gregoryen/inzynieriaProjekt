@@ -62,7 +62,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
             Collection<SimpleGrantedAuthority> authorities = (Collection<SimpleGrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-            if (!jwtUtil.doUserRolesMatch(jwtToken, authorities)) {
+            if (!jwtUtil.doUserPrivilegesMatch(jwtToken, authorities)) {
                 SecurityContextHolder.getContext().setAuthentication(null);
             }
         }
