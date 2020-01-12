@@ -1,23 +1,24 @@
 import axios from 'axios';
-
-const API_URL = 'http://localhost:8080/';
+import config from '../config'
+const API_URL = config.root;
 
 class AuthService {
   login(user) {
     return axios
-      .post(API_URL + 'logIn', {
+      .post(API_URL + '/logIn', {
         email: user.email,
         password: user.password
-        
       })
       .then(this.handleResponse)
       .then(response => {
 
         if (response.data.jwtToken) {
           response.data.email = user.email;
+          
           localStorage.setItem('user', JSON.stringify(response.data));
-        }
 
+        }
+        
         return response.data;
       });
   }

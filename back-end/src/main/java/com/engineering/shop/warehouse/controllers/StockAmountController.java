@@ -1,20 +1,16 @@
 package com.engineering.shop.warehouse.controllers;
 
-import com.engineering.shop.warehouse.models.Measure;
-import com.engineering.shop.warehouse.models.Supplier;
-import com.google.common.collect.Iterables;
 import com.engineering.shop.warehouse.exceptions.UnprocessableEntityException;
+import com.engineering.shop.warehouse.models.Measure;
 import com.engineering.shop.warehouse.models.StockAmount;
 import com.engineering.shop.warehouse.repositories.StockAmountRepository;
-import com.google.common.collect.Sets;
+import com.google.common.collect.Iterables;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -80,7 +76,7 @@ public class StockAmountController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
     String addStockAmount(@RequestBody StockAmount stockAmount) {
-        if (stockAmount.getProductId()  == null || stockAmount.getMeasure()  == null || stockAmount.getAmount() == null) {
+        if (stockAmount.getProductId() == null || stockAmount.getMeasure() == null || stockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or measure or amount is/are not provided");
         }
         if (stockAmountRepository.existsStockAmountByProductId(stockAmount.getProductId())) {
@@ -118,7 +114,7 @@ public class StockAmountController {
         if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or amount is/are not provided");
         }
-        StockAmount stockAmount  = stockAmountRepository.findStockAmountByProductId(newStockAmount.getProductId()).
+        StockAmount stockAmount = stockAmountRepository.findStockAmountByProductId(newStockAmount.getProductId()).
                 orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with product id"));
 
         Double newAmount = newStockAmount.getAmount();
@@ -144,7 +140,7 @@ public class StockAmountController {
         if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or amount is/are not provided");
         }
-        StockAmount stockAmount  = stockAmountRepository.findStockAmountByProductId(newStockAmount.getProductId()).
+        StockAmount stockAmount = stockAmountRepository.findStockAmountByProductId(newStockAmount.getProductId()).
                 orElseThrow(() -> new ResourceNotFoundException("StockAmount not found with product id"));
         Double newAmount = newStockAmount.getAmount();
         Double oldAmount = stockAmount.getAmount();

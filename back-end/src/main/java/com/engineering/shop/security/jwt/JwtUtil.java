@@ -29,6 +29,7 @@ public class JwtUtil implements Serializable {
     private static final String DEVICE_KEY = "device";
     private static final String ROLE_KEY = "role";
     private static final String NAME_KEY = "name";
+    private static final String LAST_NAME_KEY = "lastName";
     private static final String ENCRYPTION = "RSA";
 
     private PrivateKey privateKey;
@@ -95,7 +96,7 @@ public class JwtUtil implements Serializable {
         Map<String, Object> claims = new HashMap<>();
         claims.put(NAME_KEY, userTokenInformation.getName());
         claims.put(ROLE_KEY, userTokenInformation.getPrivileges());
-
+        claims.put(LAST_NAME_KEY,userTokenInformation.getLastName());
         Date now = new Date();
 
         return Jwts.builder().setClaims(claims)
@@ -110,7 +111,7 @@ public class JwtUtil implements Serializable {
         return Jwts.parser().setSigningKey(publicKey).parseClaimsJws(token).getBody();
     }
 
-    private String getStringClaimFromToken(String token, String key) {
+    public String getStringClaimFromToken(String token, String key) {
         return getCustomClaimFromToken(token, key, String.class);
     }
 

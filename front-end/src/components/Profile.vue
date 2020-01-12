@@ -2,7 +2,7 @@
   <div class="container">
     <header class="jumbotron">
       <h3>
-        <strong>{{currentUser.email}}</strong> Profile
+        <strong>{{currentUser.name + currentUser.lastName}}</strong> Profile
       </h3>
     </header>
     <p>
@@ -14,9 +14,9 @@
       {{currentUser.email}}
     </p>
     <strong>Authorities:</strong>
-    <ul>
-      <li v-for="(role,index) in currentUser.roles" :key="index">{{role}}</li>
-    </ul>
+    <u>
+      <li v-for="(privilege,index) in currentUser.privileges.split(',') " :key="index">{{privilege}}</li>
+    </u>
   </div>
 </template>
 

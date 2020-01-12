@@ -1,32 +1,32 @@
 <template>
   <div id="app">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
-      <a href="#" class="navbar-brand">bezKoder</a>
+      <a href="#" class="navbar-brand">GardenShop</a>
       <div class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a href="/home" class="nav-link">
-            <font-awesome-icon icon="home" /> Home
+          <a href="/" class="nav-link">
+            <font-awesome-icon icon="home" />Home
           </a>
         </li>
-        <li class="nav-item">
-          <a href="/user" class="nav-link" v-if="currentUser">User</a>
-        </li>
       </div>
-
       <div class="navbar-nav ml-auto" v-if="!currentUser">
         <li class="nav-item">
           <a href="/register" class="nav-link">
-            <font-awesome-icon icon="user-plus" /> Sign Up
+            <font-awesome-icon icon="user-plus" />Sign Up
           </a>
         </li>
         <li class="nav-item">
           <a href="/login" class="nav-link">
-            <font-awesome-icon icon="sign-in-alt" /> Login
+            <font-awesome-icon icon="sign-in-alt" />Login
           </a>
         </li>
       </div>
-
       <div class="navbar-nav ml-auto" v-if="currentUser">
+        <li class="nav-item" v-if="ifHavePrivilege('ADMIN_PRIVILEGE')">
+          <a href="/adminPanel" class="nav-link">
+           Admin Panel
+          </a>
+        </li>
         <li class="nav-item">
           <a href="/profile" class="nav-link">
             <font-awesome-icon icon="user" />
@@ -35,7 +35,7 @@
         </li>
         <li class="nav-item">
           <a href class="nav-link" @click="logOut">
-            <font-awesome-icon icon="sign-out-alt" /> LogOut
+            <font-awesome-icon icon="sign-out-alt" />LogOut
           </a>
         </li>
       </div>
@@ -51,28 +51,30 @@
 export default {
   computed: {
     currentUser() {
- 
       return this.$store.state.auth.user;
-    },
-    // showAdminBoard() {
-    //   if (this.currentUser) {
-    //     return this.currentUser.roles.includes('ROLE_ADMIN');
-    //   }
-
-    //   return false;
-    // },
-    // showModeratorBoard() {
-    //   if (this.currentUser) {
-    //     return this.currentUser.roles.includes('ROLE_MODERATOR');
-    //   }
-
-    //   return false;
-    // }
+    }
   },
   methods: {
     logOut() {
-      this.$store.dispatch('auth/logout');
-      this.$router.push('/login');
+      this.$store.dispatch("auth/logout");
+      this.$router.push("/login");
+    },
+    ifHavePrivilege(privilegeName) {
+      if (this.$store.state.auth.status.loggedIn) {
+        
+
+        let userInfo = this.$store.state.auth.user.privileges.split(',');
+
+
+        for (let i = 0; i < userInfo.length; i++) {
+          if (userInfo[i] == privilegeName) {
+            return true;
+          }
+          
+        }
+        return false;
+      }
+      return false;
     }
   }
 };
@@ -105,9 +107,9 @@ h2 {
 }
 
 .small-card-deck {
-    display: flex;
-    margin-right: 3em;
-    margin-left: 3em;
-    margin-bottom: 3em;
+  display: flex;
+  margin-right: 3em;
+  margin-left: 3em;
+  margin-bottom: 3em;
 }
 </style>

@@ -16,7 +16,8 @@ public class UserToUserTokenInformationTransformer implements Transformer<User, 
         Collections.sort(privileges);
         return UserTokenInformation.builder()
                 .email(user.getEmail())
-                .name(user.getFirstName() + " " + user.getLastName())
+                .name(user.getFirstName())
+                .lastName(user.getLastName())
                 .privileges(StringUtils.join(privileges, ','))
                 .build();
     }

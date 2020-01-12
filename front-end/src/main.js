@@ -2,19 +2,21 @@ import Vue from 'vue'
 import App from './App.vue'
 import BootstrapVue from 'bootstrap-vue'
 import VueRouter from 'vue-router'
+
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import Home from './components/Home.vue'
+
+
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
 import AdminPanel from './components/AdminPanel.vue'
 import Profile from './components/Profile.vue'
-
+import Home from './components/Home.vue'
 
 import { ValidationProvider,ValidationObserver } from 'vee-validate';
 import { required, min, max, email} from 'vee-validate/dist/rules';
 import UserServices from './services/user.service'
-import store from './store';
+import store from './store/';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import {
@@ -27,6 +29,18 @@ import {
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
 
+
+import VueCurrencyInput from 'vue-currency-input'
+import ShoppingCart from './components/ShoppingCart'
+import OrderSummary from './components/OrderSummary'
+import AddProduct from "./components/AddProduct";
+
+import Categories from './components/Categories.vue'
+import Products from './components/Products.vue'
+import Product from './components/Product.vue'
+import AddCategory from "./components/AddCategory";
+import DeleteCategory from "./components/DeleteCategory";
+import DeleteProduct from './components/DeleteProduct'
 import { extend } from 'vee-validate';
 
 
@@ -102,8 +116,17 @@ next('/')
   }
   else
   next('/')
-
 }
+const pluginOptions = {
+  globalOptions: { currency: 'PLN' }
+}
+
+Vue.use(VueRouter);
+Vue.use(BootstrapVue);
+Vue.use(VueCurrencyInput, pluginOptions)
+
+Vue.config.productionTip = false;
+
 
 const router = new VueRouter({
   mode: 'history',
@@ -129,18 +152,36 @@ const router = new VueRouter({
       
     },
     {
+      path: '/shoppingCart',
+      component: ShoppingCart
+    },
+    {
+      path: '/orderSummary',
+      component: OrderSummary
+    },
+    {
+      path: '/addProduct',
+      component: AddProduct
+    },
+    {
       path: '/adminPanel',
       name: 'adminPanel',
-      // lazy-loaded
       component: AdminPanel,
       beforeEnter:ifHavePrivilege,
       meta:{
       requiredPrivilege: 'ADMIN_PRIVILEGE' 
       }
     },
-
+  { path: '/product', name: 'product', component: Product },
+  { path: '/products', name: 'products', component: Products },
+  { path: '/categories', name: 'categories', component: Categories },
+  { path: '/addCategory', name: 'addCategory', component: AddCategory},
+  { path: '/addProduct', name: 'addProduct', component: AddProduct },
+  { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
+  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct }
   ]
 })
+
 router.beforeEach((to, from, next) => {
   if (!ifAuthenticated) next('/login')
   else next()
@@ -152,6 +193,6 @@ new Vue({
     value: '',
     email:''
   }),
-
   render: h => h(App),
 }).$mount('#app')
+export const bus = new Vue();
