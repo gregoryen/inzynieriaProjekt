@@ -64,9 +64,13 @@ public class Bucket {
         positions.add(pos);
     }
 
-    public void removeFromPositions(BucketPosition pos){
+    public boolean removeFromPositions(BucketPosition pos){
         for (BucketPosition it : positions){
-            positions.remove(it);
+            if (it == pos) {
+                positions.remove(it);
+                return true;
+            }
         }
+        return false;
     }
 }

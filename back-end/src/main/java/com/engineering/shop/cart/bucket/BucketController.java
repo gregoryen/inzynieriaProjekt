@@ -68,6 +68,7 @@ public class BucketController {
         }
 
         Boolean isInBucket = bucketPositionRepo.existsByProductIdAndBucket(productId, bucket);
+        Boolean isActive = false;
 
         if(isInBucket) {
            position = getBucketPositionByProductId(productId, bucket);
@@ -77,7 +78,13 @@ public class BucketController {
            bucketPositionRepo.save(position);
         } else {
            position = bucketPositionPOJOtoBucketPosition.transform(bucketPositionPOJO);
+           isActive = position.getProduct().isActive();
         }
+
+        if(!isActive){
+            return "Cannot add product to bucket, Product is not avaiable in the warehouse";
+        }
+
         total = position.getProductPrice().multiply(new BigDecimal(position.getProductQuantity()));
         bucket.addToTotalValue(total);
         bucket.addToPositions(position);
