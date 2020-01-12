@@ -142,7 +142,7 @@ public class ReportController {
 //                changesAsString += s + ";";
 //            }
             for (int i = 0; i < changes.size(); i++) {
-                changesAsString += changes.get(i) + (i == changes.size() -1 ? "" : ";");
+                changesAsString += changes.get(i) + (i == changes.size() - 1 ? "" : ";");
             }
             result.put("changes", changesAsString);
         } else {
@@ -150,52 +150,4 @@ public class ReportController {
         }
         return result;
     }
-
-//    @PostMapping("/export")
-//    public String exportToCSVFileFromDatabase(@RequestBody Map<String, String> filepathAndReportId) {
-//        try {
-//            String filepath = filepathAndReportId.get("filepath");
-//            Integer reportId = Integer.parseInt(filepathAndReportId.get("reportId"));
-//
-//            Report report = reportRepository.findByReportId(reportId).
-//                    orElseThrow(() -> new ResourceNotFoundException("Report not found with reportId"));
-//            List<StockAmount> stockAmounts = report.getStockAmountChanges();
-//
-//            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), StandardCharsets.ISO_8859_1));
-//            String separator = ",";
-//            StringBuffer stringBuffer = new StringBuffer();
-//            stringBuffer.append("\"Poprzednia ilosc\",\"Aktualna ilosc\",\"Data zmiany\",\"Info\",\"Produkt\",\"Jednostka\"");
-//            bufferedWriter.write(stringBuffer.toString());
-//            bufferedWriter.newLine();
-//            for (StockAmount stockAmount : stockAmounts) {
-//                stringBuffer = new StringBuffer();
-//                stringBuffer.append("\""+stockAmountChange.getStockAmountChangeId()+"\"");
-//                stringBuffer.append(separator);
-//                stringBuffer.append("\""+stockAmountChange.getPreviousAmount()+"\"");
-//                stringBuffer.append(separator);
-//                stringBuffer.append("\""+stockAmountChange.getCurrentAmount()+"\"");
-//                stringBuffer.append(separator);
-//                stringBuffer.append("\""+stockAmountChange.getChangeDateTime()+"\"");
-//                stringBuffer.append(separator);
-//                String changeInfo = stockAmountChange.getChangeInfo();
-//                if (changeInfo.equals("SOLD_OUT")) {
-//                    changeInfo = "wyprzedano";
-//                } else if (changeInfo.equals("PROVIDED")) {
-//                    changeInfo = "dostarczono";
-//                } else if (changeInfo.equals("SOLD")) {
-//                    changeInfo = "sprzedano";
-//                }
-//                stringBuffer.append("\""+changeInfo+"\"");
-//                stringBuffer.append(separator);
-//                stringBuffer.append("\""+stockAmountChange.getStockAmount().getProductId()+"\"");
-//                bufferedWriter.write(stringBuffer.toString());
-//                bufferedWriter.newLine();
-//            }
-//            bufferedWriter.flush();
-//            bufferedWriter.close();
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//        }
-//        return "Exported";
-//    }
 }

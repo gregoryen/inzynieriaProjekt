@@ -1,30 +1,44 @@
 <template>
     <div id="warehouse-stocks" class="container">
-        {{dateTimes.startDateTime}}
-        <table align="center" class="container">
+        {{dateTimes.startDate}}
+        {{dateTimes.startTime}}
+        <table id="create-report" align="center" class="container">
             <thead>
             <tr>
                 <td>Czas początkowy</td>
                 <td>Czas końcowy</td>
-                <td>Stwórz raport</td>
+                <td></td>
             </tr>
             </thead>
             <tbody>
 
             <tr>
-                <td>
-                    <input v-model="dateTimes.startDateTime" type="datetime-local" min="0001-01-01T00:00"
-                           max="5000-01-01T00:00">
+                <td align="center">
+                    <div class="form-group col-md-6">
+                        <input v-model="dateTimes.startDate" class="form-control" style=" border-right-style: none"
+                               type="date"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <input v-model="dateTimes.startTime" class="form-control" style=" border-left-style: none"
+                               type="time"/>
+                    </div>
 
                 </td>
-                <td>
-                    <input v-model="dateTimes.endDateTime" type="datetime-local" min="0001-01-01T00:00"
-                           max="5000-01-01T00:00">
+                <td align="center">
+                    <div class="form-group col-md-6">
+                        <input v-model="dateTimes.endDate" class="form-control" style=" border-right-style: none"
+                               type="date"/>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <input v-model="dateTimes.endTime" class="form-control" style=" border-left-style: none"
+                               type="time"/>
+                    </div>
 
                 </td>
                 <td>
                     <button
-                            :disabled='dateTimes.startDateTime === "" || dateTimes.endDateTime === ""'
+                            :disabled='dateTimes.startDate === "" || dateTimes.endDate === "" ||
+                                        dateTimes.startTime === "" || dateTimes.endTime === ""'
                             class="btn btn-success form-control" v-on:click="createReport">Stwórz
                     </button>
                 </td>
@@ -34,8 +48,8 @@
         </table>
         {{dateTimes.endDateTime}}
 
-        <h1>Stany magazynowe</h1>
-        <table id="stocks" align="center" class="container">
+        <h1 id="stocks-h1">Stany magazynowe</h1>
+        <table id="show-stocks" align="center" class="container">
             <thead>
             <tr>
                 <td>Nazwa</td>
@@ -55,61 +69,54 @@
             </tr>
             </tbody>
         </table>
-        <!--        <div>-->
-        <!--            <input type="file">-->
-        <!--        </div>-->
-        <h3>Raporty</h3>
-        <div v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
-            <strong>{{report.disabled}}</strong>
-
-            <table align="center" class="container">
+        <h3 id="reports-h3">Raporty</h3>
+        <div id="show-reports" v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
+            <form>
+                <table align="center" class="container">
+                    <thead>
+                    <tr>
+                        <td>Utworzony:</td>
+                        <td>Czas początkowy:</td>
+                        <td>Czas końcowy:</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>{{report.creationDateTime}}</td>
+                        <td>{{report.startDateTime}}</td>
+                        <td>{{report.endDateTime}}</td>
+                        <td>
+                            <download-csv
+                                    class="btn btn-default"
+                                    :data="getReport(index)"
+                                    name="filename.csv"
+                            >
+                                pobierz
+                                <img src="../assets/download_icon.png">
+                            </download-csv>
+                        </td>
+                        <td>
+                            <button class="form-control" @click="disable(index)">
+                                <strong v-if="report.disabled">schowaj</strong>
+                                <strong v-else>pokaż</strong>
+                            </button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </form>
+            <table class="table" v-if="report.disabled === true">
                 <thead>
                 <tr>
-                    <td>Utworzony:</td>
-                    <td>Czas początkowy:</td>
-                    <td>Czas końcowy:</td>
-                    <td></td>
                     <td></td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td>{{report.creationDateTime}}</td>
-                    <td>{{report.startDateTime}}</td>
-                    <td>{{report.endDateTime}}</td>
-                    <td>
-<!--                        <form>-->
-<!--                            <div class="custom-file">-->
-<!--                                <input type="file" class="custom-file-input" placeholder="Eksport">-->
-<!--                                <label class="custom-file-label">Wybierz plik</label>-->
-<!--                            </div>-->
-<!--                        </form>-->
-<!--                        <download-csv-->
-<!--                                :data   = "json_data">-->
-<!--                            Download Data-->
-<!--                            <img src="download_icon.png">-->
-<!--                        </download-csv>-->
-                        <download-csv
-                                class   = "btn btn-default"
-                                :data   = "getReport(index)"
-                                name    = "filename.csv"
-                                @click = "download(index)"
-                        >
-                            pobierz
-                            <img src="../assets/download_icon.png">
-                        </download-csv>
-                    </td>
-                    <td>
-                        <button class="form-control" @click="disable(index)">pokaż</button>
-                    </td>
+                <tr align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">
+                    <td>{{change}}</td>
                 </tr>
-                </tbody>
             </table>
-            <ul v-if="report.disabled === true">
-                <li align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">
-                    {{change}}
-                <li/>
-            </ul>
         </div>
     </div>
 </template>
@@ -139,15 +146,17 @@
             return {
                 reports: [],
                 dateTimes: {
-                    startDateTime: "",
-                    endDateTime: ""
+                    startDate: "",
+                    startTime: "",
+                    endDate: "",
+                    endTime: ""
                 },
                 stocks: []
             }
         },
         methods: {
             getReport: function (index) {
-                return this.reports[index];
+                return JSON.parse("[" + JSON.stringify(this.reports[index]) + "]");
             },
             disable: function (index) {
                 Vue.set(this.reports[index], 'disabled', !this.reports[index].disabled);
@@ -165,7 +174,7 @@
                     this.reports[i].creationDateTime = this.parseLocalDateTime(this.reports[i].creationDateTime);
                     this.reports[i].startDateTime = this.parseLocalDateTime(this.reports[i].startDateTime);
                     this.reports[i].endDateTime = this.parseLocalDateTime(this.reports[i].endDateTime);
-                    this.reports[i].disabled = true;
+                    this.reports[i].disabled = false;
                 }
 
                 // eslint-disable-next-line no-console
@@ -177,17 +186,33 @@
                 res = res.substr(0, 16);
                 return res;
             },
+            joinDateWithTime: function (date, time) {
+                date = date.toString();
+                time = time.toString();
+                let dateTime = date + "T" + time + ":00";
+
+                return dateTime;
+            },
             createReport: async function () {
-                if (Date.parse(this.dateTimes.startDateTime.toString()) >=
-                    Date.parse(this.dateTimes.endDateTime.toString())) {
+                let startDateTime = this.joinDateWithTime(this.dateTimes.startDate, this.dateTimes.startTime);
+                let endDateTime = this.joinDateWithTime(this.dateTimes.endDate, this.dateTimes.endTime);
+
+                // eslint-disable-next-line no-console
+                console.log(Date.parse(startDateTime));
+
+                // eslint-disable-next-line no-console
+                console.log(Date.parse(endDateTime));
+
+                if (Date.parse(startDateTime) >=
+                    Date.parse(endDateTime)) {
                     alert("data poczatkowa musi byc mniejsza niz koncowa");
                 } else {
-                    let start = this.dateTimes.startDateTime;
-                    let end = this.dateTimes.endDateTime;
+                    let start = startDateTime;
+                    let end = endDateTime;
                     start = start.replace("T", "");
                     end = end.replace("T", "");
-                    start += ":00";
-                    end += ":00";
+                    // start += ":00";
+                    // end += ":00";
 
                     let res = await this.postReport(start, end);
                     // eslint-disable-next-line no-console
@@ -201,9 +226,9 @@
                         this.reports.push(
                             {
                                 reportId: res.data.reportId,
-                                creationDateTime: res.data.creationDateTime,
-                                startDateTime: res.data.startDateTime,
-                                endDateTime: res.data.endDateTime,
+                                creationDateTime: this.parseLocalDateTime(res.data.creationDateTime),
+                                startDateTime: this.parseLocalDateTime(res.data.startDateTime),
+                                endDateTime: this.parseLocalDateTime(res.data.endDateTime),
                                 changes: tmp
                             }
                         );
@@ -252,3 +277,27 @@
         }
     };
 </script>
+
+<style scoped>
+
+    #create-report {
+        margin-top: 50px;
+    }
+
+    #stocks-h1 {
+        margin-top: 100px;
+    }
+
+    #reports-h3 {
+        margin-top: 100px;
+    }
+
+    #show-reports {
+        margin-bottom: 30px;
+    }
+
+    #warehouse-stocks {
+        margin-bottom: 150px;
+    }
+
+</style>
