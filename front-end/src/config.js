@@ -1,5 +1,5 @@
 export default {
-    root: "http://localhost:8100",
+    root: "http://localhost:8080",
     token: "eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiUkVBRF9QUklWSUxFR0UiLCJuYW1lIjoic2Rhc2QgZGFzZGFzZCIsInN1YiI6InNkYXNkQHNhZHNkLmNvbSIsImlhdCI6MTU3NjUwOTMyOCwiZXhwIjoxNTc5MTAxMzI4fQ.F_hZrlXxYzJGGRKEDV1VTMI1Vn0NOkxO7DriM8xJwWpCTwSa36KL8hpENN8q_Vp9ARwOXNRBYBw3X6Ed5cKgms_gGNxsy8oTYmx_nyLPXBNSBeQp2GgGeyWyaQnwFDZ-u-mgACUcaf5VO2-z6-SsfA1Gn8zycaUEiTs-4Ni388O8JZkB2HYcRzm3tERWDPNnw4mBOSGru3mJbh5kFfAV1JbgGfh2MVW_lA_hCknkqdoIN4y_gJTgZZ0mP2Xd6p6sH7tIloEPlhqQAQT9P_ZPMIzz_-3AqQTt1_9GiNJHu0iFRgUdvXFS862z8LnjAaa6WI3O4Rt5yGEWFA20-t1mpA",
     bucketId: "89ceb2e3-bc0e-4242-95fc-8eef1ab16f29"
 };
