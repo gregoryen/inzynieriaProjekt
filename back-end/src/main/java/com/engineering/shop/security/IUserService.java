@@ -5,4 +5,5 @@ import com.engineering.shop.users.UserSignUpPOJO;
 
 public interface IUserService {
     User registerNewUserAccount(UserSignUpPOJO account);
+    //User changeUserData(UserSignUpPOJO account);
 }
