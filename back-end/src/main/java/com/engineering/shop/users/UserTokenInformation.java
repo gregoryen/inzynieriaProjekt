@@ -14,7 +14,8 @@ import lombok.Getter;
 public class UserTokenInformation {
 	private long Id;
     private String email;
-    private String name;
+    private String firstName;
+    private String lastName;
     private String privileges;
     private List<Role> roles;
     public long getId() {
@@ -26,12 +27,7 @@ public class UserTokenInformation {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 	public String getPrivileges() {
 		return privileges;
 	}
@@ -41,6 +37,12 @@ public class UserTokenInformation {
 	
 	public List<Role> getRoles() {
 		return roles;
+	}
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
     
     
