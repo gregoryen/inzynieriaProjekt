@@ -46,6 +46,14 @@ public class AuthenticationController {
     public ResponseEntity signUp(@RequestBody UserSignUpPOJO accountDetails) {
         return createUserAccount(accountDetails) ? new ResponseEntity(HttpStatus.CREATED) : new ResponseEntity(HttpStatus.CONFLICT);
     }
+    
+    @PutMapping(path = "modify", consumes = "application/json")
+    @ResponseBody
+    public ResponseEntity modify(@RequestBody User modifyDetails) {
+    	System.out.println("AuthenticationController modyfikacja: "+modifyDetails);
+    	userService.updateUser(modifyDetails);
+    	return null;
+    }
 
     @PostMapping(path = "logIn", consumes = "application/json")
     @ResponseBody
@@ -73,7 +81,8 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtResponse(token,
         										 userTokenInformation.getId(),
         										 userTokenInformation.getEmail(),
-        										 userTokenInformation.getName(),
+        										 userTokenInformation.getFirstName(),
+        										 userTokenInformation.getLastName(),
         										 userTokenInformation.getPrivileges()
         										 ));
     }
@@ -105,4 +114,6 @@ public class AuthenticationController {
             return false;
         }
     }
+    
+    
 }
