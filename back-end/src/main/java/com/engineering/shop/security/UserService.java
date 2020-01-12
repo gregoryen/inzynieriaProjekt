@@ -4,8 +4,13 @@ import com.engineering.shop.users.*;
 import com.engineering.shop.users.exceptions.EmailAlreadyUsedException;
 import com.engineering.shop.users.exceptions.UserException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Service("userService")
 public class UserService implements IUserService {
@@ -47,4 +52,33 @@ public class UserService implements IUserService {
 
         return alreadyRegistered != null;
     }
+    
+    //@PutMapping(path = "modify", consumes = "application/json")
+    //@ResponseBody
+    public ResponseEntity<Object> updateUser(@RequestBody User userDetails) {
+    	//Optional<UserSignUpPOJO> userOptional = user
+    	//long id = 19;
+    	//getUserDetailsForToken(userDetails.getEmail());
+    	//User user = transformer.transform(userDetails);
+    	User trueUser = userRepository.getById(userDetails.getId());
+    	//userDetails.setId(trueUser.getId());
+    	userDetails.setPassword(trueUser.getPassword());
+    	userDetails.setRoles(trueUser.getRoles());
+    	System.out.println("UserService userDetails: " + userDetails);
+    	//user.setId(id);
+    	userRepository.save(userDetails);
+    	
+    	return ResponseEntity.noContent().build();
+    	
+    }
+    
+    //@Override
+    public User changeUserData(UserSignUpPOJO account) throws UserException {
+    	User user = transformer.transform(account);
+    	
+		return null;
+    	
+    }
+    
+    
 }
