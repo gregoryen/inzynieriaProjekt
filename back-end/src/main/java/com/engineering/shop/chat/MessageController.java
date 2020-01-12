@@ -2,6 +2,7 @@ package com.engineering.shop.chat;
 
 import com.engineering.shop.users.UserRoleType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -26,21 +27,23 @@ public class MessageController {
     }
 
     @PostMapping
-    public Message addMessage(@RequestBody Message message) {
+    public ResponseEntity addMessage(@RequestBody Message message) {
         Authentication token = SecurityContextHolder.getContext().getAuthentication();
         String email = token.getName();
         Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
 
-        if (roles.contains(UserRoleType.ADMIN.name())) {
+        if (roles.contains(UserRoleType.ADMIN.name()))
             message.setSender(null);
-            notification.sendNotification(message.getReceiver());
-        }
         else
             message.setSender(email);
 
-        if( messageValidator.validate(message))
-            return messageRepository.save(message);
-        return null;
+        if( messageValidator.validate(message) ) {
+            Message savedMessage = messageRepository.save(message);
+            if(roles.contains(UserRoleType.ADMIN.name()))
+                notification.setNotification(savedMessage.getId());
+            return ResponseEntity.ok().body(savedMessage); //200
+        }
+        return ResponseEntity.badRequest().body("Wrong message"); //400
     }
 
     @GetMapping
