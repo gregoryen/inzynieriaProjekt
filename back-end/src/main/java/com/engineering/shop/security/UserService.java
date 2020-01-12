@@ -3,8 +3,16 @@ package com.engineering.shop.security;
 import com.engineering.shop.users.*;
 import com.engineering.shop.users.exceptions.EmailAlreadyUsedException;
 import com.engineering.shop.users.exceptions.UserException;
+
+import java.util.Arrays;
+import java.util.Calendar;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +26,14 @@ public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final UserSignUpPOJOToUserTransformer transformer;
     private final PasswordEncoder encoder;
+    private PasswordResetTokenRepository passwordTokenRepository;
 
     @Autowired
-    public UserService(PasswordEncoder encoder, UserRepository userRepository, UserSignUpPOJOToUserTransformer transformer) {
+    public UserService(PasswordEncoder encoder, UserRepository userRepository, UserSignUpPOJOToUserTransformer transformer, PasswordResetTokenRepository passwordTokenRepository) {
         this.encoder = encoder;
         this.userRepository = userRepository;
         this.transformer = transformer;
+        this.passwordTokenRepository = passwordTokenRepository;
     }
 
     @Override
@@ -79,6 +89,39 @@ public class UserService implements IUserService {
 		return null;
     	
     }
-    
-    
+
+	@Override
+	public void createPasswordResetTokenForUser(User user, String token) {
+		PasswordResetToken myToken = new PasswordResetToken(token, user);
+		
+		System.out.println("User = " + user);
+		System.out.println("token = "+token);
+		System.out.println("myToken = " + myToken);
+		passwordTokenRepository.save(myToken);
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String validatePasswordResetToken(long id, String token) {
+        final PasswordResetToken passToken = passwordTokenRepository.findByToken(token);
+        if ((passToken == null) || (passToken.getUser().getId() != id)) {
+            return "invalidToken";
+        }
+
+        final Calendar cal = Calendar.getInstance();
+        if ((passToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
+            return "expired";
+        }
+
+        final User user = passToken.getUser();
+        final Authentication auth = new UsernamePasswordAuthenticationToken(user, null, Arrays.asList(new SimpleGrantedAuthority("CHANGE_PASSWORD_PRIVILEGE")));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        return null;
+    }
+	
+	public void changeUserPassword(final User user, final String password) {
+        user.setPassword(encoder.encode(password));
+        userRepository.save(user);
+    }
 }
