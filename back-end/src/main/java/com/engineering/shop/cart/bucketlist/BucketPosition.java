@@ -1,82 +1,57 @@
 package com.engineering.shop.cart.bucketlist;
 
+import com.engineering.shop.cart.bucket.Bucket;
 import com.engineering.shop.products.Product;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import lombok.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
 
+
 @Entity
+@Builder(access = AccessLevel.PUBLIC)
 @Getter
 @Setter
-@Table(name="BucketPosition")
+@Table(name="bucket_position")
+@AllArgsConstructor
 public class BucketPosition extends RepresentationModel<BucketPosition> {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "position_id")
     private Integer id;
-
-    @NotNull
     @ManyToOne
     private Product product;
-
-    private String bucketIndex;
-    @NotNull
-    private int productQuantity;
+   // @NotNull
+    private String productName;
     @NotNull
     private BigDecimal productPrice;
+    @NotNull
+    private int productQuantity;
+
+    @ManyToOne
+    @JoinColumn(name="bucket_id")
+    @JsonIgnore
+    private Bucket bucket;
 
     public BucketPosition(){
-
     }
 
-    public BucketPosition( Product product, int productQuantity, BigDecimal price) {
+    public BucketPosition( Product product, int productQuantity, Bucket bucket) {
 
         this.product = product;
+        this.productName = product.getName();
         this.productQuantity = productQuantity;
-        this.productPrice = price;
+        this.productPrice = product.getPrice();
+        this.bucket = bucket;
 
     }
-/*
-    public void setBucketIndex(String bucketIndex) {
-        this.bucketIndex = bucketIndex;
-    }
 
-    public void setProductQuantity(Integer productQuantity) {
-        this.productQuantity = productQuantity;
-    }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public String getBucketIndex() {
-        return bucketIndex;
-    }
-
-    public int getProductQuantity() {
-        return productQuantity;
-    }
-
-    public BigDecimal getProductPrice() {
-        return productPrice;
-    } */
-
-    public void increaseProductQuantity(){
-        this.productQuantity+=1;
-    }
-
-    public void decreaseProductQuantity(){
-        if (this.productQuantity > 0 ) {
-            this.productQuantity-=1;
-        }
-    }
 }
