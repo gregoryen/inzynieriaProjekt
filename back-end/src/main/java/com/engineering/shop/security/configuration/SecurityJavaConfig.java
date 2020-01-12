@@ -94,7 +94,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
-
                 .antMatchers("/bucket", "/bucket/**").permitAll()
                 .antMatchers("/bucketPosition", "/bucketPosition/**").permitAll()
                 .antMatchers("/order", "/order/**").permitAll()
@@ -117,4 +116,3 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
 
 }
-
