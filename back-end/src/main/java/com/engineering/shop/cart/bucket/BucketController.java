@@ -95,9 +95,9 @@ public class BucketController {
         return bucketRepo.findAll();
     }
 
-    @GetMapping("/getBucketById/{bucketId}")
-    public Optional<Bucket> findAll (@PathVariable("id") String token) {
-        return bucketRepo.findByToken(token);
+    @GetMapping("/getBucketById/{token}")
+    public Bucket findByToken (@PathVariable("token") String token) {
+        return getBucketByToken(token);
     }
 
     // usuwanie calego koszyka
