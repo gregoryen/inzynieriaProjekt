@@ -138,8 +138,11 @@ public class ReportController {
             result.put("startDateTime", report.getStartDateTime().format(f));
             result.put("endDateTime", report.getEndDateTime().format(f));
             String changesAsString = "";
-            for (String s : changes) {
-                changesAsString += s + ";";
+//            for (String s : changes) {
+//                changesAsString += s + ";";
+//            }
+            for (int i = 0; i < changes.size(); i++) {
+                changesAsString += changes.get(i) + (i == changes.size() -1 ? "" : ";");
             }
             result.put("changes", changesAsString);
         } else {

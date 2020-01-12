@@ -77,15 +77,38 @@
                     <td>{{report.creationDateTime}}</td>
                     <td>{{report.startDateTime}}</td>
                     <td>{{report.endDateTime}}</td>
-                    <td><input type="file"></td>
                     <td>
-                        <button @click="disable(index)">pokaż</button>
+<!--                        <form>-->
+<!--                            <div class="custom-file">-->
+<!--                                <input type="file" class="custom-file-input" placeholder="Eksport">-->
+<!--                                <label class="custom-file-label">Wybierz plik</label>-->
+<!--                            </div>-->
+<!--                        </form>-->
+<!--                        <download-csv-->
+<!--                                :data   = "json_data">-->
+<!--                            Download Data-->
+<!--                            <img src="download_icon.png">-->
+<!--                        </download-csv>-->
+                        <download-csv
+                                class   = "btn btn-default"
+                                :data   = "getReport(index)"
+                                name    = "filename.csv"
+                                @click = "download(index)"
+                        >
+                            pobierz
+                            <img src="../assets/download_icon.png">
+                        </download-csv>
+                    </td>
+                    <td>
+                        <button class="form-control" @click="disable(index)">pokaż</button>
                     </td>
                 </tr>
                 </tbody>
             </table>
             <ul v-if="report.disabled === true">
-                <li align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">{{change}}<li/>
+                <li align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">
+                    {{change}}
+                <li/>
             </ul>
         </div>
     </div>
@@ -94,6 +117,9 @@
 <script>
     import axios from 'axios';
     import Vue from 'vue';
+    import JsonCSV from 'vue-json-csv';
+
+    Vue.component('downloadCsv', JsonCSV);
 
     const URL = 'http://localhost:8100';
     const STOCKS = '/stock_amounts/last_updated';
@@ -120,6 +146,9 @@
             }
         },
         methods: {
+            getReport: function (index) {
+                return this.reports[index];
+            },
             disable: function (index) {
                 Vue.set(this.reports[index], 'disabled', !this.reports[index].disabled);
                 this.reports = this.reports.slice();
