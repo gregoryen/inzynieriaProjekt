@@ -42,13 +42,16 @@
     </nav>
 
     <div class="container">
+      <Categories/>
       <router-view />
     </div>
   </div>
 </template>
 
 <script>
+import Categories from "./components/Categories";
 export default {
+  components: {Categories},
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
@@ -61,13 +64,13 @@ export default {
     },
     ifHavePrivilege(privilegeName) {
       if (this.$store.state.auth.status.loggedIn) {
-        
+
         let userInfo = this.$store.state.auth.user.privileges.split(',');
         for (let i = 0; i < userInfo.length; i++) {
           if (userInfo[i] == privilegeName) {
             return true;
           }
-          
+
         }
         return false;
       }
