@@ -24,6 +24,7 @@ export default {
     axios.get(globalConfig.root + "/categories/tree").then(response => {
       this.categories = response.data;
     });
+    this.emitAllProducts();
   },
   methods: {
     emitAllProducts() {
