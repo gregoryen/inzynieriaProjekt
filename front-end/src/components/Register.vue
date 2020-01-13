@@ -24,7 +24,7 @@
           </div>
           <div class="form-group">
             <label for="email">Email</label>
-            <validation-provider rules="required|min:3|max:20|email" v-slot="{ errors }">
+            <validation-provider rules="required|min:3|max:50|email" v-slot="{ errors }">
               <input v-model="user.email" name="email" type="text" class="form-control"/>
               <span>{{ errors[0] }}</span>
             </validation-provider>
