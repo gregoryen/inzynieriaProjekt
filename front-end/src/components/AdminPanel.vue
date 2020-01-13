@@ -97,94 +97,33 @@
 </template>
 
 <script>
-import axios from "axios";
 export default {
   name: "AdminPanel",
   data() {
     return {
       changeMainTable: "empty",
-      items: [{ option: "Show users" }, { option: "Show roles" }],
-      mainTable: [],
+      mainTable: []
     };
   },
   methods: {
-    getUsersTable() {
-      /* eslint-disable no-console */
-      console.log("users");
-      this.mainTable = this.users;
-      this.changeMainTable = "users";
+    getUsersResponseData() {
+      this.$store.dispatch("admin/getUsers").then(() => {
+        this.setDataFromStore();
+      });
     },
-    getRolesTable() {
-      /* eslint-disable no-console */
-      console.log("roles");
-      this.mainTable = this.roles;
-      this.changeMainTable = "roles";
+    getRolesResponseData() {
+      this.$store.dispatch("admin/getRoles").then(() => {
+        this.setDataFromStore();
+      });
     },
-    getUsersResponseData: function() {
-      var root = "http://localhost:8080";
-      var token = this.$store.state.auth.user.jwtToken
-       const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
-      axios
-        .get(root + "/users", config)
-        .then(response => {
-          /* eslint-disable no-console */
-          console.log(response.data._embedded.users);
-          this.mainTable = response.data._embedded.users;
-          this.changeMainTable = "users";
-        })
-        .catch(error => {
-          /* eslint-disable no-console */
-          console.log(error);
-        });
+    getPrivilegesResponseData() {
+      this.$store.dispatch("admin/getPrivileges").then(() => {
+        this.setDataFromStore();
+      });
     },
-    getRolesResponseData: function() {
-      var root = "http://localhost:8080";
-      var token = this.$store.state.auth.user.jwtToken
-           const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
-      axios
-        .get(root + "/roles", config)
-        .then(response => {
-          /* eslint-disable no-console */
-          console.log(response.data._embedded.roles);
-          this.mainTable = response.data._embedded.roles;
-          this.changeMainTable = "roles";
-        })
-        .catch(error => {
-          /* eslint-disable no-console */
-          console.log(error);
-        });
-    },
-        getPrivilegesResponseData: function() {
-      var root = "http://localhost:8080";
-      var token = this.$store.state.auth.user.jwtToken
-            const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
-      axios
-        .get(root + "/privileges", config)
-        .then(response => {
-          /* eslint-disable no-console */
-          console.log(response.data._embedded.privileges);
-          this.mainTable = response.data._embedded.privileges;
-          this.changeMainTable = "privileges";
-        })
-        .catch(error => {
-          /* eslint-disable no-console */
-          console.log(error);
-        });
+    setDataFromStore() {
+      this.mainTable = this.$store.state.admin.mainTable;
+      this.changeMainTable = this.$store.state.admin.changeMainTable;
     }
   }
 };
