@@ -2,9 +2,7 @@ package com.engineering.shop.products;
 
 import com.engineering.shop.categories.CategoriesRepo;
 import com.engineering.shop.categories.Category;
-import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
-import com.engineering.shop.products.exception.ProductCreateException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
