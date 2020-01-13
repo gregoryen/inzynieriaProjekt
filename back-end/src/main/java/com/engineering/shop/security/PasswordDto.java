@@ -2,20 +2,22 @@ package com.engineering.shop.security;
 
 public class PasswordDto {
 
-    private String oldPassword;
+    private String changeId;
 
    
     private String newPassword;
 
-    public String getOldPassword() {
-        return oldPassword;
-    }
+    
 
-    public void setOldPassword(String oldPassword) {
-        this.oldPassword = oldPassword;
-    }
+    public String getChangeId() {
+		return changeId;
+	}
 
-    public String getNewPassword() {
+	public void setChangeId(String changeId) {
+		this.changeId = changeId;
+	}
+
+	public String getNewPassword() {
         return newPassword;
     }
 
