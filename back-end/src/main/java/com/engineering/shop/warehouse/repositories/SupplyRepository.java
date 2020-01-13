@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface SupplyRepository extends CrudRepository<Supply, Integer> {
-
     Optional<Supply> findBySupplyId(Integer supplyId);
 }

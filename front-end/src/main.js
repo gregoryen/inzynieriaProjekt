@@ -34,6 +34,10 @@ import VueCurrencyInput from 'vue-currency-input'
 import ShoppingCart from './components/ShoppingCart'
 import OrderSummary from './components/OrderSummary'
 import AddProduct from "./components/AddProduct";
+import Home from './components/Home'
+import AdminPanel from './components/AdminPanel'
+import WarehouseSupplyForm from './components/WarehouseSupplyForm';
+import StockAmounts from './components/StockAmounts';
 
 import Categories from './components/Categories.vue'
 import Products from './components/Products.vue'
@@ -171,7 +175,15 @@ const router = new VueRouter({
       beforeEnter:ifHavePrivilege,
       meta:{
       requiredPrivilege: 'ADMIN_PRIVILEGE'
-      }
+      },
+    {
+      path: '/warehouseSupplyForm',
+      component: WarehouseSupplyForm
+    },
+    {
+      path: '/StockAmounts',
+      component: StockAmounts
+    }
     },
   { path: '/product', name: 'product', component: Product },
   { path: '/products', name: 'products', component: Products },
