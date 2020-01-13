@@ -42,16 +42,13 @@
     </nav>
 
     <div class="container">
-      <Categories/>
       <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import Categories from "./components/Categories";
 export default {
-  components: {Categories},
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
