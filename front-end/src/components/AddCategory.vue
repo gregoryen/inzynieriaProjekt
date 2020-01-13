@@ -114,6 +114,7 @@
     import Treeselect from '@riophae/vue-treeselect'
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import globalConfig from '../config'
 
     const CATEGORIES_CHILDREN = '/categories/children';
     const CATEGORIES_TREE = '/categories/tree';
@@ -123,9 +124,6 @@
     export default {
         // register the component
         components: {Treeselect},
-        props: {
-            baseurl: String
-        },
         data() {
             return {
                 form: {
@@ -178,7 +176,7 @@
                             'content-type': 'application/json'
                         },
                     };
-                    axios.post(this.baseurl + ADD_CATEGORIES, this.form, config)
+                    axios.post(globalConfig.root + ADD_CATEGORIES, this.form, config)
                         .then(() => {
                             this.showSuccessModal()
                         }).catch(() => {
@@ -234,7 +232,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.get(this.baseurl + CATEGORIES_CHILDREN, config)
+                axios.get(globalConfig.root + CATEGORIES_CHILDREN, config)
                     .then(res => {
                             if (res.status === 200) {
                                 for (let i = 0; i < res.data.length; i++) {
@@ -261,7 +259,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.get(this.baseurl + CATEGORIES_MAIN, config)
+                axios.get(globalConfig.root + CATEGORIES_MAIN, config)
                     .then(res => {
                             if (res.status === 200) {
                                 for (let i = 0; i < res.data.length; i++) {
@@ -313,7 +311,7 @@
                     }
                 };
 
-                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                axios.get(globalConfig.root + CATEGORIES_TREE, config)
                     .then(res => {
                             if (res.status === 200) {
                                 this.supported.treeCategories = this.createBranch(res.data);

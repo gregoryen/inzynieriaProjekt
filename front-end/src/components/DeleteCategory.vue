@@ -48,6 +48,7 @@
     import axios from 'axios';
     import Treeselect from '@riophae/vue-treeselect'
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import globalConfig from '../config'
 
     const CATEGORIES_TREE = '/categories/tree';
     const CATEGORIES = '/categories';
@@ -55,9 +56,6 @@
 
     export default {
         components: {Treeselect},
-        props: {
-            baseurl: String
-        },
         data() {
             return {
                 categoryId: null,
@@ -96,7 +94,7 @@
                             'content-type': 'application/json'
                         }
                     };
-                    axios.delete(this.baseurl + CATEGORIES, config)
+                    axios.delete(globalConfig.root + CATEGORIES, config)
                         .then(() => {
                                 this.showSuccessModal()
                             }
@@ -136,13 +134,13 @@
                     }
                 };
                 let categoriesWithoutProducts = [];
-                axios.get(this.baseurl + CATEGORIES_WITHOUT_PRODUCTS, config)
+                axios.get(globalConfig.root + CATEGORIES_WITHOUT_PRODUCTS, config)
                     .then(res => {
                             if (res.status === 200) {
                                 for (let temp of res.data) {
                                     categoriesWithoutProducts.push(temp.id);
                                 }
-                                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                                axios.get(globalConfig.root + CATEGORIES_TREE, config)
                                     .then(res => {
                                             if (res.status === 200) {
                                                 this.treeCategories = this.createBranch(res.data, categoriesWithoutProducts);

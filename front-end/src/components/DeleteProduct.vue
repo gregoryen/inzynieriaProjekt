@@ -20,7 +20,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.id">
-                            <DeleteProductHeader :productHeader="productHeader" :baseurl="baseurl"/>
+                            <DeleteProductHeader :productHeader="productHeader" />
                         </div>
                     </div>
                 </div>
@@ -37,6 +37,7 @@
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     import DeleteProductHeader from "./DeleteProductHeader.vue";
+    import globalConfig from '../config'
 
     const CATEGORIES_TREE = '/categories/tree';
     const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
@@ -77,7 +78,7 @@
                 if (this.categoryId) {
                     axios
                         .get(
-                            this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.categoryId
+                            globalConfig.root + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.categoryId
                         )
                         .then(response => {
                             this.productsHeader = response.data._embedded.products;
@@ -90,7 +91,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                axios.get(globalConfig.root + CATEGORIES_TREE, config)
                     .then(res => {
                             if (res.status === 200) {
                                 this.treeCategories = this.createBranch(res.data);
