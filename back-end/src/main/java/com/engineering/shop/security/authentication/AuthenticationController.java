@@ -164,7 +164,7 @@ public class AuthenticationController {
     
     
     private String getAppUrl(HttpServletRequest request) {
-        return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+        return "http://" + request.getServerName() + ":" + "8081" + request.getContextPath();
     }
     
     private SimpleMailMessage constructResetTokenEmail(final String contextPath, final Locale locale, final String token, final User user) {
@@ -200,8 +200,8 @@ public class AuthenticationController {
     @ResponseBody
     public GenericResponse  savePassword(final Locale locale, @Valid @RequestBody PasswordDto passwordDto) {
     	System.out.println("new password = " + passwordDto.getNewPassword());
-    	System.out.println("old password = " + passwordDto.getOldPassword());
-    	String temp = passwordDto.getOldPassword();
+    	System.out.println("old password = " + passwordDto.getChangeId());
+    	String temp = passwordDto.getChangeId();
     	Long tempL = Long.parseLong(temp);
         final User user = userRepository.getById(tempL);
         userService.changeUserPassword(user, passwordDto.getNewPassword());
