@@ -199,9 +199,9 @@
             </b-row>
         </b-container>
 
-        <b-card class="mt-3" header="Form Data Result">
+<!--        <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
-        </b-card>
+        </b-card>-->
 
         <b-modal ref="successCreate" hide-footer title="Utworzono nowy produkt">
             <div class="d-block text-center">
@@ -244,7 +244,6 @@
     const PRODUCTS = '/products';
     const UPLOAD_IMAGE = '/images/uploadImage';
     const UPLOAD_MULTIPLE_IMAGE = '/images/uploadMultipleImages';
-    const WAREHOUSE = '/stock_amounts/add_empty';
     const CATEGORIES_TREE = '/categories/tree';
 
     export default {
@@ -348,11 +347,7 @@
                             },
                         };
                         axios.post(this.baseurl + PRODUCTS, this.form, config)
-                            .then((res) => {
-                                axios.post(this.baseurl + WAREHOUSE, {
-                                    productId: res.id,
-                                    measure: 'UNIT',
-                                }, config);
+                            .then(() => {
                                 this.showSuccessModal();
                             }).catch(() => {
                             this.showFailModal();
