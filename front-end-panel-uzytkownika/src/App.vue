@@ -31,10 +31,13 @@
 
       <div class="navbar-nav ml-auto" v-if="currentUser">
         <li class="nav-item">
-          <a href="/profile" class="nav-link">
+		
+			<a href="/profile" class="nav-link">
             <font-awesome-icon icon="user" />
-            {{userFirstName}} {{userLastName}}
+            {{currentUser.firstName}} {{currentUser.lastName}}
+			
           </a>
+		
         </li>
         <li class="nav-item">
           <a href class="nav-link" @click="logOut">
@@ -54,8 +57,17 @@
 export default {
   computed: {
     currentUser() {
-      return this.$store.state.auth.user;
+	
+	
+	
+	return this.$store.state.auth.user;
+	
+	
+	
+	
+      
     },
+	
     showAdminBoard() {
       if (this.currentUser) {
         //return this.currentUser.roles.includes('ROLE_ADMIN');
@@ -71,13 +83,7 @@ export default {
       return false;
     }
   },
-  data() {
-	return {
-	userFirstName: this.$store.state.auth.user.firstName,
-	userLastName: this.$store.state.auth.user.lastName
-	}
-		
-  },
+  
   methods: {
     logOut() {
       this.$store.dispatch('auth/logout');
