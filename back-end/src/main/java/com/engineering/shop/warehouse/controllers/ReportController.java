@@ -83,4 +83,13 @@ public class ReportController {
         }
         return result;
     }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @DeleteMapping(path = "/delete")
+    public Map<String, String> deleteReport(@RequestParam Integer reportId) {
+        Map<String, String> result = new HashMap<>();
+        reportRepository.deleteById(reportId);
+        result.put("status", "removed");
+        return  result;
+    }
 }

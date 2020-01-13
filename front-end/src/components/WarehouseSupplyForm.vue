@@ -274,9 +274,9 @@
             removeProduct: function (index) {
                 this.products.splice(index, 1);
             },
-            submit: function () {
+            submit: async function () {
                 if (this.isFormCorrect() == true) {
-                    this.acceptDelivery();
+                    await this.acceptDelivery();
                     window.location.reload(false);
                     this.getAllCompanies();
                 }
@@ -315,7 +315,7 @@
                 }
                 return correct;
             },
-            acceptDelivery: function () {
+            acceptDelivery: async function () {
                 this.deliveryDateTime = this.date + "T" + this.time + ":00";
                 let stockAmounts = this.products.slice();
                 let products = this.allProducts.slice();
@@ -336,7 +336,7 @@
 
                 // eslint-disable-next-line no-console
                 console.log(stockAmounts)
-                axios.post(this.url + '/supplies/accept_delivery', {
+                const result = await axios.post(this.url + '/supplies/accept_delivery', {
                     supplier: {
                         firstname: this.supplier.firstname,
                         lastname: this.supplier.lastname,
@@ -348,13 +348,13 @@
                 }, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
-                }).then(response => {
-                    // eslint-disable-next-line no-console
-                    console.log(response)
-                }).catch(error => {
-                    // eslint-disable-next-line no-console
-                    console.log(error.response)
                 });
+
+                if (result.data === "Saved") {
+                    alert("Dodano dostawe");
+                } else {
+                    alert("Nie dodano dostawy.");
+                }
             }
         }
     }

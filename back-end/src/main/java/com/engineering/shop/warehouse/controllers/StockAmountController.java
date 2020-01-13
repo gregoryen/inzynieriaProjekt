@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -239,6 +240,12 @@ public class StockAmountController {
             mapValue.put("amount", Double.toString(s.getAmount()));
             mapValue.put("productId", Integer.toString(s.getProductId()));
             mapValue.put("productName", productName);
+
+
+            String dateTime = s.getDateTime().toString();
+            dateTime = dateTime.replace("T", " ");
+            dateTime = dateTime.substring(0, 16);
+            mapValue.put("dateTime", dateTime);
 
             result.add(mapValue);
         }

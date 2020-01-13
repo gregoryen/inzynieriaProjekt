@@ -1,7 +1,7 @@
 <template>
     <div id="warehouse-stocks" class="container">
-        {{dateTimes.startDate}}
-        {{dateTimes.startTime}}
+
+        <h1>Tworzenie raportów</h1>
         <table id="create-report" align="center" class="container">
             <thead>
             <tr>
@@ -46,10 +46,9 @@
 
             </tbody>
         </table>
-        {{dateTimes.endDateTime}}
 
         <h1 id="stocks-h1">Stany magazynowe</h1>
-        <table id="show-stocks" align="center" class="container">
+        <table v-if="stocks.length > 0" id="show-stocks" align="center" class="container">
             <thead>
             <tr>
                 <td>Nazwa</td>
@@ -61,63 +60,80 @@
             </thead>
             <tbody>
             <tr v-for="(stock, index) in stocks" v-bind:item="stock" v-bind:key="index">
-                <td><strong>{{stock.name}}</strong></td>
+                <td><strong>{{stock.productName}}</strong></td>
                 <td><strong>{{stock.amount}}</strong></td>
                 <td><strong>{{stock.measure}}</strong></td>
-                <td><strong>{{stock.available}}</strong></td>
-                <td><strong>{{stock.dateTimeForDisplay}}</strong></td>
+                <td>
+                    <strong v-if='stock.available === "true"'>Tak</strong>
+                    <strong v-else>Nie</strong>
+                </td>
+                <td><strong>{{stock.dateTime}}</strong></td>
             </tr>
             </tbody>
         </table>
+        <strong v-else>
+            Brak stanów magazynowych
+        </strong>
         <h3 id="reports-h3">Raporty</h3>
-        <div id="show-reports" v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
-            <form>
-                <table align="center" class="container">
+        <div v-if="reports.length > 0">
+            <div id="show-reports" v-for="(report, index) in reports" v-bind:item="report" v-bind:key="index">
+                <form>
+                    <table align="center" class="container">
+                        <thead>
+                        <tr>
+                            <td>Utworzony:</td>
+                            <td>Czas początkowy:</td>
+                            <td>Czas końcowy:</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>{{report.creationDateTime}}</td>
+                            <td>{{report.startDateTime}}</td>
+                            <td>{{report.endDateTime}}</td>
+                            <td>
+                                <download-csv
+                                        class="btn btn-default"
+                                        :data="getReport(index)"
+                                        name="filename.csv"
+                                >
+                                    pobierz
+                                    <img src="../assets/download_icon.png">
+                                </download-csv>
+                            </td>
+                            <td>
+                                <button class="form-control" @click="disable(index)">
+                                    <strong v-if="report.disabled">schowaj</strong>
+                                    <strong v-else>pokaż</strong>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-danger form-control" @click="remove(index)">
+                                    <strong>X</strong>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </form>
+                <table class="table" v-if="report.disabled === true">
                     <thead>
                     <tr>
-                        <td>Utworzony:</td>
-                        <td>Czas początkowy:</td>
-                        <td>Czas końcowy:</td>
-                        <td></td>
                         <td></td>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>{{report.creationDateTime}}</td>
-                        <td>{{report.startDateTime}}</td>
-                        <td>{{report.endDateTime}}</td>
-                        <td>
-                            <download-csv
-                                    class="btn btn-default"
-                                    :data="getReport(index)"
-                                    name="filename.csv"
-                            >
-                                pobierz
-                                <img src="../assets/download_icon.png">
-                            </download-csv>
-                        </td>
-                        <td>
-                            <button class="form-control" @click="disable(index)">
-                                <strong v-if="report.disabled">schowaj</strong>
-                                <strong v-else>pokaż</strong>
-                            </button>
-                        </td>
+                    <tr align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">
+                        <td>{{change}}</td>
                     </tr>
-                    </tbody>
                 </table>
-            </form>
-            <table class="table" v-if="report.disabled === true">
-                <thead>
-                <tr>
-                    <td></td>
-                </tr>
-                </thead>
-                <tr align="left" v-for="(change, index) in report.changes" v-bind:item="change" v-bind:key="index">
-                    <td>{{change}}</td>
-                </tr>
-            </table>
+            </div>
         </div>
+        <strong v-else>
+            Brak raportów
+        </strong>
     </div>
 </template>
 
@@ -129,18 +145,21 @@
     Vue.component('downloadCsv', JsonCSV);
 
     const URL = 'http://localhost:8100';
-    const STOCKS = '/stock_amounts/last_updated';
-    const PRODUCTS = '/products/search/findAllByActiveIsTrue?projection=header';
+    // const STOCKS = '/stock_amounts/last_updated';
+    // const PRODUCTS = '/products/search/findAllByActiveIsTrue?projection=header';
+    const STOCKS_WITH_NAMES = '/stock_amounts/last_updated_with_names';
     const CREATE_REPORT = '/reports/create';
     const GET_REPORTS = '/reports/all';
+    const DELETE_REPORT = '/reports/delete';
 
     export default {
 
         created: async function () {
-            const _stocks = await this.getStocks();
-            const products = await this.getProducts();
-            await this.getReports();
-            this.mergeStocksWithProducts(_stocks, products);
+            // const _stocks = await this.getStocks();
+            // const products = await this.getProducts();
+            this.getStocks();
+            this.getReports();
+            // this.mergeStocksWithProducts(_stocks, products);
         },
         data: function () {
             return {
@@ -155,6 +174,23 @@
             }
         },
         methods: {
+            remove: function (index) {
+                let reports = this.reports;
+                let reportId = reports.splice(index, 1)[0].reportId;
+                this.reports = reports.slice();
+
+                this.deleteReport(reportId);
+            },
+            deleteReport: async function (reportId) {
+                const data = await axios.delete(URL + DELETE_REPORT + '?reportId=' + reportId, {
+                    "Access-Control-Allow-Origin": "*",
+                    "Content-Type": "application/json"
+                });
+
+
+                // eslint-disable-next-line no-console
+                console.log(data);
+            },
             getReport: function (index) {
                 return JSON.parse("[" + JSON.stringify(this.reports[index]) + "]");
             },
@@ -232,9 +268,8 @@
                                 changes: tmp
                             }
                         );
-                        // eslint-disable-next-line no-console
-                        console.log(this.reports);
                     }
+                    window.location.reload(false);
                 }
             },
             postReport: async function (start, end) {
@@ -244,35 +279,15 @@
                 });
             },
             getStocks: async function () {
-                const _stocks = await axios.get(URL + STOCKS, {
+                const stocks = await axios.get(URL + STOCKS_WITH_NAMES, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 });
-                return _stocks.data;
-            },
-            getProducts: async function () {
-                const products = await axios.get(URL + PRODUCTS, {
-                    "Access-Control-Allow-Origin": "*",
-                    "Content-Type": "application/json"
-                });
-                return products.data._embedded.products;
-            },
-            mergeStocksWithProducts: function (_stocks, products) {
-                let stocks = [];
-                for (let i = 0; i < _stocks.length; i++) {
-                    let dateTimeForDisplay = _stocks[i].dateTime.slice();
-                    dateTimeForDisplay = dateTimeForDisplay.replace("T", " ");
-                    dateTimeForDisplay = dateTimeForDisplay.substr(0, dateTimeForDisplay.length - 10);
-                    stocks.push({
-                        'name': products.filter(p => (p.id === _stocks[i].productId))[0].name,
-                        'amount': _stocks[i].amount,
-                        'measure': _stocks[i].measure,
-                        'available': _stocks[i].available ? "tak" : "nie",
-                        'dateTime': _stocks[i].dateTime,
-                        'dateTimeForDisplay': dateTimeForDisplay
-                    });
-                }
-                this.stocks = stocks;
+
+                // eslint-disable-next-line no-console
+                console.log(stocks.data);
+
+                this.stocks = stocks.data;
             }
         }
     };
