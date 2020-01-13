@@ -52,7 +52,7 @@ public class AuthenticationController {
         UserTokenInformation userTokenInformation = userService.getUserDetailsForToken(authenticationDetails.getEmail());
         String token = jwtUtil.generateToken(userTokenInformation);
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new JwtResponse(token,jwtUtil.getStringClaimFromToken(token,"name"),jwtUtil.getStringClaimFromToken(token,"lastName"), jwtUtil.getStringClaimFromToken(token,"role")));
     }
 
     @GetMapping(path = "verifyToken")

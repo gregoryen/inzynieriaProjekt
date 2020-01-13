@@ -25,7 +25,6 @@ export default {
   }
 };
 </script>
-
 <style>
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
@@ -54,9 +53,9 @@ h2 {
 }
 
 .small-card-deck {
-    display: flex;
-    margin-right: 3em;
-    margin-left: 3em;
-    margin-bottom: 3em;
+  display: flex;
+  margin-right: 3em;
+  margin-left: 3em;
+  margin-bottom: 3em;
 }
 </style>

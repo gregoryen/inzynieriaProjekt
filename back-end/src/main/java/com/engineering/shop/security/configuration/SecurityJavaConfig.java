@@ -94,6 +94,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
+
+
                 .antMatchers("/bucket", "/bucket/**").permitAll()
                 .antMatchers("/bucketPosition", "/bucketPosition/**").permitAll()
                 .antMatchers("/order", "/order/**").permitAll()
@@ -106,7 +108,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/images/**", "/downloadFile/**").permitAll()
                 .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
-                //.anyRequest().authenticated()
+                .anyRequest().authenticated()
+
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();
