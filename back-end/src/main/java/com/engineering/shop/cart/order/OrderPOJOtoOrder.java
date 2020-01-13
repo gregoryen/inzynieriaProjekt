@@ -29,7 +29,6 @@ public class OrderPOJOtoOrder implements Transformer<OrderPOJO, Order> {
     @Override
     public Order transform(OrderPOJO pojo) {
         return Order.builder()
-                .userId(pojo.getUserId())
                 .firstName(pojo.getFirstName())
                 .lastName(pojo.getLastName())
                 .adress(pojo.getAdress())

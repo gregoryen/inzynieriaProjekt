@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class OrderPOJO {
 
-    private String userId;
     private String firstName;
     private String lastName;
     private String adress;

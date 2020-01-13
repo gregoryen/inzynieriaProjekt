@@ -32,7 +32,6 @@ public class OrderPOJOValidator implements Validator {
 
     @Override
     public void validate(Object o, Errors errors) {
-        ValidationUtils.rejectIfEmpty(errors, "userId", "order.userId.empty");
         ValidationUtils.rejectIfEmpty(errors, "firstName", "order.firstName.empty");
         ValidationUtils.rejectIfEmpty(errors, "lastName", "order.lastName.empty");
         ValidationUtils.rejectIfEmpty(errors, "adress", "order.adress.empty");
@@ -50,11 +49,11 @@ public class OrderPOJOValidator implements Validator {
                 Pattern.CASE_INSENSITIVE);
 
         if(!(email.matcher(order.getEmail()).matches())){
-            errors.rejectValue("email","order.email.invalid");
+            errors.rejectValue("email","email is invalid");
         }
 
         if(!(phone.matcher(order.getPhoneNumber()).matches())){
-            errors.rejectValue("phoneNumber","order.phone.invalid");
+            errors.rejectValue("phoneNumber","phone number is invalid");
         }
 
         Optional<Bucket> optBucket = bucketRepo.findByToken(order.getOrderBucketId());
@@ -63,7 +62,7 @@ public class OrderPOJOValidator implements Validator {
         }
 
         if(order.getOrderValue().compareTo(new BigDecimal(0))<0){
-            errors.rejectValue("orderValue","order.orderValue.mustBePositiveNumber");
+            errors.rejectValue("orderValue","order value must be larger or equal to 0");
         }
 
     }

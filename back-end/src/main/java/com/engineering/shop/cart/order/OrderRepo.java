@@ -5,7 +5,7 @@ import org.apache.coyote.http11.filters.SavedRequestInputFilter;
 import org.springframework.data.repository.CrudRepository;
 
 public interface OrderRepo extends CrudRepository<Order, Integer> {
-    Iterable<Order> findAllByUserId(String userId);
+    Iterable<Order> findAllByEmail(String email);
 }
 
 
