@@ -240,6 +240,7 @@
     import Treeselect from '@riophae/vue-treeselect'
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import globalConfig from '../config'
 
     const PRODUCTS = '/products';
     const UPLOAD_IMAGE = '/images/uploadImage';
@@ -248,9 +249,6 @@
 
     export default {
         components: {Treeselect},
-        props: {
-            baseurl: String
-        },
         data() {
             return {
 
@@ -346,7 +344,7 @@
                                 'content-type': 'application/json'
                             },
                         };
-                        axios.post(this.baseurl + PRODUCTS, this.form, config)
+                        axios.post(globalConfig.root + PRODUCTS, this.form, config)
                             .then(() => {
                                 this.showSuccessModal();
                             }).catch(() => {
@@ -406,7 +404,7 @@
                     }
                 };
 
-                axios.post(this.baseurl + UPLOAD_IMAGE, formData, config)
+                axios.post(globalConfig.root + UPLOAD_IMAGE, formData, config)
 
                     .then(res => {
                         if (res.status === 200) {
@@ -446,7 +444,7 @@
                     }
                 };
 
-                axios.post(this.baseurl + UPLOAD_MULTIPLE_IMAGE, formData, config)
+                axios.post(globalConfig.root + UPLOAD_MULTIPLE_IMAGE, formData, config)
 
                     .then(res => {
                         if (res.status === 200) {
@@ -478,7 +476,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                axios.get(globalConfig.root + CATEGORIES_TREE, config)
                     .then(res => {
                             if (res.status === 200) {
                                 this.supported.treeCategories = this.createBranch(res.data);

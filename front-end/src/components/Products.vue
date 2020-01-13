@@ -6,7 +6,7 @@
                 <h1 class="text-center p-5">Nasze Produkty</h1>
                 <div class="row">
                     <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.name">
-                        <ProductHeader :productHeader="productHeader" :baseurl="baseurl"/>
+                        <ProductHeader :productHeader="productHeader" :baseurl="globalConfig.root"/>
                     </div>
                 </div>
             </div>
@@ -17,12 +17,10 @@
 <script>
     import ProductHeader from "./ProductHeader.vue";
 
+
     export default {
         components: {ProductHeader},
         name: "Products",
-        props: {
-            baseurl: String
-        },
         computed: {
             productsHeader() {
                 return this.$store.getters.productsHeader;
