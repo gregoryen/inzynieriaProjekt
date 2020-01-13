@@ -46,6 +46,7 @@ import AddCategory from "./components/AddCategory";
 import DeleteCategory from "./components/DeleteCategory";
 import DeleteProduct from './components/DeleteProduct'
 import { extend } from 'vee-validate';
+import ProductsOverview from "./components/ProductsOverview";
 
 
 extend('required', {
@@ -191,7 +192,8 @@ const router = new VueRouter({
   { path: '/addCategory', name: 'addCategory', component: AddCategory},
   { path: '/addProduct', name: 'addProduct', component: AddProduct },
   { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
-  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct }
+  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct },
+    { path: '/overview', name: 'overview', component: ProductsOverview }
   ]
 })
 
