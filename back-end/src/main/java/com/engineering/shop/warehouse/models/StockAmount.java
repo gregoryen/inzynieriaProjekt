@@ -2,10 +2,10 @@ package com.engineering.shop.warehouse.models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,7 +15,6 @@ public class StockAmount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer stockAmountId;
 
-//    @OneToOne(cascade = CascadeType.ALL))
     @NotNull
     private Integer productId;
 
@@ -29,14 +28,18 @@ public class StockAmount {
     @NotNull
     private Boolean available;
 
+    @NotNull
+    private LocalDateTime dateTime;
+
     public StockAmount() {
     }
 
-    public StockAmount(Integer productId, Measure measure, Double amount, Boolean available) {
+    public StockAmount(Integer productId, Measure measure, Double amount, Boolean available, LocalDateTime dateTime) {
         this.productId = productId;
         this.measure = measure;
         this.amount = amount;
         this.available = available;
+        this.dateTime = dateTime;
     }
 
     public Boolean isAvailable() {

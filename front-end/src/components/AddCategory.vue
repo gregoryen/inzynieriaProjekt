@@ -83,7 +83,7 @@
 
         <b-modal ref="successCreate" hide-footer title="Utworzono nową kategorię">
             <div class="d-block text-center">
-                <h3>Nowa kategoria zostala dodany do sklepu</h3>
+                <h3>Nowa kategoria zostala dodana do sklepu</h3>
             </div>
             <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
         </b-modal>
