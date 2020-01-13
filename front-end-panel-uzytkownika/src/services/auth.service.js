@@ -37,6 +37,20 @@ class AuthService {
   logout() {
     localStorage.removeItem('user');
   }
+  
+  resetPass(mail) {
+		return axios.post(API_URL + 'resetPassword', {
+			email: mail
+			});
+  }
+  
+  changePass(obj) {
+		return axios.post(API_URL + 'savePassword', {
+			newPassword: obj.passwd,
+			changeId: obj.id
+			});
+  }
+  
 
   register(user) {
     return axios.post(API_URL + 'signUp', {
