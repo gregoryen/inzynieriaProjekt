@@ -46,6 +46,7 @@
 <script>
 import AddToBucketButton from "../utils/AddToBucketButton"
 import axios from "axios";
+import globalConfig from '../config'
 
 const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
 export default {
@@ -74,7 +75,7 @@ export default {
   },
   methods: {
     emitProducts (id) {
-      this.$store.dispatch('productsHeader',  this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id);
+      this.$store.dispatch('productsHeader',  globalConfig.root + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id);
     },
     getProductId() {
       return this.productId

@@ -32,7 +32,7 @@
           <div class="form-group">
             <label for="password">Password</label>
            <validation-provider rules="required|min:3|max:20" v-slot="{ errors }">
-              <input v-model="user.password" name="password" type="text" class="form-control"/>
+              <input v-model="user.password" name="password" type="password" class="form-control"/>
               <span>{{ errors[0] }}</span>
             </validation-provider>
           </div>

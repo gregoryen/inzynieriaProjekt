@@ -90,16 +90,16 @@ const ifHavePrivilege =(to,from,next)=>
    if (store.state.auth.status.loggedIn) {
         UserServices.getUserPrivileges().then(
           response =>{
-         
-         
-     
+
+
+
           let ifHas = false;
           for(let i =0;i<response.data.length;i++)
           {
-  
+
             if(response.data[i].authority == to.meta.requiredPrivilege)
               {
-  
+
                     ifHas =true;
                     break;
               }
@@ -128,6 +128,7 @@ Vue.use(VueCurrencyInput, pluginOptions)
 
 Vue.config.productionTip = false;
 
+export const bus = new Vue();
 
 const router = new VueRouter({
   mode: 'history',
@@ -135,7 +136,7 @@ const router = new VueRouter({
     {
       path: '/',
       component: Home,
-      
+
     },
     {
       path: '/login',
@@ -145,12 +146,12 @@ const router = new VueRouter({
     {
       path: '/register',
       component: Register,
-      
+
     },
     {
       path:'/profile',
       component: Profile,
-      
+
     },
     {
       path: '/shoppingCart',
@@ -170,7 +171,7 @@ const router = new VueRouter({
       component: AdminPanel,
       beforeEnter:ifHavePrivilege,
       meta:{
-      requiredPrivilege: 'ADMIN_PRIVILEGE' 
+      requiredPrivilege: 'ADMIN_PRIVILEGE'
       }
     },
   { path: '/product', name: 'product', component: Product },
@@ -196,4 +197,4 @@ new Vue({
   }),
   render: h => h(App),
 }).$mount('#app')
-export const bus = new Vue();
+
