@@ -119,6 +119,7 @@ public class StockAmountController {
 
     @PatchMapping("/increase")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public
     String increaseAmount(@RequestBody StockAmount newStockAmount) {
         if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or amount is/are not provided");
@@ -145,6 +146,7 @@ public class StockAmountController {
 
     @PatchMapping("/decrease")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public
     String decreaseAmount(@RequestBody StockAmount newStockAmount) {
         if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or amount is/are not provided");
