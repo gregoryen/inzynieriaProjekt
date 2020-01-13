@@ -76,8 +76,8 @@
             </b-list-group>
             </b-form-group>
 
-            <b-button type="submit" variant="primary">Submit</b-button>
-            <b-button type="reset" variant="danger">Reset</b-button>
+            <b-button type="submit" variant="primary">Dodaj</b-button>
+            <b-button type="reset" variant="danger">Zresetuj</b-button>
         </b-form>
 
 
@@ -90,7 +90,7 @@
 
         <b-modal ref="failCreate" hide-footer title="NIE stworzono nowej kategorii">
             <div class="d-block text-center">
-                <h3>Utworzenie nowegej kategorii nie udało się</h3>
+                <h3>Utworzenie nowej kategorii nie udało się</h3>
             </div>
             <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
         </b-modal>
@@ -102,9 +102,9 @@
             <b-button class="mt-3" variant="danger" block @click="hideSelectCategoryModal">OK</b-button>
         </b-modal>
 
-        <b-card class="mt-3" header="Form Data Result">
+<!--        <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
-        </b-card>
+        </b-card>-->
     </div>
 </template>
 
