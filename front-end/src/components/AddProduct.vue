@@ -32,6 +32,9 @@
                                         :state="Boolean(mainImageFile)"
                                         placeholder="Przeciągnij i upuść plik tutaj"
                                         drop-placeholder="Upouść plik tutaj..."
+
+                                        required
+
                                         accept="image/*"
                                         @change="onMainImagePicked"
                                 ></b-form-file>
@@ -64,7 +67,8 @@
                                     <b-row>
                                         <b-col v-for="imageURL in supported.additionalImagesURL"
                                                v-bind:key="imageURL.id">
-                                            <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.id"></b-img>
+                                            <b-img thumbnail fluid :src="imageURL.image" :alt="imageURL.name"></b-img>
+
                                         </b-col>
                                     </b-row>
                                 </b-container>
@@ -90,38 +94,34 @@
                                     id="mainCategory"
                                     label="Wybierz kategorię główną: "
                                     label-for="searcher">
-                                <b-form-input
-                                        id="searcher"
-                                        v-model="supported.searchMainCategories"
-                                        type="text"
-                                        placeholder="Wpisz szukaną kategorię"
-                                ></b-form-input>
-                                <div>
-                                    <b-form-select v-model="form.product.mainCategoryId"
-                                                   :options="filteredMainCategoriesId" :select-size="4"
-                                                   required></b-form-select>
-                                    <div v-if="form.product.mainCategoryId" class="mt-3">Wybrana kategoria: <strong>{{
-                                        form.product.mainCategoryId }}</strong></div>
-                                </div>
+                                <treeselect
+                                        :options="supported.treeCategories"
+                                        v-model="form.product.mainCategoryId"
+                                        :required="true"
+                                        :searchable="false"
+                                        :show-count="true"
+                                        :default-expand-level="1"
+                                        placeholder="Kategoria główna"
+                                >
+                                </treeselect>
                             </b-form-group>
 
                             <b-form-group
                                     id="additionalCategory"
                                     label="Wybierz kategorię dodatkowe: "
                                     label-for="searcher">
-                                <b-form-input
-                                        id="searcher"
-                                        v-model="supported.searchAdditionalCategories"
-                                        type="text"
-                                        placeholder="Wpisz szukaną kategorie"
-                                ></b-form-input>
-                                <div>
-                                    <b-form-select v-model="form.product.categories"
-                                                   :options="filteredAdditionalCategoriesId" :select-size="4"
-                                                   multiple></b-form-select>
-                                    <div class="mt-3">Wybrane kategorie: <strong>{{ form.product.categories }}</strong>
-                                    </div>
-                                </div>
+
+                                <treeselect
+                                        :options="supported.treeCategories"
+                                        v-model="form.product.categories"
+                                        :flat="true"
+                                        :searchable="false"
+                                        :show-count="true"
+                                        :default-expand-level="1"
+                                        :multiple="true"
+                                        placeholder="Kategorie dodatkowe"
+                                >
+                                </treeselect>
                             </b-form-group>
 
                             <b-form-group id="price"
@@ -145,7 +145,6 @@
                                         id="reference"
                                         v-model="form.product.reference"
                                         type="text"
-                                        required
                                         placeholder="Podaj kod REFERENCE produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -159,7 +158,7 @@
                                         id="isbn"
                                         v-model="form.product.isbn"
                                         type="text"
-                                        required
+
                                         placeholder="Podaj kod ISBN produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -173,7 +172,7 @@
                                         id="ean13"
                                         v-model="form.product.ean13"
                                         type="text"
-                                        required
+
                                         placeholder="Podaj kod EAN13 produktu"
                                 ></b-form-input>
                             </b-form-group>
@@ -190,40 +189,76 @@
                                 <b v-else>Niedostępny</b>
                             </b-form-group>
 
-                            <b-button type="submit" variant="primary">Submit</b-button>
-                            <b-button type="reset" variant="danger">Reset</b-button>
+
+                            <b-button type="submit" variant="primary">Dodaj</b-button>
+                            <b-button type="reset" variant="danger">Zresetuj</b-button>
+
                         </b-form>
                     </b-card-text>
                 </b-col>
             </b-row>
         </b-container>
 
-        <b-card class="mt-3" header="Form Data Result">
+<!--        <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
-        </b-card>
+        </b-card>-->
+
+        <b-modal ref="successCreate" hide-footer title="Utworzono nowy produkt">
+            <div class="d-block text-center">
+                <h3>Nowy produkt został dodany do sklepu</h3>
+            </div>
+            <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="failCreate" hide-footer title="NIE stworzono nowego produktu">
+            <div class="d-block text-center">
+                <h3>Utworzenie nowego produktu nie udało się</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="waitCreate" hide-footer title="Zdjęcia nie zostały jeszcze wysłane">
+            <div class="d-block text-center">
+                <h3>Proszę odczekać chwilę i spróbować zatwierdzić dodanie nowego produktu ponownie</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideWaitModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="selectCategory" hide-footer title="Wybierz kategorię główną">
+            <div class="d-block text-center">
+                <h3>Proszę wybrać kategorię główną</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideSelectCategoryModal">OK</b-button>
+        </b-modal>
+
     </div>
 </template>
 
 <script>
     import axios from 'axios';
+
+    import Treeselect from '@riophae/vue-treeselect'
+    // import the styles
+    import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import globalConfig from '../config'
+
     const PRODUCTS = '/products';
     const UPLOAD_IMAGE = '/images/uploadImage';
     const UPLOAD_MULTIPLE_IMAGE = '/images/uploadMultipleImages';
-    const CATEGORIES_WITH_ID = '/categories?projection=withId';
-    const WAREHOUSE = '/stock_amounts/add_empty';
+    const CATEGORIES_TREE = '/categories/tree';
+
     export default {
-        props: {
-        },
+        components: {Treeselect},
         data() {
             return {
-                baseUrl: "http://localhost:8100",
+
                 form: {
                     product: {
                         name: '',
                         description: '',
                         mainCategoryId: null,
                         categories: null,
-                        price: '',
+                        price: null,
                         reference: '',
                         isbn: '',
                         ean13: '',
@@ -236,23 +271,46 @@
                 mainImageFile: null,
                 show: true,
                 supported: {
+
+                    treeCategories: [],
                     mainImageURL: null,
                     additionalImagesURL: null,
-                    allCategories: [],
-                    searchedMainCategories: [],
-                    searchedAdditionalCategories: [],
-                    searchMainCategories: '',
-                    searchAdditionalCategories: '',
                 },
                 status: {
                     mainImageSend: true,
                     additionalImagesSend: true,
-                    mainCategoryIdSelected: false,
-                    additionalCategoriesIdSelected: false
+
                 }
             }
         },
         methods: {
+
+            showSuccessModal() {
+                this.$refs["successCreate"].show()
+            },
+            showFailModal() {
+                this.$refs["failCreate"].show()
+            },
+            waitModal() {
+                this.$refs["waitCreate"].show();
+            },
+            selectCategoryModal() {
+                this.$refs["selectCategory"].show();
+            },
+            hideSuccessModal() {
+                this.$refs["successCreate"].hide();
+                this.onReset();
+            },
+            hideFailModal() {
+                this.$refs["failCreate"].hide();
+                this.onReset();
+            },
+            hideWaitModal() {
+                this.$refs["waitCreate"].hide();
+            },
+            hideSelectCategoryModal() {
+                this.$refs["selectCategory"].hide();
+            },
             resetMainImage() {
                 this.$refs['mainImage'].reset();
                 this.mainImageFile = null;
@@ -269,36 +327,43 @@
             },
             onSubmit(evt) {
                 evt.preventDefault();
-                if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
-                    this.form.additionalImages.push(this.form.product.mainImage);
-                    const config = {
-                        headers: {
-                            'content-type': 'application/json'
-                        },
-                    };
-                    axios.post(this.baseUrl + PRODUCTS, this.form, config)
-                        .then(res => {
-                            if (res.status === 200) {
-                                // eslint-disable-next-line no-console
-                                console.log(res);
-                                if(res.status==201){
-                                    axios.post(this.baseUrl + WAREHOUSE, {
-                                        productId: res.id,
-                                        measure: 'UNIT',
-                                    }, config);
-                                }
-                            }
+                if (this.form.product.mainCategoryId) {
+                    if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
+                        if (this.form.additionalImages === null) {
+                            this.form.additionalImages = []
+                        }
+                        this.form.additionalImages.push(this.form.product.mainImage);
+                        if (this.form.product.categories === null) {
+                            this.form.product.categories = []
+                        }
+                        if (this.form.product.categories.indexOf(this.form.product.mainCategoryId)) {
+                            this.form.product.categories.push(this.form.product.mainCategoryId);
+                        }
+                        const config = {
+                            headers: {
+                                'content-type': 'application/json'
+                            },
+                        };
+                        axios.post(globalConfig.root + PRODUCTS, this.form, config)
+                            .then(() => {
+                                this.showSuccessModal();
+                            }).catch(() => {
+                            this.showFailModal();
                         });
+                    } else {
+                        this.waitModal();
+                    }
+                } else {
+                    this.selectCategoryModal();
                 }
             },
-            onReset(evt) {
-                evt.preventDefault();
+            onReset() {
                 // Reset  form.products
                 this.form.product.name = '';
                 this.form.product.description = '';
                 this.form.product.mainCategoryId = null;
                 this.form.product.categories = null;
-                this.form.product.price = '';
+                this.form.product.price = null;
                 this.form.product.reference = '';
                 this.form.product.isbn = '';
                 this.form.product.ean13 = '';
@@ -306,6 +371,9 @@
                 //Reset form images
                 this.resetMainImage();
                 this.resetAdditionalImages();
+
+                this.getTree();
+
                 //Reset all view
                 this.resetView()
             },
@@ -319,12 +387,14 @@
                 this.status.mainImageSend = false;
                 this.form.product.mainImage = null;
                 const files = event.target.files;
+
                 //Create imageURL to display selected image to user
                 const fileReader = new FileReader();
                 fileReader.addEventListener('load', () => {
                     this.supported.mainImageURL = fileReader.result
                 });
                 fileReader.readAsDataURL(files[0]);
+
                 //Send image
                 const formData = new FormData();
                 formData.append('file', files[0]);
@@ -333,7 +403,9 @@
                         'content-type': 'multipart/form-data'
                     }
                 };
-                axios.post(this.baseUrl + UPLOAD_IMAGE, formData, config)
+
+                axios.post(globalConfig.root + UPLOAD_IMAGE, formData, config)
+
                     .then(res => {
                         if (res.status === 200) {
                             this.form.product.mainImage = res.data.id;
@@ -341,11 +413,14 @@
                         }
                     })
             },
+
             onAdditionalImagesPicked(event) {
                 this.status.additionalImagesSend = false;
                 this.form.additionalImages = [];
                 const files = event.target.files;
                 this.supported.additionalImagesURL = [];
+
+
                 for (let i = 0; i < files.length; i++) {
                     const fileReader = new FileReader();
                     fileReader.addEventListener('load', () => {
@@ -357,16 +432,20 @@
                     });
                     fileReader.readAsDataURL(files[i])
                 }
+
                 const formData = new FormData();
                 for (let file of files) {
                     formData.append('files', file);
                 }
+
                 const config = {
                     headers: {
                         'content-type': 'multipart/form-data'
                     }
                 };
-                axios.post(this.baseUrl + UPLOAD_MULTIPLE_IMAGE, formData, config)
+
+                axios.post(globalConfig.root + UPLOAD_MULTIPLE_IMAGE, formData, config)
+
                     .then(res => {
                         if (res.status === 200) {
                             for (let temp of res.data) {
@@ -375,39 +454,40 @@
                             this.status.additionalImagesSend = true;
                         }
                     });
-            }
-        },
-        computed: {
-            filteredMainCategoriesId: function () {
-                return this.supported.allCategories.filter((category) => {
-                    return category.text.match(this.supported.searchMainCategories);
-                })
             },
-            filteredAdditionalCategoriesId: function () {
-                return this.supported.allCategories.filter((category) => {
-                    return category.text.match(this.supported.searchAdditionalCategories);
-                })
+            createBranch: function (oldBranch) {
+                let newBranch = [];
+                for (let e of oldBranch) {
+                    let temp = {
+                        id: e.category.id,
+                        label: e.category.name,
+                    };
+                    let children = this.createBranch(e.children);
+                    if (children.length > 0) {
+                        temp.children = children;
+                    }
+                    newBranch.push(temp);
+                }
+                return newBranch;
+            },
+            getTree() {
+                const config = {
+                    headers: {
+                        'content-type': 'application/json'
+                    }
+                };
+                axios.get(globalConfig.root + CATEGORIES_TREE, config)
+                    .then(res => {
+                            if (res.status === 200) {
+                                this.supported.treeCategories = this.createBranch(res.data);
+                            }
+                        }
+                    );
             }
         },
         created() {
-            const config = {
-                headers: {
-                    'content-type': 'application/json'
-                }
-            };
-            axios.get(this.baseUrl + CATEGORIES_WITH_ID, config)
-                .then(res => {
-                        if (res.status === 200) {
-                            for (let temp of res.data._embedded.categories) {
-                                let item = {
-                                    value: temp.id,
-                                    text: temp.name
-                                };
-                                this.supported.allCategories.push(item);
-                            }
-                        }
-                    }
-                );
+            this.getTree();
         }
     }
 </script>
+

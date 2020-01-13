@@ -1,9 +1,12 @@
 package com.engineering.shop.cart.order;
 
 
+import com.engineering.shop.cart.Exceptions.BucketException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+
 import org.springframework.web.bind.annotation.*;
+
+
 
 import java.util.Optional;
 
@@ -12,26 +15,36 @@ import java.util.Optional;
 public class OrderController {
 
     private OrderRepo orderRepo;
+    private OrderPOJOtoOrder orderPOJOtoOrder;
 
     @Autowired
-    public OrderController(OrderRepo orderRepo) {
+    public OrderController(OrderRepo orderRepo, OrderPOJOtoOrder orderPOJOtoOrder) {
         this.orderRepo = orderRepo;
+        this.orderPOJOtoOrder = orderPOJOtoOrder;
     }
 
-    // Repo methods implementation
+    @PostMapping
+    public void addOrder(@RequestBody OrderPOJO orderPOJO){
+        Order order = orderPOJOtoOrder.transform(orderPOJO);
+        orderRepo.save(order);
+    }
+
     @GetMapping("/all")
     public Iterable<Order> getAll(){
         return orderRepo.findAll();
     }
 
     @GetMapping(path="{id}")
-    public Optional<Order> getById(@PathVariable("id") Integer id) {
-        return orderRepo.findById(id);
+    public Order getById(@PathVariable("id") Integer id) {
+        Optional<Order> optOrder = Optional.ofNullable(orderRepo.findById(id)).orElseThrow(()-> new BucketException("Order not found with provided  id"));
+        return optOrder.get();
     }
 
-    @PostMapping
-    public Order addBucketPosition(Order order){
-        return orderRepo.save(order);
+    @PutMapping("update/{id}")
+    public void updateOrder(@PathVariable("id") Integer id
+                                            ,@RequestBody OrderPOJO orderPOJO) {
+       Order order = orderPOJOtoOrder.transform(orderPOJO);
+       orderRepo.save(order);
     }
 
     @DeleteMapping(path = "{id}")

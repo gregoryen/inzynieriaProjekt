@@ -67,10 +67,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-//        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8081"));
-//        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8100"));
-        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
-
+        configuration.setAllowedOrigins(Collections.singletonList("*"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("X-Requested-With","Origin","Content-Type","Accept","Authorization"));
 
@@ -97,6 +94,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
+
+
                 .antMatchers("/bucket", "/bucket/**").permitAll()
                 .antMatchers("/bucketPosition", "/bucketPosition/**").permitAll()
                 .antMatchers("/order", "/order/**").permitAll()
@@ -105,11 +104,12 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/cart", "/cart/**").permitAll()
                 .antMatchers("/images/**", "/products/**").permitAll()
                 .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**").permitAll()
+                .antMatchers("/suppliers/**", "/stock_amounts/**", "/supplies/**").permitAll()
                 .antMatchers("/images/**", "/downloadFile/**").permitAll()
                 .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
-                .antMatchers("/suppliers/**", "/stock_amounts/**", "/supplies/**").permitAll()
-                //.anyRequest().authenticated()
+                .anyRequest().authenticated()
+
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();
@@ -119,4 +119,3 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
 
 }
-

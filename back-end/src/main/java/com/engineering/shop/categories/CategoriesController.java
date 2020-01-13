@@ -1,26 +1,38 @@
 package com.engineering.shop.categories;
 
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsRepo;
+import com.google.common.collect.Iterables;
 import lombok.Data;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/categories")
 public class CategoriesController {
     private CategoriesRepo categoriesRepo;
+    private CategoryValidator categoryValidator;
+    private ProductsRepo productsRepo;
 
     @Autowired
-    public CategoriesController(CategoriesRepo categoriesRepo) {
+    public CategoriesController(CategoriesRepo categoriesRepo, CategoryValidator categoryValidator, ProductsRepo productsRepo) {
         this.categoriesRepo = categoriesRepo;
+        this.categoryValidator = categoryValidator;
+        this.productsRepo = productsRepo;
     }
 
     @GetMapping("/children")
@@ -35,7 +47,35 @@ public class CategoriesController {
         return children;
     }
 
-    @Cacheable("categoriesTree")
+    @GetMapping("/mainCategories")
+    public Iterable<Category> getMainCategories() {
+        ArrayList<Category> mainCategories = new ArrayList<>();
+        Optional<Category> next = categoriesRepo.findByParentIdIsNullAndPreviousCategoryIdIsNull();
+        while (next.isPresent()) {
+            Category category = next.get();
+            mainCategories.add(category);
+            next = categoriesRepo.findByParentIdIsNullAndPreviousCategoryId(category.getId());
+        }
+        return mainCategories;
+    }
+
+    @GetMapping("/withoutProducts")
+    public Iterable<Category> getCategoriesWithoutProducts() {
+        Iterable<Category> allCategories = categoriesRepo.findAll();
+        List<Category> categories = IteratorUtils.toList(allCategories.iterator());
+
+        Iterable<Product> allProducts = productsRepo.findAll();
+        List<Product> products = IteratorUtils.toList(allProducts.iterator());
+
+        List<Integer> idUsedCategories = products.stream().map(Product::getMainCategoryId).distinct().collect(Collectors.toList());
+
+        idUsedCategories.forEach( e -> {
+            categories.removeIf((element) -> element.getId().equals(e));
+        });
+
+        return categories;
+    }
+
     @GetMapping("/tree")
     public Iterable<TreeNode> getCategoriesTree() {
         Iterable<Category> allCategories = categoriesRepo.findAll();
@@ -66,6 +106,42 @@ public class CategoriesController {
         childNodes.forEach(node -> this.buildTree(node, categories));
     }
 
+    @DeleteMapping
+    public ResponseEntity<Object> deleteCategory(@RequestParam Integer id) {
+        Iterable<Product> products = productsRepo.findByMainCategoryId(id);
+        if (Iterables.size(products) > 0) {
+            return new ResponseEntity<>(
+                    new DeleteCategoryMessage("Do tej kategorii sa przypisane produkty"),
+                    HttpStatus.FORBIDDEN);
+        }
+        Optional<Category> optionalDeletCategory = categoriesRepo.findById(id);
+        if (optionalDeletCategory.isPresent()) {
+            Optional<Category> optionalCategory = categoriesRepo.findByPreviousCategoryId(id);
+            if (optionalCategory.isPresent()) {
+                Category category = optionalCategory.get();
+                category.setPreviousCategoryId(optionalDeletCategory.get().getPreviousCategoryId());
+                categoriesRepo.save(category);
+            }
+            categoriesRepo.deleteById(id);
+        }
+         return new ResponseEntity<>(
+                 new DeleteCategoryMessage("Kategoria została usunieta"),
+                HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @PostMapping
+    public Category addCategory(@RequestBody @Validated Category category) {
+        Optional<Category> optionalCategoryToModify = categoriesRepo.findByParentIdAndPreviousCategoryId(category.getParentId(), category.getPreviousCategoryId());
+        Category toReturn = categoriesRepo.save(category);
+        if (optionalCategoryToModify.isPresent()) {
+            Category categoryToModify = optionalCategoryToModify.get();
+            categoryToModify.setPreviousCategoryId(toReturn.getId());
+            categoriesRepo.save(categoryToModify);
+        }
+        return toReturn;
+    }
+
     @Data
     private class TreeNode {
         Category category;
@@ -75,5 +151,23 @@ public class CategoriesController {
             this.category = category;
             this.children = new ArrayList<>();
         }
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public Map<String, String> handleValidationExceptions(
+            MethodArgumentNotValidException ex) {
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getCode();
+            errors.put(fieldName, errorMessage);
+        });
+        return errors;
+    }
+
+    @InitBinder("category")
+    private void initBinder(WebDataBinder binder) {
+        binder.setValidator(categoryValidator);
     }
 }
