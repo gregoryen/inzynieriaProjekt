@@ -42,7 +42,10 @@ public class Bucket {
     }
 
     public int getUniqueItemsNumber () {
-        return this.positions.size();
+        if (this.positions != null)
+            return this.positions.size();
+
+        return 0;
     }
 
     public void addToTotalValue (BigDecimal value) {

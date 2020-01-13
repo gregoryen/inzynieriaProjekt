@@ -77,9 +77,9 @@ import apiConfig from "../config.js"
 
 export default {
   name: "ShoppingCart",
-  // props: {
-  //   bucketId: String
-  // },
+  props: {
+    bucketId: String
+  },
   data: function() {
     return {
       cartItems: [],
@@ -89,7 +89,7 @@ export default {
   },
   methods: {
     deleteCartItem: (id) => {
-        let url = apiConfig.root + "/bucket/deletePosition" + "/user1/" + id;  //ID KOSZYKA do zmiany
+        let url = apiConfig.root + "/bucket/deletePosition" + this.props.bucketId + id;  //ID KOSZYKA do zmiany
         // eslint-disable-next-line no-console
         console.log(id)
         axios.delete(url)
@@ -100,7 +100,7 @@ export default {
     }
   },
   created() {
-    let url = apiConfig.root + "/bucket/getBucketById/" + "user1";  //ID KOSZYKA do zmiany
+    let url = apiConfig.root + "/bucket/getBucketById/" + this.props.bucketId;  //ID KOSZYKA do zmiany
 
     // const config = {
     //   headers: {

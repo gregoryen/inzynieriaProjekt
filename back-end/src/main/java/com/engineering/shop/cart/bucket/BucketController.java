@@ -49,6 +49,24 @@ public class BucketController {
 //        "bucket": 1
 //    }
 
+    @PostMapping("/createBucket")
+    public @ResponseBody String createBucketWithId (@RequestBody BucketPOJO bucketPOJO) {
+        String token = bucketPOJO.getId();
+
+        Boolean isInBase = bucketRepo.existsByToken(token);
+
+        Bucket bucket;
+
+        if (isInBase) {
+            return "Bucket already exists";
+        } else {
+            bucket = new Bucket(token);
+            bucketRepo.save(bucket);
+        }
+
+        return "Bucket created at id: " + token;
+    }
+
     @PostMapping("/addProduct")
     public @ResponseBody String addProductById (@RequestBody BucketPositionPOJO bucketPositionPOJO) {
 
@@ -98,7 +116,12 @@ public class BucketController {
 
     @GetMapping("/itemNumber/{token}")
     public int getItemNumber(@PathVariable("token") String token) {
-        return getBucketByToken(token).getUniqueItemsNumber();
+        try {
+            return getBucketByToken(token).getUniqueItemsNumber();
+        }
+        catch (Exception ex) {
+            return 0;
+        }
     }
 
 
