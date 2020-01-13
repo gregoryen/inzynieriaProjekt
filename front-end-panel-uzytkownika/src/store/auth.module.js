@@ -60,7 +60,21 @@ export const auth = {
           return Promise.reject(error.response.data);
         }
       );
-    }
+    },
+	resetPass({ commit }, mail) {
+		return AuthService.resetPass(mail).then(
+		response => {
+          commit('registerSuccess');
+          return Promise.resolve(response.data);
+        });
+	},
+	changePass({ commit }, obj) {
+		return AuthService.changePass(obj).then(
+		response => {
+          commit('registerSuccess');
+          return Promise.resolve(response.data);
+        });
+	}
   },
   mutations: {
     loginSuccess(state, user) {
