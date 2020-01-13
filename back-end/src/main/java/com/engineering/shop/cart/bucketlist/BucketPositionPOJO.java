@@ -12,8 +12,8 @@ public class BucketPositionPOJO {
 
     //private Integer id;
     private Integer product;
-    private String productName;
-    private BigDecimal productPrice;
+    //private String productName;
+    //private BigDecimal productPrice;
     private Integer productQuantity;
     private String bucket;
 

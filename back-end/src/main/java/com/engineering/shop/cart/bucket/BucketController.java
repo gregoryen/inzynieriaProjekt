@@ -39,7 +39,7 @@ public class BucketController {
     OrderRepo orderRepo;
     ProductsRepo productsRepo;
     BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition;
-    private BucketValidator bucketValidator;
+    BucketValidator bucketValidator;
 
     public BucketController(BucketRepo bucketRepo,
                             BucketPositionRepo bucketPositionRepo,
@@ -51,6 +51,7 @@ public class BucketController {
         this.orderRepo = orderRepo;
         this.productsRepo = productsRepo;
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
+        this.bucketValidator = bucketValidator;
     }
 
 // Wysylam Jsona
@@ -62,7 +63,7 @@ public class BucketController {
 //            "bucket": "user1"
 //    }
 
-    @PostMapping("addProduct")
+    @PostMapping("/addProduct")
     public @ResponseBody String addProductById (@RequestBody @Validated BucketPositionPOJO bucketPositionPOJO) {
 
         Integer productId = bucketPositionPOJO.getProduct();

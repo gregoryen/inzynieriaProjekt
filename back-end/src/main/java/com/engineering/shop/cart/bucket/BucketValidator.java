@@ -41,27 +41,41 @@ public class BucketValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
 
-        ValidationUtils.rejectIfEmpty(errors,"bucket", "token must be provided.");
-        ValidationUtils.rejectIfEmpty(errors,"productQuantity", "quantity must be provided");
-        ValidationUtils.rejectIfEmpty(errors,"product", "product must be provided");
+        ValidationUtils.rejectIfEmpty(errors,"product", "product.empty", "invalid product id");
+        ValidationUtils.rejectIfEmpty(errors,"productQuantity", "productQuantity.empty","provide product quantity");
+        ValidationUtils.rejectIfEmpty(errors,"bucket", "bucket.empty","invalid bucket token");
 
         BucketPositionPOJO bucket = (BucketPositionPOJO) o;
 
-        if(bucket.getBucket().isEmpty()){
-            errors.rejectValue("bucket token","bucket token must be provided");
-        }
+        Integer productId = bucket.getProduct();
+        Optional<Product> optProduct = productRepo.findById(productId);
 
-        if(bucket.getProductQuantity()>0){
-            errors.rejectValue("productQuantity","quantity must be positive");
-        }
-
-        Optional<Product> optProduct = productRepo.findById(bucket.getProduct());
         if(optProduct.isEmpty()){
             errors.rejectValue("product","product with provided id doesn't exist");
         }
 
         if(!optProduct.get().isActive()){
             errors.rejectValue("product", "product is not currently avaiable");
+        }
+
+        if(bucket.getBucket()==null){
+            errors.rejectValue("bucket token","null value");
+        }
+
+        if(bucket.getProductQuantity()==null){
+            errors.rejectValue("productQuantity","null value");
+        }
+
+        if(bucket.getProduct()==null){
+            errors.rejectValue("product","null value");
+        }
+
+        if(bucket.getBucket().isEmpty()){
+            errors.rejectValue("bucket token","bucket token must be provided");
+        }
+
+        if(bucket.getProductQuantity()<=0){
+            errors.rejectValue("productQuantity","quantity must be positive");
         }
 
 
