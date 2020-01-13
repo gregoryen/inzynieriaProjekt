@@ -19,6 +19,9 @@
               <tr>
                 <td @click="getPrivilegesResponseData">Show Privileges</td>
               </tr>
+              <tr>
+                <td @click="getPrivilegesResponseData">Show Opinions</td>
+              </tr>
             </tbody>
           </table>
         </div>

@@ -12,6 +12,9 @@ import Register from './components/Register.vue'
 import AdminPanel from './components/AdminPanel.vue'
 import Profile from './components/Profile.vue'
 import Home from './components/Home.vue'
+import OpinionsInAdminPanel from './components/OpinionsInAdminPanel'
+import OpinionsInUserPanel from './components/OpinionsInUserPanel'
+import OpinionsInProductPage from './components/OpinionsInProductPage'
 
 import { ValidationProvider,ValidationObserver } from 'vee-validate';
 import { required, min, max, email} from 'vee-validate/dist/rules';
@@ -19,6 +22,7 @@ import UserServices from './services/user.service'
 import store from './store/';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import StarRating from 'vue-star-rating'
 import {
   faHome,
   faUser,
@@ -68,7 +72,7 @@ Vue.component('ValidationObserver', ValidationObserver);
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
+Vue.component('star-rating', StarRating);
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.state.auth.status.loggedIn) {
@@ -136,6 +140,18 @@ const router = new VueRouter({
       path: '/',
       component: Home,
 
+    },
+    {
+      path: '/opinions/admin',
+      component: OpinionsInAdminPanel
+    },
+    {
+      path: '/opinions/user',
+      component: OpinionsInUserPanel
+    },
+    {
+      path: '/opinions/product',
+      component: OpinionsInProductPage
     },
     {
       path: '/login',
