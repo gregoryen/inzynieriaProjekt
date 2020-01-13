@@ -6,7 +6,7 @@
                 <h1 class="text-center p-5">Nasze Produkty</h1>
                 <div class="row">
                     <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.name">
-                        <ProductHeader :productHeader="productHeader" :baseurl="globalConfig.root"/>
+                        <ProductHeader :productHeader="productHeader" />
                     </div>
                 </div>
             </div>

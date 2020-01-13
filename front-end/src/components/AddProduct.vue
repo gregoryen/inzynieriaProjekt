@@ -205,7 +205,7 @@
 
         <b-modal ref="successCreate" hide-footer title="Utworzono nowy produkt">
             <div class="d-block text-center">
-                <h3>Nowa produkt został dodany do sklepu</h3>
+                <h3>Nowy produkt został dodany do sklepu</h3>
             </div>
             <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
         </b-modal>

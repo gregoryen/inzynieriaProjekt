@@ -12,18 +12,33 @@
                 img-height="480"
                 style="text-shadow: 1px 1px 2px #333;"
         >
+            <div v-if="Array.isArray(product._links.additionalImages)">
+            <b-carousel-slide v-for="(image, index) in product._links.additionalImages" v-bind:key="index">
+                <template v-slot:img>
+                    <img
+                            class="d-block img-fluid w-100"
+                            width="800"
+                            height="480"
+                            :src="image.href"
+                            alt="Zdjęcie produktu"
+                    >
+                </template>
+            </b-carousel-slide>
+            </div>
+            <div v-else>
+                <b-carousel-slide>
+                    <template v-slot:img>
+                        <img
+                                class="d-block img-fluid w-100"
+                                width="800"
+                                height="480"
+                                :src="product._links.additionalImages.href"
+                                alt="Zdjęcie produktu"
+                        >
+                    </template>
+                </b-carousel-slide>
+            </div>
 
-          <b-carousel-slide v-for="(image, index) in product._links.additionalImages" v-bind:key="index">
-            <template v-slot:img>
-              <img
-                      class="d-block img-fluid w-100"
-                      width="800"
-                      height="480"
-                      :src="image.href"
-                      alt="Zdjęcie produktu"
-              >
-            </template>
-          </b-carousel-slide>
 
         </b-carousel>
       </div>
