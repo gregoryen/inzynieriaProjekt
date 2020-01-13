@@ -54,6 +54,9 @@ public class User implements Serializable {
         for (Privilege item : collection) {
             privileges.add(item.getName());
         }
+
+        System.out.println(       privileges);
+
         return privileges;
     }
     public User() {

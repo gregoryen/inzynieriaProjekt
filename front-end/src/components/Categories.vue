@@ -2,7 +2,7 @@
   <nav>
     <ul>
       <li><a @click="emitAllProducts">Wszystkie produkty</a></li>
-      <Category v-for="root in categories" v-bind:key="root.category.id" :root="root" :baseurl="baseurl" />
+      <Category v-for="root in categories" v-bind:key="root.category.id" :root="root" />
     </ul>
   </nav>
 </template>
@@ -10,26 +10,24 @@
 <script>
 import axios from "axios";
 import Category from "./Category.vue";
+import globalConfig from '../config'
 
 export default {
   name: "Categories",
   components: { Category },
-  props: {
-    baseurl: String
-  },
   data: () => {
     return {
       categories: null,
     };
   },
   mounted() {
-    axios.get(this.baseurl + "/categories/tree").then(response => {
+    axios.get(globalConfig.root + "/categories/tree").then(response => {
       this.categories = response.data;
     });
   },
   methods: {
     emitAllProducts() {
-      this.$store.dispatch('productsHeader',  this.baseurl + "/products/search/findAllByActiveIsTrue?projection=header");
+      this.$store.dispatch('productsHeader',  globalConfig.root + "/products/search/findAllByActiveIsTrue?projection=header");
     }
   }
 };

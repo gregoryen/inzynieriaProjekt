@@ -41,6 +41,10 @@ public class Bucket {
         this.positions = new ArrayList<>(); //new HashSet<>();
     }
 
+    public int getUniqueItemsNumber () {
+        return this.positions.size();
+    }
+
     public void addToTotalValue (BigDecimal value) {
         System.out.println(this.totalValue);
         this.totalValue = this.totalValue.add(value);

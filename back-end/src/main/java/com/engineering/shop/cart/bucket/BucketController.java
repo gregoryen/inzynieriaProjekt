@@ -138,6 +138,12 @@ public class BucketController {
         return bucketRepo.findAll();
     }
 
+    @GetMapping("/itemNumber/{token}")
+    public int getItemNumber(@PathVariable("token") String token) {
+        return getBucketByToken(token).getUniqueItemsNumber();
+    }
+
+
     @GetMapping("/getBucketById/{token}")
     public Bucket findByToken (@PathVariable("token") String token) {
         return getBucketByToken(token);
@@ -190,6 +196,8 @@ public class BucketController {
 
         return "Position deleted";
     }
+
+
 
     public Bucket getBucketByToken(String token) {
         Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findByToken(token)).orElseThrow(()-> new BucketException("Bucket not found with provided  token"));

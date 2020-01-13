@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -25,18 +26,20 @@ public class Report {
     @NotNull
     private LocalDateTime endDateTime;
 
-    @ManyToMany(cascade = CascadeType.ALL)
     @NotNull
-    private List<StockAmountChange> stockAmountChanges;
+    @ElementCollection(targetClass=String.class)
+    private List<String> changes;
 
     public Report() {
     }
 
-    public Report(Integer reportId, LocalDateTime creationDateTime, LocalDateTime startDateTime, LocalDateTime endDateTime, List<StockAmountChange> stockAmountChanges) {
+    public Report(Integer reportId, LocalDateTime creationDateTime,
+                  LocalDateTime startDateTime, LocalDateTime endDateTime,
+                  List<String> changes) {
         this.reportId = reportId;
         this.creationDateTime = creationDateTime;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
-        this.stockAmountChanges = stockAmountChanges;
+        this.changes = changes;
     }
 }

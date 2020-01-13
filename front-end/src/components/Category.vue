@@ -6,7 +6,6 @@
         v-for="subcategory in root.children"
         v-bind:key="subcategory.id"
         :root="subcategory"
-        :baseurl="baseurl"
       />
     </ul>
   </li>
@@ -14,16 +13,15 @@
 
 <script>
 const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
-
+import globalConfig from '../config'
 export default {
   name: "Category",
   props: {
     root: Object,
-    baseurl: String
   },
   methods: {
     emitProducts () {
-      this.$store.dispatch('productsHeader', this.baseurl + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.root.category.id);
+      this.$store.dispatch('productsHeader', globalConfig.root + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + this.root.category.id);
     }
   }
 };
