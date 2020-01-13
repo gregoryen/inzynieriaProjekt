@@ -39,70 +39,6 @@ public class ReportController {
         return reportRepository.findAll();
     }
 
-//    @GetMapping("/readable")
-//    public Map<String, List<String>> getReadableReports() {
-//        Map<String, List<String>> result = new HashMap<>();
-//
-//        Iterable<Report> reports = reportRepository.findAll();
-//        for (Report r : reports) {
-//            List<Integer> ids = toInts(r.getInfo().split(";"));
-//            List<StockAmount> selected = stockAmountRepository.findAllByStockAmountIdIn(ids);
-//            List<String> lines = getLines(selected);
-//            result.put(Integer.toString(r.getReportId()), lines);
-//        }
-//
-//        return result;
-//    }
-//
-//    private List<Integer> toInts(String[] strings) {
-//        List<Integer> ints = new ArrayList<>();
-//        for (String s : strings) {
-//            ints.add(Integer.parseInt(s));
-//        }
-//        return ints;
-//    }
-//
-//    private List<String> getLines(List<StockAmount> selected) {
-//        List<String> result = new ArrayList<>();
-//
-//        List<Integer> productsIds = getProductsIds(selected);
-//        Map<Integer, String> products = getProductsMap(productsIds);
-//
-//        for (StockAmount s : selected) {
-//            result.add(
-//                    "Produkt: " + products.get(s.getProductId()) + ", " +
-//                    "ilosc: " + s.getAmount() + ", " +
-//                    "data dodania/aktualizacji: " + s.getDateTime() + ", " +
-//                    "dostepny: " + (s.getAvailable() ? "tak" : "nie") + ", " +
-//                    "jednostka: " + (s.getMeasure()));
-//        }
-//
-//        return result;
-//    }
-//
-//    private List<Integer> getProductsIds(List<StockAmount> selected) {
-//        Set<Integer> set = new HashSet<>(selected.size());
-//        return (ArrayList) selected.stream().filter(s -> set.add(s.getProductId())).collect(Collectors.toList());
-//    }
-//
-//    private Map<Integer, String> getProductsMap(List<Integer> productsIds) {
-//        Map<Integer, String> products = new HashMap<>();
-//        for (Integer id : productsIds) {
-//            int ID = id;
-//            String name = productsRepo.findById(ID).get().getName();
-//            products.put(id, name);
-//        }
-//        return products;
-//    }
-
-//    private List<StockAmount> getAllByStockIds(Iterable<StockAmount> stocks, Integer[] ids) {
-//        List<StockAmount> result = new ArrayList<>();
-//        for (int i = 0; i < ids.length; i++) {
-//            result.add(stockAmountRepository.findStockAmountByStockAmountId(ids[i]).get());
-//        }
-//        return result;
-//    }
-
     @PostMapping("/create")
     public Map<String, String> create(@RequestParam String startDateTime, @RequestParam String endDateTime) {
         Map<String, String> result = new HashMap<>();
@@ -138,9 +74,6 @@ public class ReportController {
             result.put("startDateTime", report.getStartDateTime().format(f));
             result.put("endDateTime", report.getEndDateTime().format(f));
             String changesAsString = "";
-//            for (String s : changes) {
-//                changesAsString += s + ";";
-//            }
             for (int i = 0; i < changes.size(); i++) {
                 changesAsString += changes.get(i) + (i == changes.size() - 1 ? "" : ";");
             }

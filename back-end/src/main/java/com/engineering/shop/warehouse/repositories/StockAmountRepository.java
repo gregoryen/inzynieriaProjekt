@@ -20,4 +20,5 @@ public interface StockAmountRepository extends CrudRepository<StockAmount, Integ
     Iterable<StockAmount> findAllByDateTimeBetween(LocalDateTime start, LocalDateTime end);
     Iterable<StockAmount> findAllByStockAmountId(Integer productId);
     List<StockAmount> findAllByStockAmountIdIn(List<Integer> ids);
+    Iterable<StockAmount> findAllByProductIdOrderByStockAmountIdDesc(Integer productId);
 }
