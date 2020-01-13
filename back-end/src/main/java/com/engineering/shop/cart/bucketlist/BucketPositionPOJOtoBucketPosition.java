@@ -27,6 +27,7 @@ public class BucketPositionPOJOtoBucketPosition implements Transformer<BucketPos
     public BucketPosition transform(BucketPositionPOJO pojo) {
         return BucketPosition.builder()
                 .product(getProduct(pojo.getProduct()))
+                //.token(pojo.getProduct())
                 .productName(getProduct(pojo.getProduct()).getName())
                 .productPrice(getProduct((pojo.getProduct())).getPrice())
                 .productQuantity(pojo.getProductQuantity())
@@ -40,16 +41,15 @@ public class BucketPositionPOJOtoBucketPosition implements Transformer<BucketPos
         return productToReturn;
     }
 
-    private Bucket getBucket(Integer id){
+    private Bucket getBucket(String token){
         Bucket bucket;
-        Boolean isTrue = bucketRepo.existsById(id);
+        Boolean isTrue = bucketRepo.existsByToken(token);
         if(isTrue){
-            Optional<Bucket> product = Optional.ofNullable(bucketRepo.findById(id)).orElseThrow();
+            Optional<Bucket> product = Optional.ofNullable(bucketRepo.findByToken(token)).orElseThrow();
             bucket = product.get();
         } else {
-            bucket = new Bucket(id);
+            bucket = new Bucket(token);
         }
-
         return bucket;
     }
 }

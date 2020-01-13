@@ -1,5 +1,6 @@
 package com.engineering.shop.cart.bucket;
 
+import com.engineering.shop.cart.Exceptions.BucketException;
 import com.engineering.shop.cart.bucketlist.BucketPosition;
 import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
@@ -20,22 +21,28 @@ import java.util.Set;
 //@RequiredArgsConstructor Sprawdzic czy POJO nadal bedzise sie z tym gryzlo
 public class Bucket {
     @Id
-    //@GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name="bucket_id")
     private Integer bucketId;
+    private String token;
     private BigDecimal totalValue;
  //   @OneToMany(mappedBy = "bucket")
     @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<BucketPosition> positions;
 
+
     public Bucket(){
 
     }
 
-    public Bucket(int bucketId) {
-        this.bucketId = bucketId;
+    public Bucket(String token) {
+        this.token = token;
         this.totalValue = new BigDecimal(0);
         this.positions = new ArrayList<>(); //new HashSet<>();
+    }
+
+    public int getUniqueItemsNumber () {
+        return this.positions.size();
     }
 
     public void addToTotalValue (BigDecimal value) {
@@ -46,13 +53,13 @@ public class Bucket {
     }
 
     public boolean substructFromTotalValue (BigDecimal value) {
-        System.out.println(value);
+        //System.out.println(value);
         if (this.totalValue.subtract(value).compareTo(new BigDecimal(0)) >= 0) {
             this.totalValue = totalValue.subtract(value);
-            System.out.println("Odejmowanie" + this.totalValue);
+            //System.out.println("Odejmowanie" + this.totalValue);
             return true;
         } else {
-            System.out.println("Nie da rady odjac");
+           // System.out.println("Nie da rady odjac");
             return false;
         }
     }
@@ -61,9 +68,13 @@ public class Bucket {
         positions.add(pos);
     }
 
-    public void removeFromPositions(BucketPosition pos){
+    public boolean removeFromPositions(BucketPosition pos){
         for (BucketPosition it : positions){
-            positions.remove(it);
+            if (it == pos) {
+                positions.remove(it);
+                return true;
+            }
         }
+        return false;
     }
 }
