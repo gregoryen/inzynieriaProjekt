@@ -16,4 +16,5 @@ public interface StockAmountRepository extends CrudRepository<StockAmount, Integ
 
     Boolean existsStockAmountByProductId(Integer productId);
     Optional<StockAmount> findStockAmountByProductId(Integer productId);
+
 }

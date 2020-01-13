@@ -33,6 +33,7 @@ public class OrderPOJOtoOrder implements Transformer<OrderPOJO, Order> {
                 .firstName(pojo.getFirstName())
                 .lastName(pojo.getLastName())
                 .adress(pojo.getAdress())
+                .email((pojo.getEmail()))
                 .phoneNumber(pojo.getPhoneNumber())
                 .bucket(getBucket(pojo.getOrderBucketId())) // dodac metode
                 .orderValue(getOrderValue(pojo.getOrderBucketId()))

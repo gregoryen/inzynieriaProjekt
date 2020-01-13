@@ -14,6 +14,7 @@ public class OrderPOJO {
     private String lastName;
     private String adress;
     private String phoneNumber;
+    private String email;
     private String orderBucketId;
     private BigDecimal orderValue;
     private Boolean isPaid;
