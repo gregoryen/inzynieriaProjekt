@@ -93,7 +93,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
-                .antMatchers("/signUp", "/logIn").permitAll()
+                .antMatchers("/signUp", "/logIn", "/veryfi", "/resetPassword", "/changePassword", "/savePassword").permitAll()
                 .antMatchers("/bucket", "/bucket/**").permitAll()
                 .antMatchers("/bucketPosition", "/bucketPosition/**").permitAll()
                 .antMatchers("/order", "/order/**").permitAll()
