@@ -11,10 +11,7 @@ import com.engineering.shop.common.Exceptions.ResourceNotFoundException;
 import com.engineering.shop.products.Product;
 import com.engineering.shop.products.ProductsRepo;
 
-import com.engineering.shop.warehouse.controllers.StockAmountChangeController;
-import com.engineering.shop.warehouse.controllers.StockAmountController;
-import com.engineering.shop.warehouse.models.StockAmount;
-import com.engineering.shop.warehouse.repositories.StockAmountRepository;
+
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jackson.JsonObjectDeserializer;
@@ -39,19 +36,19 @@ public class BucketController {
     OrderRepo orderRepo;
     ProductsRepo productsRepo;
     BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition;
-    BucketValidator bucketValidator;
+//    BucketValidator bucketValidator;
 
     public BucketController(BucketRepo bucketRepo,
                             BucketPositionRepo bucketPositionRepo,
                             OrderRepo orderRepo, ProductsRepo productsRepo,
-                            BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition,
-                            BucketValidator bucketValidator) {
+                            BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition ){
+                           // BucketValidator bucketValidator) { @Validated
         this.bucketRepo = bucketRepo;
         this.bucketPositionRepo = bucketPositionRepo;
         this.orderRepo = orderRepo;
         this.productsRepo = productsRepo;
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
-        this.bucketValidator = bucketValidator;
+     //   this.bucketValidator = bucketValidator;
     }
 
 // Wysylam Jsona
@@ -82,7 +79,7 @@ public class BucketController {
     }
 
     @PostMapping("/addProduct")
-    public @ResponseBody String addProductById (@RequestBody @Validated BucketPositionPOJO bucketPositionPOJO) {
+    public @ResponseBody String addProductById (@RequestBody BucketPositionPOJO bucketPositionPOJO) {
 
         Integer productId = bucketPositionPOJO.getProduct();
         String token = bucketPositionPOJO.getBucket();
@@ -134,11 +131,10 @@ public class BucketController {
     }
 
     @PostMapping("/createBucket")
-    public @ResponseBody String createBucketWithId (@RequestBody BucketPOJO bucketPOJO) {
-        String token = bucketPOJO.getId();
+    public @ResponseBody String createBucketWithId (@RequestBody  BucketPOJO bucketPOJO) {
 
+        String token = bucketPOJO.getBucket();
         Boolean isInBase = bucketRepo.existsByToken(token);
-
         Bucket bucket;
 
         if (isInBase) {
@@ -236,21 +232,21 @@ public class BucketController {
         return optPosition.get();
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
-        Map<String, String> errors = new HashMap<>();
-        ex.getBindingResult().getAllErrors().forEach((error) -> {
-            String fieldName = ((FieldError) error).getField();
-            String errorMessage = error.getCode();
-            errors.put(fieldName, errorMessage);
-        });
-        return errors;
-    }
-
-    @InitBinder
-    private void initBinder(WebDataBinder binder) {
-        binder.setValidator(bucketValidator);
-    }
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public Map<String, String> handleValidationExceptions(
+//            MethodArgumentNotValidException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        ex.getBindingResult().getAllErrors().forEach((error) -> {
+//            String fieldName = ((FieldError) error).getField();
+//            String errorMessage = error.getCode();
+//            errors.put(fieldName, errorMessage);
+//        });
+//        return errors;
+//    }
+//
+//    @InitBinder
+//    private void initBinder(WebDataBinder binder) {
+//        binder.setValidator(bucketValidator);
+//    }
 }
