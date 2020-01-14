@@ -1,15 +1,16 @@
 <template>
     <router-link to="/shoppingCart">
-        <div class="container">
+        <font-awesome-icon icon="shopping-cart" />
+        <!-- <div class="container">
             <div class="row justify-content-end">
                 <div class="col-1">
                     <font-awesome-icon icon="shopping-cart" />
                 </div>
                 <div class="col-1">
                     <p>{{itemNumber}}</p>
-                </div>
+                </div> CHWILOWO WYRZUCAM BO NIE MAM CZASU NAPRAWIC
             </div>
-        </div>
+        </div> -->
     </router-link>
 </template>
 
@@ -30,10 +31,8 @@ import axios from "axios"
         mounted() {
             let token = localStorage.getItem('user').jwtToken
             let id = token.substring(0, token.length/4)
-            axios.get(config.root + "/bucket/itemNumber/" + id) //this.bucketId //ZMIEN
+            axios.get(config.root + "/bucket/itemNumber/" + id)
             .then( (res) => {
-                // // eslint-disable-next-line no-console
-                // console.log(res)
                 this.itemNumber = res.data;
             })
         }

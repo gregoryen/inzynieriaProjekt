@@ -7,20 +7,27 @@ import axios from "axios";
 import config from "../config.js"
     export default {
         name: "AddToBucketButton",
+        data: () => {
+            return {
+                loading: false,
+            };
+        },
         props: {
             productId: Number
         },
         methods: {
             addProductToCart: function() {
-                // eslint-disable-next-line no-console
-                console.log(this.props.productId)
-                axios.post(config.root + "bucket/addProduct", {
-                    product: this.props.productId,
+                let token = JSON.parse(localStorage.getItem('user')).jwtToken
+                let bucketId = token.substring(0, token.length/4)
+
+                axios.post(config.root + "/bucket/addProduct", {
+                    product: this.$props.productId,
                     productName: null,
                     productPrice: null,
                     productQuantity: 1,
-                    bucket: "user1" //ZMIEN TO NA MILOSC BOSKA CZLOWIEKU JAK DOSTANIESZ 
-                                                 //TOKENY OD TEGO IMBECYLA
+                    bucket: bucketId
+                }).then( ()=> {
+                    this.$router.push("/shoppingCart")
                 })
             }
         }

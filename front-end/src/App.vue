@@ -84,11 +84,13 @@ export default {
       }
       return false;
     },
-    createBucket() {
+    createBucket() {    //przydaloby sie przeniesc to w inne miejsce ale narazie dziala wiec nie ruszam
+    //wywoluje sie caly czas a powinna tylko raz po zalogowaniu
       let user = JSON.parse(localStorage.getItem('user'))
       axios.post(config.root + "/bucket/createBucket", {
         id: user.jwtToken.substr(0, user.jwtToken.length/4)
       }).then( (res) => {
+          setTimeout(function(){ }, 500); //bug wysyła posta 2 na raz i tworzy 2 koszyki co buguje koszyk
           // eslint-disable-next-line no-console
           console.log(res)
       })

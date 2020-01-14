@@ -49,9 +49,9 @@ public class Bucket {
     }
 
     public void addToTotalValue (BigDecimal value) {
-        System.out.println(this.totalValue);
+//        System.out.println(this.totalValue);
         this.totalValue = this.totalValue.add(value);
-        System.out.println(this.totalValue);
+//        System.out.println(this.totalValue);
 
     }
 

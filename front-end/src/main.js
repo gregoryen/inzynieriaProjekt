@@ -35,8 +35,6 @@ import VueCurrencyInput from 'vue-currency-input'
 import ShoppingCart from './components/ShoppingCart'
 import OrderSummary from './components/OrderSummary'
 import AddProduct from "./components/AddProduct";
-import Home from './components/Home'
-import AdminPanel from './components/AdminPanel'
 import WarehouseSupplyForm from './components/WarehouseSupplyForm';
 import StockAmounts from './components/StockAmounts';
 
@@ -68,12 +66,19 @@ extend('max', {
   message: 'Field too long'
 });
 
-Vue.config.productionTip = false
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
-Vue.use(BootstrapVue)
-Vue.use(VueRouter)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+const pluginOptions = {
+  globalOptions: { currency: 'PLN' }
+}
+
+Vue.use(VueRouter);
+Vue.use(BootstrapVue);
+Vue.use(VueCurrencyInput, pluginOptions)
+
+Vue.config.productionTip = false;
 
 
 const ifNotAuthenticated = (to, from, next) => {
@@ -123,15 +128,6 @@ next('/')
   else
   next('/')
 }
-const pluginOptions = {
-  globalOptions: { currency: 'PLN' }
-}
-
-Vue.use(VueRouter);
-Vue.use(BootstrapVue);
-Vue.use(VueCurrencyInput, pluginOptions)
-
-Vue.config.productionTip = false;
 
 export const bus = new Vue();
 
@@ -164,6 +160,7 @@ const router = new VueRouter({
     },
     {
       path: '/orderSummary',
+      name: 'orderSummary',
       component: OrderSummary
     },
     {
@@ -175,9 +172,11 @@ const router = new VueRouter({
       name: 'adminPanel',
       component: AdminPanel,
       beforeEnter:ifHavePrivilege,
-      meta:{
-      requiredPrivilege: 'ADMIN_PRIVILEGE'
-      },
+      meta:
+      {
+        requiredPrivilege: 'ADMIN_PRIVILEGE'
+      }
+    },
     {
       path: '/warehouseSupplyForm',
       component: WarehouseSupplyForm
@@ -185,7 +184,6 @@ const router = new VueRouter({
     {
       path: '/StockAmounts',
       component: StockAmounts
-    }
     },
   { path: '/product', name: 'product', component: Product },
   { path: '/products', name: 'products', component: Products },
