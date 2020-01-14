@@ -32,14 +32,14 @@ public class MessageController {
         String email = token.getName();
         Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
 
-        if (roles.contains(UserRoleType.ADMIN.name()))
+        if (roles.contains("ADMIN"))
             message.setSender(null);
         else
             message.setSender(email);
 
         if( messageValidator.validate(message) ) {
             Message savedMessage = messageRepository.save(message);
-            if(roles.contains(UserRoleType.ADMIN.name()))
+            if(roles.contains("ADMIN"))
                 notification.setNotification(savedMessage.getId());
             return ResponseEntity.ok().body(savedMessage); //200
         }
