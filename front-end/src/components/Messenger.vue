@@ -1,6 +1,7 @@
 <template>
     <div class="messenger">
         <div class="container" id="chatBox">
+            <input type="button" @click="onClickBackButton()" value="Back" class="btn btn-info">
             <h2 v-if="addressee == null">Conversation with: Helpdesk</h2>
             <h2 v-else>Conversation with: {{addressee}}</h2>
             <div class="container rounded" id="messageArea">
@@ -80,6 +81,9 @@
                     /* eslint-disable no-console */
                     console.log(error);
                 });
+            },
+            onClickBackButton: function() {
+                this.$emit('backButtonClicked',);
             }
         },
         mounted() {
