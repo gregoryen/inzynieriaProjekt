@@ -18,13 +18,12 @@
 
 <script>
     import axios from 'axios'
+    import conf from './../config'
 
     export default {
         name: "Messenger",
         props: {
-            token: String,
-            addressee: String,
-            role: String
+            addressee: String
         },
         data() {
             return {
@@ -34,9 +33,14 @@
         },
         methods: {
             loadMessages: function () {
-                var root = "http://localhost:8080";
-                var url = root + "/messages/user" + ( this.role == "admin" ? "/" + this.addressee : "");
-                var token = this.token;
+                // eslint-disable-next-line no-console
+                console.log(this.$store.state.auth.user);
+
+                var root = conf.root;
+
+                // Privileges niżej będą zmienione, jak zostaną ustalone role
+                var url = root + "/messages/user" + ( this.$store.state.auth.user.privileges == "ADMIN" ? "/" + this.addressee : "");
+                var token = this.$store.state.auth.user.jwtToken;
 
                 const config = {
                     headers: {
@@ -51,9 +55,8 @@
                 });
             },
             sendMessage: function () {
-                var root = "http://localhost:8080";
-                var token = this.token;
-
+                var root = conf.root;
+                var token = this.$store.state.auth.user.jwtToken;
 
                 const config = {
                     headers: {
@@ -65,7 +68,7 @@
                 let data = {
                     "receiver": this.addressee,
                     "text": this.text
-                }
+                };
                 axios.post(root + "/messages", data, config).then(() => {
                     this.text = "";
                     this.loadMessages();
@@ -76,6 +79,7 @@
             }
         },
         mounted() {
+            console.log(this.$store.state.auth.user);
             this.loadMessages();
         }
     }
