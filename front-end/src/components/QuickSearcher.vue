@@ -9,7 +9,7 @@
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4" v-for="productHeader in productsHeader" v-bind:key="productHeader.id">
-                            <ProductHeader :productHeader="productHeader" :baseurl="baseurl"/>
+                            <ProductHeader :productHeader="productHeader" />
                         </div>
                     </div>
                 </div>
@@ -21,13 +21,11 @@
 <script>
     import ProductHeader from "./ProductHeader.vue";
     import axios from 'axios';
+    import globalConfig from '../config'
 
     const SEARCH = '/products/search/findAllByNameContainingIgnoreCaseAndActiveIsTrue?projection=header&name=';
     export default {
         components: {ProductHeader},
-        props: {
-            baseurl: String
-        },
         data() {
             return {
                 productsHeader: []
@@ -36,7 +34,7 @@
         methods: {
             search(text) {
                 axios
-                    .get(this.baseurl + SEARCH + text)
+                    .get(globalConfig.root + SEARCH + text)
                     .then(response => {
                         this.productsHeader = response.data._embedded.products;
                     });

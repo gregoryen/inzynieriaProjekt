@@ -107,6 +107,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/suppliers/**", "/stock_amounts/**", "/supplies/**").permitAll()
                 .antMatchers("/images/**", "/downloadFile/**").permitAll()
                 .antMatchers("/products/**", "/categories/**").permitAll()
+                .antMatchers("/opinions", "/opinions/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
                 .anyRequest().authenticated()
 
