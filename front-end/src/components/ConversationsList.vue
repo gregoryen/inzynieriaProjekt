@@ -1,9 +1,9 @@
 <template>
     <div class="conversationsList">
         <div class="container">
-            <h1>Twoje konwersacje</h1>
+            <h1>Your conversations</h1>
             <ul id="usersList" v-for="i in userConversations" :key="i">
-                <li>{{i}} <input type="button" @click="onClickButton(i)" value="Otwórz" class="btn btn-info"></li>
+                <li>{{i}} <input type="button" @click="onClickButton(i)" value="Open" class="btn btn-info"></li>
             </ul>
         </div>
     </div>
@@ -16,8 +16,7 @@
 
     export default {
         name: "ConversationsList",
-        props: {
-        },
+        props: {},
         data() {
             return {
                 userConversations: null
@@ -51,5 +50,13 @@
 </script>
 
 <style scoped>
+
+    * {
+        text-align: center;
+    }
+
+    ul {
+        list-style-type: none;
+    }
 
 </style>

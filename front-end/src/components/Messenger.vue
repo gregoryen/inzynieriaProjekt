@@ -1,7 +1,9 @@
 <template>
     <div class="messenger">
         <div class="container" id="chatBox">
-            <div class="container" id="messageArea">
+            <h2 v-if="addressee == null">Conversation with: Helpdesk</h2>
+            <h2 v-else>Conversation with: {{addressee}}</h2>
+            <div class="container rounded" id="messageArea">
                 <ul v-for="message in messages" v-bind:key="message.id">
                     <li v-if="message.sender == addressee" name="leftSide">{{message.text}}</li>
                     <li v-else name="rightSide">{{message.text}}</li>
@@ -10,7 +12,7 @@
             <form class="form-inline" id="messageForm">
                 <input type="text" id="message" v-model="text" placeholder="Type a message..." autocomplete="off"
                        class="form-control"/>
-                <input type="button" @click="sendMessage()" value="Wyślij" class="btn btn-info">
+                <input type="button" id="bt" @click="sendMessage()" value="Send" class="btn btn-info">
             </form>
         </div>
     </div>
@@ -39,7 +41,7 @@
                 var root = conf.root;
 
                 // Privileges niżej będą zmienione, jak zostaną ustalone role
-                var url = root + "/messages/user" + ( this.$store.state.auth.user.privileges == "ADMIN" ? "/" + this.addressee : "");
+                var url = root + "/messages/user" + (this.$store.state.auth.user.privileges == "ADMIN" ? "/" + this.addressee : "");
                 var token = this.$store.state.auth.user.jwtToken;
 
                 const config = {
@@ -65,10 +67,12 @@
                     }
                 };
 
+
                 let data = {
                     "receiver": this.addressee,
                     "text": this.text
                 };
+
                 axios.post(root + "/messages", data, config).then(() => {
                     this.text = "";
                     this.loadMessages();
@@ -87,7 +91,14 @@
 
 <style scoped>
     #chatBox {
-        border: solid grey 1px;
+        /*border: solid grey 2px;*/
+        margin-top: 5%;
+        min-height: 50vh;
+    }
+
+    #messageArea {
+        border: solid grey 2px;
+        min-height: 50vh;
     }
 
     .form-inline {
@@ -97,23 +108,34 @@
     }
 
     #messageForm {
+        min-width: 50%;
         margin: 0px;
         padding: 0px;
     }
 
     #message {
-        width: 70%;
+        min-width: 90%;
         padding: auto;
         margin: auto;
     }
 
+    #bt {
+        min-width: 10%;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
     li[name="leftSide"] {
         text-align: left;
+        font-size: 20px;
     }
 
     li[name="rightSide"] {
         text-align: right;
         color: blue;
+        font-size: 20px;
     }
 
 </style>
