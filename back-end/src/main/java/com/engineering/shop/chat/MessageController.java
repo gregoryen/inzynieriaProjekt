@@ -49,14 +49,24 @@ public class MessageController {
     @GetMapping
     @RequestMapping("/user/{id}")
     public Iterable<Message> getMessages(@PathVariable("id") String id) {
+        Authentication token = SecurityContextHolder.getContext().getAuthentication();
+        String email = token.getName();
+        Set<String> roles = token.getAuthorities().stream().map(role -> role.getAuthority()).collect(Collectors.toSet());
+
         Iterable<Message> messagesToUser = messageRepository.getAllByReceiver(id);
         Iterable<Message> messagesFromUser = messageRepository.getAllBySender(id);
         List<Message> messages = new ArrayList<>();
         messagesToUser.forEach(messages::add);
-        messagesToUser.forEach(message -> message.setDisplayed(true));
-        messagesToUser.forEach(message -> messageRepository.save(message));
-
         messagesFromUser.forEach(messages::add);
+        if(!roles.contains("ADMIN")) {
+            messagesToUser.forEach(message -> message.setDisplayed(true));
+            messagesToUser.forEach(message -> messageRepository.save(message));
+        }
+        else{
+            messagesFromUser.forEach(message -> message.setDisplayed(true));
+            messagesFromUser.forEach(message -> messageRepository.save(message));
+        }
+
 
         messages.sort(Comparator.comparing(Message::getDate));
 
