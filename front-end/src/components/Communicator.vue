@@ -1,7 +1,7 @@
 <template>
     <div id="communicator">
         <ConversationsList v-if='showList' @conversationChosen="conversationChosen"/>
-        <Messenger v-else :addressee="addressee"/>
+        <Messenger v-else :addressee="addressee" @backButtonClicked="backButtonClicked"/>
     </div>
 </template>
 
@@ -47,6 +47,10 @@
             conversationChosen: function (user) {
                 this.addressee = user;
                 this.showList = false;
+            },
+            backButtonClicked: function() {
+                this.addressee = null;
+                this.getRole();
             }
         },
         mounted() {
