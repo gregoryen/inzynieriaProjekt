@@ -1,6 +1,7 @@
 package com.engineering.shop.quickSearch;
 
 import com.engineering.shop.categories.CategoriesRepo;
+import com.engineering.shop.products.Product;
 import com.engineering.shop.products.ProductHeaderProjection;
 import com.engineering.shop.products.ProductsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class QuickSearch {
         this.productsRepo = productsRepo;
     }
 
-    public Iterable<ProductHeaderProjection> search(String phrase) {
+    public Iterable<Product> search(String phrase) {
         return productsRepo.findAllByNameContainingIgnoreCaseAndActiveIsTrue(phrase);
     }
 }

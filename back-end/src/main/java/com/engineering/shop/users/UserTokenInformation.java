@@ -9,6 +9,7 @@ public class UserTokenInformation {
     private String email;
     private String name;
     private String privileges;
+    private String lastName;
 
 }
 

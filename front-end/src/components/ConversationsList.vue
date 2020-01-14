@@ -10,12 +10,13 @@
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
+    import conf from './../config';
+
 
     export default {
         name: "ConversationsList",
         props: {
-            token: String
         },
         data() {
             return {
@@ -24,8 +25,8 @@
         },
         methods: {
             getConversations: function () {
-                var root = "http://localhost:8080";
-                var token = this.token;
+                var root = conf.root;
+                var token = this.$store.state.auth.user.jwtToken;
                 const config = {
                     headers: {
                         Authorization: "Bearer " + token

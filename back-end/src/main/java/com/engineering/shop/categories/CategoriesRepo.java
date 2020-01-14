@@ -12,30 +12,35 @@ public interface CategoriesRepo extends CrudRepository<Category, Integer> {
 
     Optional<Category> findById(Integer id);
 
-    Optional<Category> findByParentId(Integer parentId);
+    Optional<Category> findByParentIdAndPreviousCategoryId(Integer parentId,Integer previousCategoryId);
+
+    Optional<Category> findByParentIdAndPreviousCategoryIdIsNull(Integer parentId);
 
     Iterable<Category> findAllByParentId(Integer parentId);
+
+    Iterable<Category> findAllByParentIdIsNull();
 
     @Override
     <S extends Category> Iterable<S> saveAll(Iterable<S> iterable);
 
     @Override
-    @CachePut("categoriesTree")
     <S extends Category> S save(S s);
 
     @Override
-    @CacheEvict("categoriesTree")
     void deleteById(Integer integer);
 
     @Override
-    @CacheEvict("categoriesTree")
     void delete(Category category);
 
     @Override
-    @CacheEvict("categoriesTree")
     void deleteAll(Iterable<? extends Category> iterable);
 
     @Override
-    @CacheEvict("categoriesTree")
     void deleteAll();
+
+    Optional<Category> findByPreviousCategoryId(Integer previousCategoryId);
+
+    Optional<Category> findByParentIdIsNullAndPreviousCategoryIdIsNull();
+
+    Optional<Category> findByParentIdIsNullAndPreviousCategoryId(Integer previousCategoryId);
 }
