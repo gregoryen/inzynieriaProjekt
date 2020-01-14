@@ -9,9 +9,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
-import AdminPanel from './components/AdminPanel.vue'
 import Profile from './components/Profile.vue'
-import Home from './components/Home.vue'
 
 import { ValidationProvider,ValidationObserver } from 'vee-validate';
 import { required, min, max, email} from 'vee-validate/dist/rules';
@@ -19,6 +17,7 @@ import UserServices from './services/user.service'
 import store from './store/';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import StarRating from 'vue-star-rating'
 import {
   faHome,
   faUser,
@@ -73,7 +72,7 @@ Vue.component('ValidationObserver', ValidationObserver);
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
-
+Vue.component('star-rating', StarRating);
 
 const ifNotAuthenticated = (to, from, next) => {
   if (!store.state.auth.status.loggedIn) {
@@ -173,10 +172,11 @@ const router = new VueRouter({
       path: '/adminPanel',
       name: 'adminPanel',
       component: AdminPanel,
-      beforeEnter:ifHavePrivilege,
-      meta:{
-      requiredPrivilege: 'ADMIN_PRIVILEGE'
+      beforeEnter: ifHavePrivilege,
+      meta: {
+        requiredPrivilege: 'ADMIN_PRIVILEGE'
       },
+    },
     {
       path: '/warehouseSupplyForm',
       component: WarehouseSupplyForm
@@ -184,7 +184,6 @@ const router = new VueRouter({
     {
       path: '/StockAmounts',
       component: StockAmounts
-    }
     },
   { path: '/product', name: 'product', component: Product },
   { path: '/products', name: 'products', component: Products },
@@ -193,9 +192,9 @@ const router = new VueRouter({
   { path: '/addProduct', name: 'addProduct', component: AddProduct },
   { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
   { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct },
-    { path: '/overview', name: 'overview', component: ProductsOverview }
+  { path: '/overview', name: 'overview', component: ProductsOverview }
   ]
-})
+});
 
 router.beforeEach((to, from, next) => {
   if (!ifAuthenticated) next('/login')

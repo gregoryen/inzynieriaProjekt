@@ -17,11 +17,16 @@
     <u>
       <li v-for="(privilege,index) in currentUser.privileges.split(',') " :key="index">{{privilege}}</li>
     </u>
+    <OpinionsInUserPanel/>
   </div>
 </template>
 
 <script>
+  import OpinionsInUserPanel from "./OpinionsInUserPanel";
 export default {
+  components: {
+    OpinionsInUserPanel
+  },
   name: 'profile',
   computed: {
     currentUser() {
