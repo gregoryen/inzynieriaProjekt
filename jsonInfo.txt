@@ -1,0 +1,59 @@
+------ KATEGORIE I PRODUKTY -----------------
+
+DODANIE PRODUKTU:
+<HOST>/products
+{
+	"product": {
+		"name": "nazwa",
+		"description": "opis",
+		"mainCategoryId": 1,        		<---- KATEGORIA MUSI BYĆ TEŻ PRZEKAZANA W TABLICY "categories" 
+		"categories": [1, 2, 3, 4],  		<---- KATEGORIE MUSZĄ ISTNIEĆ
+		"price": 0.99,
+		"mainImage": 1,						<---- ID zdjęcia wysłanego na /uploadImage, po wysłaniu zdjęcia jest zwracany w odpowiedzi
+		"active": true,						<------------->
+		"reference": "cos",					   NIE MUSISZ
+		"isbn": "cos",						    WYSYŁAĆ
+		"ean13": "cos"						<------------->
+	},
+	"additionalImages": [1,2,3,4,5,6,7,8,9] <----ID zdjęć wysłanego na /uploadImage
+}
+
+produkty mają jedną projekcję: po GET dodajesz na końcu requestu ?projection=header - jak nie chcesz kategorii i innych gówien
+_______________________________________________________________________________________________________________________
+
+DODANIE KATEGORII:
+<HOST>/categories
+{
+	"name": "nazwa",
+	"description": "opis",
+	"parentId": 1,						<-----	 CZYTAJ
+	"previousCategoryId": 2				<-----   NIŻEJ
+}
+
+produkty mają jedną projekcję: po GET dodajesz na końcu requestu ?projection=withId, bo metody udostępniane przez repozytoria NIE oddają ID
+
+parentId - ID istniejącej już kategorii, dla kategorii głównej null
+previousCategoryId - ID istniejącej już kategorii, po której kategoria jest wyświetlana i jej parentId jest takie samo tej kategorii, którą dodajesz np:
+
+kategoria1   <---- kategoria główna
+kategoria2    <---- druga kategoria główna, która jako previousCategoryId ma ID kategoria1 (bo zarówno kategoria1 jak i kategoria2 mają parentId null)
+
+bardziej skomplikowany przykład:
+kategoria1
+	kategoria1a
+	kategoria1b
+	kategoria1c
+kategoria2
+	kategoria2a
+kategoria3
+
+chcesz dodać kategorię POD kategoria1b
+	parentId ustawiasz ID kategoria1
+	previousCategoryId ustawiasz ID kategoria1b
+	
+chcesz dodać podkategorię do kategoria 2
+	parentId ustawiasz ID kategoria2
+	previousCategoryId ustawiasz kategoria2a -> Twoja kategoria będzie pod kategoria2a
+
+
+GETy -> wysyłasz sobie request na <HOST>/[repository]/search i masz metody, których można używać

@@ -3,8 +3,11 @@ package com.engineering.shop.security.configuration;
 import com.engineering.shop.security.RestAuthenticationEntryPoint;
 import com.engineering.shop.security.SavedRequestAwareAuthenticationSuccessHandler;
 import com.engineering.shop.security.jwt.JwtRequestFilter;
+import org.apache.catalina.filters.CorsFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.Ordered;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -91,10 +94,19 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint).and()
                 .authorizeRequests()
                 .antMatchers("/signUp", "/logIn").permitAll()
+                .antMatchers("/bucket", "/bucket/**").permitAll()
+                .antMatchers("/bucketPosition", "/bucketPosition/**").permitAll()
+                .antMatchers("/order", "/order/**").permitAll()
+                .antMatchers("/product", "/product/**").permitAll()
+                .antMatchers("/bucketProduct", "/bucketProduct/**").permitAll()
+                .antMatchers("/cart", "/cart/**").permitAll()
+                .antMatchers("/images/**", "/products/**").permitAll()
+                .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**").permitAll()
+                //.anyRequest().authenticated()
                 .antMatchers("/images/**", "/downloadFile/**").permitAll()
                 .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
-                .anyRequest().authenticated()
+                //.anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();
@@ -102,4 +114,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
+
 }
+
