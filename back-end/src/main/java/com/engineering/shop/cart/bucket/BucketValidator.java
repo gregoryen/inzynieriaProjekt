@@ -36,6 +36,7 @@ public class BucketValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
 
+
         ValidationUtils.rejectIfEmpty(errors,"product", "bucket.product.empty", "invalid product id");
         ValidationUtils.rejectIfEmpty(errors,"productQuantity", "bucket.productQuantity.empty","provide product quantity");
         ValidationUtils.rejectIfEmpty(errors,"bucket", "bucket.bucket.empty","invalid bucket token");
