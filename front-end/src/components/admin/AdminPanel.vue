@@ -101,8 +101,8 @@ export default {
   name: "AdminPanel",
   data() {
     return {
-      changeMainTable: "empty",
-      mainTable: []
+      changeMainTable: this.$store.state.admin.changeMainTable,
+      mainTable: this.$store.state.admin.mainTable
     };
   },
   methods: {

@@ -15,23 +15,23 @@
     >
       <b-carousel-slide
         caption="Drip tape"
-        img-src="../assets/tasmaKroplujaca.jpg"
+        img-src="../../assets/tasmaKroplujaca.jpg"
       >
       </b-carousel-slide>
 
       <b-carousel-slide
-        caption="Three whitening"
-        img-src="../assets/bielenie.jpg"
+        caption="Tree whitening"
+        img-src="../../assets/bielenie.jpg"
       >
       </b-carousel-slide>
     </b-carousel>
     <div>
-      <div class="space"></div>
+      <div class="space" />
       <b-card-group deck>
         <div class="small-card-deck">
         <b-card
           border-variant="success"
-          img-src="../assets/grabie.jpg"
+          img-src="../../assets/grabie.jpg"
           img-alt="Card image"
           img-top
           img-height="560px"
@@ -42,7 +42,7 @@
         </b-card>
         <b-card
           border-variant="success"
-          img-src="../assets/opryskiwacze.jpg"
+          img-src="../../assets/opryskiwacze.jpg"
           img-alt="Card image"
           img-bottom
         >
