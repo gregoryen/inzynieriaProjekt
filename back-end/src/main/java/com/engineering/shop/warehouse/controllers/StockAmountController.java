@@ -1,5 +1,7 @@
 package com.engineering.shop.warehouse.controllers;
 
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsRepo;
 import com.engineering.shop.warehouse.exceptions.UnprocessableEntityException;
 import com.engineering.shop.warehouse.models.Measure;
 import com.engineering.shop.warehouse.models.StockAmount;
@@ -10,7 +12,10 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -18,10 +23,13 @@ import java.util.Optional;
 public class StockAmountController {
 
     private StockAmountRepository stockAmountRepository;
+    private ProductsRepo productsRepo;
 
     @Autowired
-    public StockAmountController(StockAmountRepository stockAmountRepository) {
+    public StockAmountController(StockAmountRepository stockAmountRepository,
+                                 ProductsRepo productsRepo) {
         this.stockAmountRepository = stockAmountRepository;
+        this.productsRepo = productsRepo;
     }
 
     @GetMapping(path = "/all")
@@ -72,6 +80,7 @@ public class StockAmountController {
         return stockAmounts;
     }
 
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping(path = "/add")
     @ResponseStatus(value = HttpStatus.CREATED)
     public @ResponseBody
@@ -110,6 +119,7 @@ public class StockAmountController {
 
     @PatchMapping("/increase")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public
     String increaseAmount(@RequestBody StockAmount newStockAmount) {
         if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or amount is/are not provided");
@@ -136,6 +146,7 @@ public class StockAmountController {
 
     @PatchMapping("/decrease")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public
     String decreaseAmount(@RequestBody StockAmount newStockAmount) {
         if (newStockAmount.getProductId() == null || newStockAmount.getAmount() == null) {
             throw new ResourceNotFoundException("Product id or amount is/are not provided");
@@ -159,12 +170,133 @@ public class StockAmountController {
         return "Decreased";
     }
 
-    // ---
+    // --- POWYZSZE DO WYWALENIA NAJPRAWDOPODOBNIEJ, NIE WSZYSTKIE
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping(path = "/measures")
     public Measure[] getAllMeasures() {
         Measure[] measures = Measure.class.getEnumConstants();
         return measures;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path = "/last_updated")
+    public List<StockAmount> getAllLastUpdated() {
+        Iterable<StockAmount> iterable = stockAmountRepository.findAll();
+        List<StockAmount> stocks = getIterableAsList(iterable);
+
+        Map<Integer, List<StockAmount>> groupedStocks =
+                stocks.stream().collect(Collectors.groupingBy(StockAmount::getProductId));
+
+        return getLastUpdated(groupedStocks);
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping(path = "/last_updated_with_names")
+    public List<Map<String, String>> getAllLastUpdatedWithProductsNames() {
+        Iterable<StockAmount> iterable = stockAmountRepository.findAll();
+        List<StockAmount> stocks = getIterableAsList(iterable);
+        Map<Integer, List<StockAmount>> groupedStocks =
+                stocks.stream().collect(Collectors.groupingBy(StockAmount::getProductId));
+        List<StockAmount> lastUpdated = getLastUpdated(groupedStocks);
+        return addProductsNamesTo(lastUpdated);
+    }
+
+    private List<StockAmount> getIterableAsList(Iterable<StockAmount> iterable) {
+        Iterator<StockAmount> iterator = iterable.iterator();
+        List<StockAmount> list = new ArrayList<>();
+        iterator.forEachRemaining(list::add);
+        return list;
+    }
+
+    private List<StockAmount> getLastUpdated(Map<Integer, List<StockAmount>> groupedStocks) {
+        List<StockAmount> lastUpdated = new ArrayList<>();
+        groupedStocks.forEach(
+                (key, list) -> lastUpdated.add(
+                        list
+                                .stream()
+                                .max(
+                                        Comparator.comparingInt(
+                                                StockAmount::getStockAmountId
+                                        )
+                                ).get()
+                )
+        );
+        return lastUpdated;
+    }
+
+    private List<Map<String, String>> addProductsNamesTo(List<StockAmount> lastUpdated) {
+        List<Map<String, String>> result = new ArrayList<>();
+
+        for (StockAmount s : lastUpdated) {
+            Map<String, String> mapValue = new HashMap<>();
+
+            String productName = productsRepo.findById(
+                    s.getProductId()).orElseThrow(
+                    () -> new ResourceNotFoundException("Brak produktu dla stanu magazynowego.")
+            ).getName();
+
+            mapValue.put("stockId", Integer.toString(s.getStockAmountId()));
+            mapValue.put("measure", s.getMeasure().toString());
+            mapValue.put("available", Boolean.toString(s.getAvailable()));
+            mapValue.put("amount", Double.toString(s.getAmount()));
+            mapValue.put("productId", Integer.toString(s.getProductId()));
+            mapValue.put("productName", productName);
+
+
+            String dateTime = s.getDateTime().toString();
+            dateTime = dateTime.replace("T", " ");
+            dateTime = dateTime.substring(0, 16);
+            mapValue.put("dateTime", dateTime);
+
+            result.add(mapValue);
+        }
+
+        return result;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping(path = "/decrease_amount")
+    public Map<String, String> decrease(@RequestParam double amount, @RequestParam Integer productId) {
+        Map<String, String> result = new HashMap<>();
+        List<String> info = new ArrayList<>();
+
+        Iterator<StockAmount> stocks = stockAmountRepository.findAllByProductIdOrderByStockAmountIdDesc(productId).iterator();
+        if (!stocks.hasNext()) {
+            result.put("status", "failed");
+            result.put("info", "Nie ma takiego produktu. Nie mozna zmniejszyc ilosci.");
+        } else {
+            StockAmount stock = stocks.next();
+            if (stock.getMeasure().toString().contentEquals("SZT") &&
+                    amount % 1 != 0) {
+                info.add("Liczba sztuk powinna byc calkowita.");
+            }
+            if (stock.getAmount() - amount < 0.0) {
+                info.add("Podana ilosc przekracza ilosc produktow w magazynie.");
+            }
+            if (amount < 0.0) {
+                info.add("Ilosc/liczba powinna byc wieksza od zera.");
+            }
+            if (info.size() == 0) {
+                StockAmount stockAmount = new StockAmount();
+                stockAmount.setAmount(stock.getAmount() - amount);
+                stockAmount.setDateTime(LocalDateTime.now());
+                stockAmount.setAvailable(stock.getAmount() - amount != 0.0);
+                stockAmount.setMeasure(stock.getMeasure());
+                stockAmount.setProductId(stock.getProductId());
+                stockAmountRepository.save(stockAmount);
+                result.put("status", "saved");
+            } else {
+                result.put("status", "failed");
+                StringBuilder message = new StringBuilder("");
+                for (int i = 0; i < info.size(); i++) {
+                    message.append(info.get(i));
+                    message.append(i != info.size() - 1 ? "," : "");
+                }
+                result.put("error", message.toString());
+            }
+        }
+
+        return result;
     }
 }

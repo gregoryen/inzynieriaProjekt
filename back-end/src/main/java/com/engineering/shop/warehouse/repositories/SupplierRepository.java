@@ -9,7 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface SupplierRepository extends CrudRepository<Supplier, Integer> {
-
     Optional<Supplier> findBySupplierId(Integer SupplierId);
     Optional<Supplier> findSupplierByFirstnameAndLastnameAndPhoneNumberAndCompany(
             String firstname, String lastname, String phoneNumber, String company

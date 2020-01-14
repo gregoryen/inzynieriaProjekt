@@ -1,118 +1,95 @@
 package com.engineering.shop.warehouse.controllers;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.engineering.shop.products.Product;
+import com.engineering.shop.products.ProductsRepo;
 import com.engineering.shop.warehouse.models.Report;
-import com.engineering.shop.warehouse.models.StockAmountChange;
+import com.engineering.shop.warehouse.models.StockAmount;
 import com.engineering.shop.warehouse.repositories.ReportRepository;
-import com.engineering.shop.warehouse.repositories.StockAmountChangeRepository;
 import com.engineering.shop.warehouse.repositories.StockAmountRepository;
+import org.apache.commons.io.input.ObservableInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path = "/reports")
 public class ReportController {
 
     ReportRepository reportRepository;
-    StockAmountChangeRepository stockAmountChangeRepository;
+    StockAmountRepository stockAmountRepository;
+    ProductsRepo productsRepo;
 
     @Autowired
-    public ReportController(ReportRepository reportRepository, StockAmountChangeRepository stockAmountChangeRepository) {
+    public ReportController(ReportRepository reportRepository,
+                            StockAmountRepository stockAmountRepository,
+                            ProductsRepo productsRepo) {
         this.reportRepository = reportRepository;
-        this.stockAmountChangeRepository = stockAmountChangeRepository;
+        this.stockAmountRepository = stockAmountRepository;
+        this.productsRepo = productsRepo;
     }
 
     @GetMapping("/all")
-    public Iterable<StockAmountChange> getAllStockAmountChanges() {
-        return stockAmountChangeRepository.findAll();
+    public Iterable<Report> getReports() {
+        return reportRepository.findAll();
     }
 
     @PostMapping("/create")
-    public String create(@RequestBody Map<String, String> dateTimes) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime start = LocalDateTime.parse(dateTimes.get("startDateTime"), formatter);
-        LocalDateTime end = LocalDateTime.parse(dateTimes.get("endDateTime"), formatter);
-        Iterable<StockAmountChange> stockAmountChanges = stockAmountChangeRepository.findAllByChangeDateTimeBetween(start, end);
-        List<StockAmountChange> stockAmountChangesList = new ArrayList<StockAmountChange>();
-        for (StockAmountChange stockAmountChange : stockAmountChanges) {
-            stockAmountChangesList.add(stockAmountChange);
+    public Map<String, String> create(@RequestParam String startDateTime, @RequestParam String endDateTime) {
+        Map<String, String> result = new HashMap<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-ddHH:mm:ss");
+        LocalDateTime start = LocalDateTime.parse(startDateTime, formatter);
+        LocalDateTime end = LocalDateTime.parse(endDateTime, formatter);
+        Iterable<StockAmount> stockAmounts = stockAmountRepository.findAllByDateTimeBetween(start, end);
+
+        String info = "";
+        List<String> changes = new ArrayList<>();
+        for (StockAmount s : stockAmounts) {
+            info = "Produkt: " + productsRepo.findById(s.getProductId()).get().getName() + ", " +
+                    s.getAmount() + " " + s.getMeasure() + ", " +
+                    "aktualizacja: " + s.getDateTime().toString().replace("T", " ").substring(0, 16);
+            changes.add(info);
         }
-        String returnStatement;
-        if (stockAmountChangesList != null) {
+
+        if (changes.size() != 0) {
             Report report = new Report();
             report.setCreationDateTime(LocalDateTime.now());
             report.setStartDateTime(start);
             report.setEndDateTime(end);
-            report.setStockAmountChanges(stockAmountChangesList);
+            report.setChanges(changes);
+
             reportRepository.save(report);
-            returnStatement = "Report created";
-        } else {
-            // jakis wyjatek czy HTTP blad
-            returnStatement = "There are not any stock amount changes to include in report.";
-        }
-        return returnStatement;
-    }
 
-    @PostMapping("/export")
-    public String exportToCSVFileFromDatabase(@RequestBody Map<String, String> filepathAndReportId) {
-        try {
-            String filepath = filepathAndReportId.get("filepath");
-            Integer reportId = Integer.parseInt(filepathAndReportId.get("reportId"));
+            DateTimeFormatter f = DateTimeFormatter.ISO_DATE_TIME;
 
-            Report report = reportRepository.findByReportId(reportId).
-                    orElseThrow(() -> new ResourceNotFoundException("Report not found with reportId"));
-            List<StockAmountChange> stockAmountChanges = report.getStockAmountChanges();
-
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(filepath), StandardCharsets.ISO_8859_1));
-            String separator = ",";
-            StringBuffer stringBuffer = new StringBuffer();
-            stringBuffer.append("\"Id zmiany\",\"Poprzednia ilosc\",\"Aktualna ilosc\",\"Data zmiany\",\"Informacja o zmianie\",\"Id produktu\",\"Id kategorii\"");
-            bufferedWriter.write(stringBuffer.toString());
-            bufferedWriter.newLine();
-            for (StockAmountChange stockAmountChange : stockAmountChanges) {
-                stringBuffer = new StringBuffer();
-                stringBuffer.append("\""+stockAmountChange.getStockAmountChangeId()+"\"");
-                stringBuffer.append(separator);
-                stringBuffer.append("\""+stockAmountChange.getPreviousAmount()+"\"");
-                stringBuffer.append(separator);
-                stringBuffer.append("\""+stockAmountChange.getCurrentAmount()+"\"");
-                stringBuffer.append(separator);
-                stringBuffer.append("\""+stockAmountChange.getChangeDateTime()+"\"");
-                stringBuffer.append(separator);
-                String changeInfo = stockAmountChange.getChangeInfo();
-                if (changeInfo.equals("SOLD_OUT")) {
-                    changeInfo = "wyprzedano";
-                } else if (changeInfo.equals("PROVIDED")) {
-                    changeInfo = "dostarczono";
-                } else if (changeInfo.equals("SOLD")) {
-                    changeInfo = "sprzedano";
-                }
-                stringBuffer.append("\""+changeInfo+"\"");
-                stringBuffer.append(separator);
-                stringBuffer.append("\""+stockAmountChange.getStockAmount().getProductId()+"\"");
-                bufferedWriter.write(stringBuffer.toString());
-                bufferedWriter.newLine();
+            result.put("status", "created");
+            result.put("reportId", Integer.toString(report.getReportId()));
+            result.put("creationDateTime", report.getCreationDateTime().format(f));
+            result.put("startDateTime", report.getStartDateTime().format(f));
+            result.put("endDateTime", report.getEndDateTime().format(f));
+            String changesAsString = "";
+            for (int i = 0; i < changes.size(); i++) {
+                changesAsString += changes.get(i) + (i == changes.size() - 1 ? "" : ";");
             }
-            bufferedWriter.flush();
-            bufferedWriter.close();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+            result.put("changes", changesAsString);
+        } else {
+            result.put("status", "failed");
         }
-        return "Exported";
+        return result;
     }
 
-    @PostMapping("/import")
-    public String importToDatabaseFromCSVFile(@RequestBody Report report) {
-        return "Imported";
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @DeleteMapping(path = "/delete")
+    public Map<String, String> deleteReport(@RequestParam Integer reportId) {
+        Map<String, String> result = new HashMap<>();
+        reportRepository.deleteById(reportId);
+        result.put("status", "removed");
+        return  result;
     }
 }

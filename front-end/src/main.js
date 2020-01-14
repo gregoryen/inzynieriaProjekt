@@ -38,6 +38,10 @@ import VueCurrencyInput from 'vue-currency-input'
 import ShoppingCart from './components/ShoppingCart'
 import OrderSummary from './components/OrderSummary'
 import AddProduct from "./components/AddProduct";
+import Home from './components/Home'
+import AdminPanel from './components/AdminPanel'
+import WarehouseSupplyForm from './components/WarehouseSupplyForm';
+import StockAmounts from './components/StockAmounts';
 
 import Categories from './components/Categories.vue'
 import Products from './components/Products.vue'
@@ -46,6 +50,7 @@ import AddCategory from "./components/AddCategory";
 import DeleteCategory from "./components/DeleteCategory";
 import DeleteProduct from './components/DeleteProduct'
 import { extend } from 'vee-validate';
+import ProductsOverview from "./components/ProductsOverview";
 
 
 extend('required', {
@@ -187,7 +192,15 @@ const router = new VueRouter({
       beforeEnter:ifHavePrivilege,
       meta:{
       requiredPrivilege: 'ADMIN_PRIVILEGE'
-      }
+      },
+    {
+      path: '/warehouseSupplyForm',
+      component: WarehouseSupplyForm
+    },
+    {
+      path: '/StockAmounts',
+      component: StockAmounts
+    }
     },
   { path: '/product', name: 'product', component: Product },
   { path: '/products', name: 'products', component: Products },
@@ -195,7 +208,8 @@ const router = new VueRouter({
   { path: '/addCategory', name: 'addCategory', component: AddCategory},
   { path: '/addProduct', name: 'addProduct', component: AddProduct },
   { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
-  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct }
+  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct },
+    { path: '/overview', name: 'overview', component: ProductsOverview }
   ]
 })
 
