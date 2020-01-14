@@ -5,8 +5,8 @@
             <thead class="thead-dark">
                 <tr>
                     <th>Komentarz</th>
-                    <th>Ilosc gwiazdek</th>
-                    <th>Id użytkownika</th>
+                    <th>Ocena</th>
+                    <th>Email użytkownika</th>
                     <th>Usuń</th>
                 </tr>
             </thead>
@@ -19,7 +19,7 @@
                         <star-rating :rating=opinions[index-1].starsNumber :read-only="true" ></star-rating>
                     </td>
                     <td>
-                        {{opinions[index-1].clientId}}
+                        {{opinions[index-1].clientEmail}}
                     </td>
                     <td><button v-on:click="deleteOpinion(opinions[index-1].id)">Usuń</button></td>
                 </tr>
@@ -29,6 +29,8 @@
 </template>
 <script>
     import axios from 'axios';
+    import config from '../config.js'
+    const API_URL = config.root;
     export default {
         created() {
             this.getAllOpinions();
@@ -42,29 +44,26 @@
         },
         data: function () {
             return {
-                baseurl: "http://localhost:8100",
                 opinions: [],
                 opinion: {
                     productId: null,
-                    clientId: null,
+                    clientEmail: null,
                     starsNumber: null,
                     description: '',
                     likesNumber: null,
                     dislikesNumber: null
                 },
-                clicked: false,
-
             };
         },
         methods: {
             getAllOpinions: function () {
-                axios.get(this.baseurl +'/opinions/all', {
+                axios.get(API_URL +'/opinions/all', {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 })
             },
             deleteOpinion: function(id) {
-                axios.delete(this.baseurl +'/opinions/'+id);
+                axios.delete(API_URL +'/opinions/'+id);
                 this.getAllOpinions();
             }
         },

@@ -6,7 +6,7 @@
                 <thead>
                 <tr>
                     <td><strong>Komentarz</strong></td>
-                    <td><strong>Gwiazdki</strong></td>
+                    <td><strong>Ocena</strong></td>
                     <td></td>
                 </tr>
                 </thead>
@@ -49,7 +49,9 @@
             <thead class="thead-dark">
             <tr>
                 <th>Komentarz</th>
-                <th>Ilosc gwiazdek</th>
+                <th>Ocena</th>
+                <th></th>
+                <th></th>
             </tr>
             </thead>
             <tbody v-if="opinions.length > 0">
@@ -61,11 +63,11 @@
                     <star-rating :rating=opinions[index-1].starsNumber :read-only="true" :star-size="20"></star-rating>
                 </td>
                 <td>
-                    <p>{{opinions[index-1].likesList.length}}</p>
+                    <a>{{opinions[index-1].likesList.length}}</a>
                     <button class="btn btn-secondary" v-on:click="likeOpinion(opinions[index-1])">Like</button>
                 </td>
                 <td>
-                    <p>{{opinions[index-1].dislikesList.length}}</p>
+                    <a>{{opinions[index-1].dislikesList.length}}</a>
                     <button class="btn btn-secondary" v-on:click="() => {
                 dislikeOpinion(opinions[index-1]);
                 }">Dislike</button>
@@ -77,13 +79,14 @@
 </template>
 <script>
     import axios from 'axios';
+    import config from '../config.js'
+    const API_URL = config.root;
     export default {
         created() {
             this.getAllOpinions();
         },
         props: {
-            // baseurl: String,
-            // productId: Number
+             productId: Number
         },
         star: {
             rating: "No Rating Selected",
@@ -95,13 +98,10 @@
             return {
                 opinions: [],
                 showNewOpinion: false,
-                showNewOpinion2: true,
                 showAddOpinionButton: true,
-                baseurl: "http://localhost:8100",
-                productId: 1,
                 opinion: {
                     productId: null,
-                    clientId: null,
+                    clientEmail: null,
                     starsNumber: null,
                     description: '',
                     likesList: null,
@@ -112,7 +112,7 @@
         },
         methods: {
             getAllOpinions: function () {
-                axios.get(this.baseurl + '/opinions/productId/' + this.productId, {
+                axios.get(API_URL + '/opinions/productId/' + this.productId, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 }).then((response) => {
@@ -122,9 +122,9 @@
                 });
             },
             addOpinion: function () {
-                axios.post(this.baseurl + '/opinions/add', {
+                axios.post(API_URL + '/opinions/add', {
                     productId: this.productId,
-                    clientId: 1,
+                    clientEmail: this.$store.state.auth.user.email,
                     starsNumber: this.opinion.starsNumber,
                     description: this.opinion.description,
                     likesList: [],
@@ -143,7 +143,7 @@
             },
             likeOpinion: function (opinion)  {
                 opinion.likesList.push(this.$store.state.auth.user.email);
-                axios.post(this.baseurl + '/opinions/update', opinion,
+                axios.post(API_URL + '/opinions/update', opinion,
                     {
                         "Access-Control-Allow-Origin": "*",
                         "Content-Type": "application/json"
@@ -151,7 +151,7 @@
             },
             dislikeOpinion: function (opinion)  {
                 opinion.dislikesList.push(this.$store.state.auth.user.email);
-                axios.post(this.baseurl + '/opinions/update', opinion,
+                axios.post(API_URL + '/opinions/update', opinion,
                     {
                         "Access-Control-Allow-Origin": "*",
                         "Content-Type": "application/json"
@@ -167,5 +167,8 @@
     }
     button.btn-primary {
         margin: 25px;
+    }
+    a   {
+        margin: 15px;
     }
 </style>

@@ -32,9 +32,9 @@
         <table class="table table-striped">
             <thead class="thead-dark">
             <tr>
-                <th>Produkt</th>
+                <th>Id Produktu</th>
                 <th>Komentarz</th>
-                <th>Ilosc gwiazdek</th>
+                <th>Ocena</th>
                 <th>Usuń</th>
                 <th>Edytuj</th>
             </tr>
@@ -50,8 +50,8 @@
                 <td>
                     <star-rating :rating=opinions[index-1].starsNumber :read-only="true" :increment="0.01"></star-rating>
                 </td>
-                <td><button v-on:click="deleteOpinion(opinions[index-1].id)">Usuń</button></td>
-                <td><button v-on:click="() => {
+                <td><button class="btn btn-secondary" v-on:click="deleteOpinion(opinions[index-1].id)">Usuń</button></td>
+                <td><button class="btn btn-secondary" v-on:click="() => {
                 editOpinion(opinions[index-1]);
                 showSection()
                 }">Edytuj</button></td>
@@ -63,13 +63,11 @@
 </template>
 <script>
     import axios from 'axios';
+    import config from '../config.js'
+    const API_URL = config.root;
     export default {
         created() {
             this.getAllOpinions();
-        },
-        props: {
-            // baseurl: String,
-            // userId: Number
         },
         star: {
             rating: "No Rating Selected",
@@ -79,7 +77,6 @@
         },
         data: function () {
             return {
-                baseurl: "http://localhost:8100",
                 listLoading: true,
                 editedOpinion: {
                     productId: null,
@@ -106,7 +103,7 @@
         },
         methods: {
             getAllOpinions: function () {
-                axios.get(this.baseurl + '/opinions/clientEmail/' +  this.$store.state.auth.user.email, {
+                axios.get(API_URL + '/opinions/clientEmail/' +  this.$store.state.auth.user.email, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 }).then((response) => {
@@ -116,7 +113,7 @@
                 });
             },
             deleteOpinion: function(id) {
-                axios.delete(this.baseurl + '/opinions/'+id);
+                axios.delete(API_URL + '/opinions/'+id);
                 this.getAllOpinions();
             },
             editOpinion: function(opinion)  {
@@ -131,17 +128,11 @@
                 this.showTable = true;
             },
             updateOpinion: function () {
-                axios.post(this.baseurl + '/opinions/update', this.editedOpinion,
+                axios.post(API_URL + '/opinions/update', this.editedOpinion,
                     {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
-                }).then(response => {
-                    // eslint-disable-next-line no-console
-                    console.log(response)
-                }).catch(error => {
-                    // eslint-disable-next-line no-console
-                    console.log(error.response)
-                });
+                })
                 this.$router.go();
             },
         },

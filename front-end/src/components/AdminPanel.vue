@@ -20,7 +20,7 @@
                 <td @click="getPrivilegesResponseData">Show Privileges</td>
               </tr>
               <tr>
-                <td @click="getPrivilegesResponseData">Show Opinions</td>
+                <td @click="showOpinionsTable">Show Opinions</td>
               </tr>
             </tbody>
           </table>
@@ -93,6 +93,7 @@
               </tr>
             </tbody>
           </table>
+          <OpinionsInAdminPanel/>
         </div>
       </b-col>
     </b-row>
@@ -101,8 +102,12 @@
 
 <script>
 import axios from "axios";
+import OpinionsInAdminPanel from "./OpinionsInAdminPanel";
 export default {
   name: "AdminPanel",
+  components: {
+    OpinionsInAdminPanel
+  },
   data() {
     return {
       changeMainTable: "empty",
@@ -144,6 +149,9 @@ export default {
           /* eslint-disable no-console */
           console.log(error);
         });
+    },
+    showOpinionsTable: function ()  {
+      this.changeMainTable = "opinions";
     },
     getRolesResponseData: function() {
       var root = "http://localhost:8080";

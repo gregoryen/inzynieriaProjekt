@@ -66,20 +66,22 @@
                 <h4>Trwa ładowanie strony</h4>
             </div>
         </div>
-
+            <OpinionsInProductPage v-bind:productId="productId"/>
     </div>
 </template>
 
 <script>
    import AddToBucketButton from "../utils/AddToBucketButton"
-    import axios from "axios";
-    import globalConfig from '../config'
+   import axios from "axios";
+   import globalConfig from '../config'
+   import OpinionsInProductPage from "./OpinionsInProductPage";
 
     const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
     export default {
         name: "Product",
         components: {
-            AddToBucketButton
+            AddToBucketButton,
+            OpinionsInProductPage
         },
         props: {
             baseurl: String
@@ -89,7 +91,7 @@
                 loading: false,
                 product: null,
                 tree: null,
-                productId: null
+                productId: 1
             };
         },
         async mounted() {

@@ -9,9 +9,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
-import AdminPanel from './components/AdminPanel.vue'
 import Profile from './components/Profile.vue'
-import Home from './components/Home.vue'
 import OpinionsInAdminPanel from './components/OpinionsInAdminPanel'
 import OpinionsInUserPanel from './components/OpinionsInUserPanel'
 import OpinionsInProductPage from './components/OpinionsInProductPage'
@@ -189,10 +187,11 @@ const router = new VueRouter({
       path: '/adminPanel',
       name: 'adminPanel',
       component: AdminPanel,
-      beforeEnter:ifHavePrivilege,
-      meta:{
-      requiredPrivilege: 'ADMIN_PRIVILEGE'
+      beforeEnter: ifHavePrivilege,
+      meta: {
+        requiredPrivilege: 'ADMIN_PRIVILEGE'
       },
+    },
     {
       path: '/warehouseSupplyForm',
       component: WarehouseSupplyForm
@@ -200,7 +199,6 @@ const router = new VueRouter({
     {
       path: '/StockAmounts',
       component: StockAmounts
-    }
     },
   { path: '/product', name: 'product', component: Product },
   { path: '/products', name: 'products', component: Products },
