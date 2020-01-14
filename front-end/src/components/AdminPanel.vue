@@ -93,9 +93,10 @@
               </tr>
             </tbody>
           </table>
-          <OpinionsInAdminPanel/>
+
         </div>
       </b-col>
+      <OpinionsInAdminPanel  v-if="this.changeMainTable === 'opinions'"/>
     </b-row>
   </div>
 </template>

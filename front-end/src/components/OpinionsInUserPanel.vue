@@ -3,11 +3,11 @@
 
         <div v-show="showEdit" id="opinion-edit" class="container">
             <h1>Edycja opinii</h1>
-            <table class="table table-striped">
+            <table class="table table-sm table-dark table-striped">
                 <thead class="thead-dark">
                 <tr>
                     <th>Komentarz</th>
-                    <th>Ilosc gwiazdek</th>
+                    <th>Ocena</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -18,7 +18,6 @@
                     <td>
                         <star-rating v-model="editedOpinion.starsNumber" ></star-rating>
                     </td>
-
                     <td><button v-on:click="updateOpinion()">Zapisz</button></td>
                     <td><button v-on:click="hideSection()">Cofnij</button></td>
                 </tr>
@@ -28,8 +27,9 @@
 
     <div v-show="showTable" id="opinion-form" class="container">
 
+        <hr>
         <h1>Menadżer opinii</h1>
-        <table class="table table-striped">
+        <table class="table table-sm table-dark table-striped">
             <thead class="thead-dark">
             <tr>
                 <th>Id Produktu</th>
@@ -48,9 +48,9 @@
                     {{opinions[index-1].description}}
                 </td>
                 <td>
-                    <star-rating :rating=opinions[index-1].starsNumber :read-only="true" :increment="0.01"></star-rating>
+                    <star-rating :rating=opinions[index-1].starsNumber :read-only="true" :star-size="20"></star-rating>
                 </td>
-                <td><button class="btn btn-secondary" v-on:click="deleteOpinion(opinions[index-1].id)">Usuń</button></td>
+                <td><button class="btn btn-secondary" v-on:click="deleteOpinion(opinions[index-1])">Usuń</button></td>
                 <td><button class="btn btn-secondary" v-on:click="() => {
                 editOpinion(opinions[index-1]);
                 showSection()
@@ -108,13 +108,12 @@
                     "Content-Type": "application/json"
                 }).then((response) => {
                     this.opinions = response.data;
-                    // eslint-disable-next-line no-console
-                    console.log(response)
                 });
             },
-            deleteOpinion: function(id) {
-                axios.delete(API_URL + '/opinions/'+id);
-                this.getAllOpinions();
+            deleteOpinion: function(opinion) {
+                axios.delete(API_URL + '/opinions/'+ opinion.id);
+                opinion.likesList = opinion.likesList.filter(e => e !== this.$store.state.auth.user.email);
+                this.opinions = this.opinions.filter(e => e !== opinion);
             },
             editOpinion: function(opinion)  {
                 this.editedOpinion = Object.assign({}, opinion);
@@ -132,13 +131,18 @@
                     {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
-                })
-                this.$router.go();
+                });
+                this.hideSection();
+                let index = this.opinions.findIndex((obj => obj.id == this.editedOpinion.id));
+                this.opinions[index] = this.editedOpinion;
             },
         },
     }
 </script>
 
 <style scoped>
-
+tr, td {
+    text-align: center;
+    vertical-align: middle;
+}
 </style>

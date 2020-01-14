@@ -10,9 +10,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Login from './components/Login.vue'
 import Register from './components/Register.vue'
 import Profile from './components/Profile.vue'
-import OpinionsInAdminPanel from './components/OpinionsInAdminPanel'
-import OpinionsInUserPanel from './components/OpinionsInUserPanel'
-import OpinionsInProductPage from './components/OpinionsInProductPage'
 
 import { ValidationProvider,ValidationObserver } from 'vee-validate';
 import { required, min, max, email} from 'vee-validate/dist/rules';
@@ -145,18 +142,6 @@ const router = new VueRouter({
 
     },
     {
-      path: '/opinions/admin',
-      component: OpinionsInAdminPanel
-    },
-    {
-      path: '/opinions/user',
-      component: OpinionsInUserPanel
-    },
-    {
-      path: '/opinions/product',
-      component: OpinionsInProductPage
-    },
-    {
       path: '/login',
       component: Login,
       beforeEnter: ifNotAuthenticated
@@ -207,9 +192,9 @@ const router = new VueRouter({
   { path: '/addProduct', name: 'addProduct', component: AddProduct },
   { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
   { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct },
-    { path: '/overview', name: 'overview', component: ProductsOverview }
+  { path: '/overview', name: 'overview', component: ProductsOverview }
   ]
-})
+});
 
 router.beforeEach((to, from, next) => {
   if (!ifAuthenticated) next('/login')

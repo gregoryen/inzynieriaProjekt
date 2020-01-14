@@ -2,7 +2,7 @@
 
     <div class="new-opinion-form">
         <div v-show="showNewOpinion" id="new-opinion" class="new-opinion">
-            <table id="supply-products" align="center" class="table table-striped table-sm">
+            <table id="supply-products" class="table table-sm table-dark table-striped">
                 <thead>
                 <tr>
                     <td><strong>Komentarz</strong></td>
@@ -14,8 +14,9 @@
                 <tr>
                     <td>
                         <div>
-                            <input  placeholder="komentarz" className="form-control" type="text"
-                                    data-error="Please enter your description." v-model="opinion.description" required/>
+                            <input  placeholder="komentarz"
+                                    type="text"
+                                    v-model="opinion.description" required/>
                         </div>
                     </td>
                     <td>
@@ -45,7 +46,7 @@
             this.showAddOpinionButton = false
             }">Dodaj opinie</button>
         </div>
-        <table class="table table-striped table-sm">
+        <table class="table table-sm table-dark table-striped">
             <thead class="thead-dark">
             <tr>
                 <th>Komentarz</th>
@@ -117,19 +118,18 @@
                     "Content-Type": "application/json"
                 }).then((response) => {
                     this.opinions = response.data;
-                    // eslint-disable-next-line no-console
-                    console.log(response)
                 });
             },
             addOpinion: function () {
-                axios.post(API_URL + '/opinions/add', {
+                let container = {
                     productId: this.productId,
                     clientEmail: this.$store.state.auth.user.email,
                     starsNumber: this.opinion.starsNumber,
                     description: this.opinion.description,
                     likesList: [],
                     dislikesList: []
-                }, {
+                };
+                axios.post(API_URL + '/opinions/add', container, {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
                 }).then(response => {
@@ -139,23 +139,43 @@
                     // eslint-disable-next-line no-console
                     console.log(error.response)
                 });
-                this.$router.go();
+                this.opinions.push(container);
             },
             likeOpinion: function (opinion)  {
-                opinion.likesList.push(this.$store.state.auth.user.email);
-                axios.post(API_URL + '/opinions/update', opinion,
-                    {
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "application/json"
-                    })
+                if (((opinion.likesList).indexOf(this.$store.state.auth.user.email)) != -1)    {
+                    opinion.likesList = opinion.likesList.filter(e => e !== this.$store.state.auth.user.email);
+                    axios.post(API_URL + '/opinions/update', opinion,
+                        {
+                            "Access-Control-Allow-Origin": "*",
+                            "Content-Type": "application/json"
+                        })
+                }
+                else {
+                    opinion.likesList.push(this.$store.state.auth.user.email);
+                    axios.post(API_URL + '/opinions/update', opinion,
+                        {
+                            "Access-Control-Allow-Origin": "*",
+                            "Content-Type": "application/json"
+                        })
+                }
             },
             dislikeOpinion: function (opinion)  {
-                opinion.dislikesList.push(this.$store.state.auth.user.email);
-                axios.post(API_URL + '/opinions/update', opinion,
-                    {
-                        "Access-Control-Allow-Origin": "*",
-                        "Content-Type": "application/json"
-                    })
+                if (((opinion.dislikesList).indexOf(this.$store.state.auth.user.email)) != -1)    {
+                    opinion.dislikesList = opinion.dislikesList.filter(e => e !== this.$store.state.auth.user.email);
+                    axios.post(API_URL + '/opinions/update', opinion,
+                        {
+                            "Access-Control-Allow-Origin": "*",
+                            "Content-Type": "application/json"
+                        })
+                }
+                else {
+                    opinion.dislikesList.push(this.$store.state.auth.user.email);
+                    axios.post(API_URL + '/opinions/update', opinion,
+                        {
+                            "Access-Control-Allow-Origin": "*",
+                            "Content-Type": "application/json"
+                        })
+                }
             }
         },
     }
@@ -170,5 +190,9 @@
     }
     a   {
         margin: 15px;
+    }
+    tr, td {
+        text-align: center;
+        vertical-align: middle;
     }
 </style>

@@ -1,7 +1,7 @@
 <template>
     <div id="opinion-form" class="container">
         <h1>Menadżer opinii</h1>
-        <table class="table table-striped">
+        <table class="table table-striped table-sm">
             <thead class="thead-dark">
                 <tr>
                     <th>Komentarz</th>
@@ -16,12 +16,12 @@
                         {{opinions[index-1].description}}
                     </td>
                     <td>
-                        <star-rating :rating=opinions[index-1].starsNumber :read-only="true" ></star-rating>
+                        <star-rating :rating=opinions[index-1].starsNumber :read-only="true" :star-size="20"></star-rating>
                     </td>
                     <td>
                         {{opinions[index-1].clientEmail}}
                     </td>
-                    <td><button v-on:click="deleteOpinion(opinions[index-1].id)">Usuń</button></td>
+                    <td><button class="btn btn-secondary" v-on:click="deleteOpinion(opinions[index-1])">Usuń</button></td>
                 </tr>
             </tbody>
         </table>
@@ -60,16 +60,21 @@
                 axios.get(API_URL +'/opinions/all', {
                     "Access-Control-Allow-Origin": "*",
                     "Content-Type": "application/json"
-                })
+                }).then((response) => {
+                    this.opinions = response.data;
+                });
             },
-            deleteOpinion: function(id) {
-                axios.delete(API_URL +'/opinions/'+id);
-                this.getAllOpinions();
+            deleteOpinion: function(opinion) {
+                axios.delete(API_URL +'/opinions/'+ opinion.id);
+                this.opinions = this.opinions.filter(e => e !== opinion);
             }
         },
     }
 </script>
 
 <style scoped>
-
+    tr, td {
+        text-align: center;
+        vertical-align: middle;
+    }
 </style>
