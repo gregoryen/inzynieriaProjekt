@@ -45,6 +45,8 @@ import DeleteCategory from "./components/DeleteCategory";
 import DeleteProduct from './components/DeleteProduct'
 import { extend } from 'vee-validate';
 import ProductsOverview from "./components/ProductsOverview";
+import AdminPanel from "./components/AdminPanel"
+import Home from "./components/Home"
 
 
 extend('required', {

@@ -48,7 +48,7 @@
                     <div class="item2">
                         <div id="price">Cena: {{product.price}} PLN</div>
                         <p id="description">Opis: {{product.description}}</p>
-                        <AddToBucketButton v-bind:productId="this.productId"/>
+                        <AddToBucketButton v-bind:productId="this.product.id"/>
                     </div>
                           <div id="categories" class="item3">
                             <ul>
@@ -67,7 +67,7 @@
             </div>
         </div>
             <OpinionsInProductPage v-bind:productId="product.id"/>
-    </div>
+        </div>
 </template>
 
 <script>
@@ -90,8 +90,7 @@
             return {
                 loading: false,
                 product: null,
-                tree: null,
-                productId: null
+                tree: null
             };
         },
         async mounted() {
@@ -111,9 +110,6 @@
         methods: {
             emitProducts(id) {
                 this.$store.dispatch('productsHeader', globalConfig.root + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id);
-            },
-            getProductId() {
-                return this.productId
             }
         }
     };
