@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @Data
 @RequiredArgsConstructor
 public class BucketPOJO {
-    private String bucket;
+    private String id;
 }

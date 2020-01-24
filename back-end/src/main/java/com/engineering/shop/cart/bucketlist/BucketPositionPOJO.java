@@ -1,6 +1,6 @@
 package com.engineering.shop.cart.bucketlist;
 
-import com.engineering.shop.cart.bucket.Bucket;
+
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 

@@ -60,6 +60,24 @@ public class BucketController {
 //            "bucket": "user1"
 //    }
 
+    @PostMapping("/createBucket")
+    public @ResponseBody String createBucketWithId (@RequestBody BucketPOJO bucketPOJO) {
+        String token = bucketPOJO.getId();
+
+        Boolean isInBase = bucketRepo.existsByToken(token);
+
+        Bucket bucket;
+
+        if (isInBase) {
+            return "Bucket already exists";
+        } else {
+            bucket = new Bucket(token);
+            bucketRepo.save(bucket);
+        }
+
+        return "Bucket created at id: " + token;
+    }
+
     @PostMapping("/addProduct")
     public @ResponseBody String addProductById (@RequestBody BucketPositionPOJO bucketPositionPOJO) {
 
@@ -112,23 +130,6 @@ public class BucketController {
         return "save";
     }
 
-    @PostMapping("/createBucket")
-    public @ResponseBody String createBucketWithId (@RequestBody  BucketPOJO bucketPOJO) {
-
-        String token = bucketPOJO.getBucket();
-        Boolean isInBase = bucketRepo.existsByToken(token);
-        Bucket bucket;
-
-        if (isInBase) {
-            return "Bucket already exists";
-        } else {
-            bucket = new Bucket(token);
-            bucketRepo.save(bucket);
-        }
-
-        return "Bucket created at id: " + token;
-    }
-
     @GetMapping("/all")
     public Iterable<Bucket> findAll () {
         return bucketRepo.findAll();
@@ -136,7 +137,12 @@ public class BucketController {
 
     @GetMapping("/itemNumber/{token}")
     public int getItemNumber(@PathVariable("token") String token) {
-        return getBucketByToken(token).getUniqueItemsNumber();
+        try {
+            return getBucketByToken(token).getUniqueItemsNumber();
+        }
+        catch (Exception ex) {
+            return 0;
+        }
     }
 
 
@@ -153,7 +159,7 @@ public class BucketController {
     }
 
     @PutMapping("/update/{bucketId}/{productId}/{quantity}")
-    public @ResponseBody String updatePosition(@PathVariable("productId") Integer productId
+    public @ResponseBody Bucket updatePosition(@PathVariable("productId") Integer productId
                                                 , @PathVariable("bucketId") String token
                                                 , @PathVariable("quantity") Integer quantity){
 
@@ -173,12 +179,12 @@ public class BucketController {
         bucket.setTotalValue(total);
 
         bucketRepo.save(bucket);
-        return "Updated";
+        return bucket;
     }
 
     // usuwanie pozycji
     @DeleteMapping("/deletePosition/{bucketId}/{productId}")
-    public @ResponseBody String deletePosition(@PathVariable("productId") Integer productId
+    public @ResponseBody Bucket deletePosition(@PathVariable("productId") Integer productId
                                 , @PathVariable("bucketId") String token){
         Bucket bucket = getBucketByToken(token);
         BucketPosition position = getBucketPositionByProductId(productId,bucket);
@@ -187,10 +193,11 @@ public class BucketController {
         value = value.multiply(new BigDecimal(position.getProductQuantity()));
         bucket.substructFromTotalValue(value);
         bucket.removeFromPositions(position);
+        System.out.println(bucket.getPositions().size());
         bucketRepo.save(bucket);
         bucketPositionRepo.delete(position);
 
-        return "Position deleted";
+        return bucket;
     }
 
 

@@ -19,6 +19,7 @@
       >
       </b-carousel-slide>
 
+      <!-- Three xd -->
       <b-carousel-slide
         caption="Three whitening"
         img-src="../assets/bielenie.jpg"

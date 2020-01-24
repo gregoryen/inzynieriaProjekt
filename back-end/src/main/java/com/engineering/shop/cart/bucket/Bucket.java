@@ -42,13 +42,16 @@ public class Bucket {
     }
 
     public int getUniqueItemsNumber () {
-        return this.positions.size();
+        if (this.positions != null)
+            return this.positions.size();
+
+        return 0;
     }
 
     public void addToTotalValue (BigDecimal value) {
-        System.out.println(this.totalValue);
+//        System.out.println(this.totalValue);
         this.totalValue = this.totalValue.add(value);
-        System.out.println(this.totalValue);
+//        System.out.println(this.totalValue);
 
     }
 

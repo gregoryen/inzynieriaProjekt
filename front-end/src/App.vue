@@ -28,6 +28,11 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="/shoppingCart" :bucketId=createBucket() class="nav-link">
+            <BucketButton />
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="/profile" class="nav-link">
             <font-awesome-icon icon="user" />
             {{currentUser.username}}
@@ -48,7 +53,13 @@
 </template>
 
 <script>
+import BucketButton from "./utils/BucketButton"
+import config from "./config"
+import axios from "axios"
 export default {
+  components: {
+    BucketButton
+  },
   computed: {
     currentUser() {
       return this.$store.state.auth.user;
@@ -72,7 +83,19 @@ export default {
         return false;
       }
       return false;
-    }
+    },
+    createBucket() {    //przydaloby sie przeniesc to w inne miejsce ale narazie dziala wiec nie ruszam
+    //wywoluje sie caly czas a powinna tylko raz po zalogowaniu
+      let user = JSON.parse(localStorage.getItem('user'))
+      axios.post(config.root + "/bucket/createBucket", {
+        id: user.jwtToken.substr(0, user.jwtToken.length/4)
+      }).then( (res) => {
+          setTimeout(function(){ }, 500); //bug wysyła posta 2 na raz i tworzy 2 koszyki co buguje koszyk
+          // eslint-disable-next-line no-console
+          console.log(res)
+      })
+      return user.jwtToken
+    } 
   }
 };
 </script>
