@@ -182,10 +182,35 @@ public class BucketController {
         return bucket;
     }
 
+//    // usuwanie pozycji
+//    @DeleteMapping("/deletePosition/{bucketId}/{productId}")
+//    public @ResponseBody Bucket deletePosition(@PathVariable("productId") Integer productId
+//                                , @PathVariable("bucketId") String token){
+//        Bucket bucket = getBucketByToken(token);
+//        BucketPosition position = getBucketPositionByProductId(productId,bucket);
+//
+//        BigDecimal value = position.getProductPrice();
+//        value = value.multiply(new BigDecimal(position.getProductQuantity()));
+//        bucket.substructFromTotalValue(value);
+//        bucket.removeFromPositions(position);
+//        System.out.println(bucket.getPositions().size());
+//        bucketRepo.save(bucket);
+//        //bucketPositionRepo.delete(position);
+//        bucketPositionRepo.deleteById(position.getId());
+//
+//        return bucket;
+//    }
+
     // usuwanie pozycji
-    @DeleteMapping("/deletePosition/{bucketId}/{productId}")
-    public @ResponseBody Bucket deletePosition(@PathVariable("productId") Integer productId
-                                , @PathVariable("bucketId") String token){
+
+    @DeleteMapping("/deletePosition")
+    public @ResponseBody Bucket deletePosition(@RequestBody BucketPositionPOJO pojo){
+        String token;
+        Integer  productId;
+
+        productId = pojo.getProduct();
+        token = pojo.getBucket();
+
         Bucket bucket = getBucketByToken(token);
         BucketPosition position = getBucketPositionByProductId(productId,bucket);
 
@@ -195,7 +220,8 @@ public class BucketController {
         bucket.removeFromPositions(position);
         System.out.println(bucket.getPositions().size());
         bucketRepo.save(bucket);
-        bucketPositionRepo.delete(position);
+        //bucketPositionRepo.delete(position);
+        bucketPositionRepo.deleteById(position.getId());
 
         return bucket;
     }
