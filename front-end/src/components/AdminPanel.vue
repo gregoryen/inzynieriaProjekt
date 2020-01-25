@@ -19,6 +19,9 @@
               <tr>
                 <td @click="getPrivilegesResponseData">Show Privileges</td>
               </tr>
+              <tr>
+                <td @click="showOpinionsTable">Show Opinions</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -90,16 +93,22 @@
               </tr>
             </tbody>
           </table>
+
         </div>
       </b-col>
+      <OpinionsInAdminPanel  v-if="this.changeMainTable === 'opinions'"/>
     </b-row>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import OpinionsInAdminPanel from "./OpinionsInAdminPanel";
 export default {
   name: "AdminPanel",
+  components: {
+    OpinionsInAdminPanel
+  },
   data() {
     return {
       changeMainTable: "empty",
@@ -141,6 +150,9 @@ export default {
           /* eslint-disable no-console */
           console.log(error);
         });
+    },
+    showOpinionsTable: function ()  {
+      this.changeMainTable = "opinions";
     },
     getRolesResponseData: function() {
       var root = "http://localhost:8080";

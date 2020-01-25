@@ -48,7 +48,7 @@
                     <div class="item2">
                         <div id="price">Cena: {{product.price}} PLN</div>
                         <p id="description">Opis: {{product.description}}</p>
-                        <AddToBucketButton v-bind:productId="this.productId"/>
+                        <AddToBucketButton v-bind:productId="this.product.id"/>
                     </div>
                           <div id="categories" class="item3">
                             <ul>
@@ -66,20 +66,22 @@
                 <h4>Trwa ładowanie strony</h4>
             </div>
         </div>
-
-    </div>
+            <OpinionsInProductPage v-bind:productId="product.id"/>
+        </div>
 </template>
 
 <script>
    import AddToBucketButton from "../utils/AddToBucketButton"
-    import axios from "axios";
-    import globalConfig from '../config'
+   import axios from "axios";
+   import globalConfig from '../config'
+   import OpinionsInProductPage from "./OpinionsInProductPage";
 
     const UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID = "/products/search/findByMainCategoryIdAndActiveIsTrue?projection=header&active=true&categoryId=";
     export default {
         name: "Product",
         components: {
-            AddToBucketButton
+            AddToBucketButton,
+            OpinionsInProductPage
         },
         props: {
             baseurl: String
@@ -88,13 +90,12 @@
             return {
                 loading: false,
                 product: null,
-                tree: null,
-                productId: null
+                tree: null
             };
         },
         async mounted() {
             await axios.get(this.$route.params.link).then(async response => {
-                this.productId = parseInt(response.data._links.product.href.split('/')[4].split('{')[0]) //Do wywalenia - czekam aż Seba mi doda id do obiektu z produktem
+                //this.productId = parseInt(response.data._links.product.href.split('/')[4].split('{')[0]) //Do wywalenia - czekam aż Seba mi doda id do obiektu z produktem
                 this.product = response.data;
                 // eslint-disable-next-line no-console
                 console.log(this.product);
@@ -109,9 +110,6 @@
         methods: {
             emitProducts(id) {
                 this.$store.dispatch('productsHeader', globalConfig.root + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id);
-            },
-            getProductId() {
-                return this.productId
             }
         }
     };
