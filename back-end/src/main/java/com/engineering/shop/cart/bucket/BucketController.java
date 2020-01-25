@@ -217,9 +217,10 @@ public class BucketController {
         System.out.println(position.getId());
 
         BigDecimal value = position.getProductPrice();
+        System.out.println(value);
         value = value.multiply(new BigDecimal(position.getProductQuantity()));
         bucket.substructFromTotalValue(value);
-
+        System.out.println(bucket.getTotalValue());
         //System.out.println(bucket.getPositions().size());
         //bucket.removeFromPositions(position.getId());
         bucket.removeFromPositions(position);
@@ -227,7 +228,7 @@ public class BucketController {
        // System.out.println(bucket.getPositions().size());
 
         bucketRepo.save(bucket);
-        //bucketPositionRepo.delete(position);
+        //bucketPositionRepo.delete(position);.
         //System.out.println(bucket.getBucketId());
         //bucketPositionRepo.deleteBucketPositionByProductIdAndBucket(productId, bucket);
 

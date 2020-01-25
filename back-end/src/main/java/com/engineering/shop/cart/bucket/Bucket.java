@@ -86,25 +86,30 @@ public class Bucket {
 //                itr.remove();
 //                return true;
 //        }
-        if (positions.size()>1) {
-            for (int i = 0 ; i < positions.size(); i++) {
-                if (Objects.equals(pos, positions.get(i))){
 
-                    System.out.println(positions.get(i+1).getId());
-                    positions.remove(i+1);
-                }
+//            for (int i = 0 ; i < positions.size(); i++) {
+//                if (Objects.equals(pos, positions.get(i))){
+//                    System.out.println(positions.get(i).getId());
+//                    positions.remove(i);
+//                }
+//            }
+        int deletedId = pos.getProduct().getId();
+        int counter = 0;
+//        System.out.println(deletedId);
+        for (BucketPosition it : positions) {
+//            System.out.println(it.getId());
+            if(it.getProduct().getId() == deletedId) {
+//                System.out.println("Trafiony zatopiony !");
+//                System.out.println(counter);
+                positions.remove(counter);
+                return true;
+            } else {
+//                System.out.println("Nie trafiony");
+                System.out.println(counter);
             }
-        } else {
-            for (int i = 0 ; i < positions.size(); i++) {
-                if (Objects.equals(pos, positions.get(i))){
-
-                    System.out.println(positions.get(i).getId());
-                    positions.remove(i);
-                }
-            }
+            counter ++;
         }
 
-
-        return true;
+        return false;
     }
 }
