@@ -46,9 +46,7 @@ public class BucketValidator implements Validator {
         Integer productId = bucketPos.getProduct();
         Optional<Product> optProduct = productRepo.findById(productId);
         System.out.println(optProduct.isEmpty());
-        // to nie dziala ??
         if(optProduct.isEmpty()){
-            System.out.println("Tutaj jestem");
             errors.rejectValue("product","product with provided id doesn't exist");
         }
 
