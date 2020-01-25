@@ -6,11 +6,9 @@ import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Console;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -72,12 +70,41 @@ public class Bucket {
     }
 
     public boolean removeFromPositions(BucketPosition pos){
-        for (BucketPosition it : positions){
-            if (it.getId() == pos.getId()) {
-                positions.remove(it);
-                return true;
+    //public boolean removeFromPositions(Integer id){
+//        for (BucketPosition it : positions){
+////            if (it.getId() == id) {
+////                System.out.println(it.getId() == id);
+////                positions.remove(it);
+////                return true;
+////            }
+////        }
+////        return false;
+
+//        Iterator itr = positions.iterator();
+//        while(itr.hasNext()){
+//            if(itr.next().equals(pos))
+//                itr.remove();
+//                return true;
+//        }
+        if (positions.size()>1) {
+            for (int i = 0 ; i < positions.size(); i++) {
+                if (Objects.equals(pos, positions.get(i))){
+
+                    System.out.println(positions.get(i+1).getId());
+                    positions.remove(i+1);
+                }
+            }
+        } else {
+            for (int i = 0 ; i < positions.size(); i++) {
+                if (Objects.equals(pos, positions.get(i))){
+
+                    System.out.println(positions.get(i).getId());
+                    positions.remove(i);
+                }
             }
         }
-        return false;
+
+
+        return true;
     }
 }

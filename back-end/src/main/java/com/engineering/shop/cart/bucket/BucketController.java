@@ -221,6 +221,7 @@ public class BucketController {
         bucket.substructFromTotalValue(value);
 
         //System.out.println(bucket.getPositions().size());
+        //bucket.removeFromPositions(position.getId());
         bucket.removeFromPositions(position);
         //bucketPositionRepo.deleteById(position.getId());
        // System.out.println(bucket.getPositions().size());
