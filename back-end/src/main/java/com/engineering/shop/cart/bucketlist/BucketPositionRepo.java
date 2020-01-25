@@ -18,5 +18,6 @@ public interface BucketPositionRepo extends CrudRepository<BucketPosition, Integ
     Optional<BucketPosition> findBucketPositionByProductAndBucket (Product product, Bucket bucket);
     Boolean existsByProductIdAndBucket(Integer productId, Bucket bucket);
     Boolean existsByProductId (Integer productId);
+    //void deleteBucketPositionByProductIdAndBucket(Integer productId, Bucket bucket);
 
 }

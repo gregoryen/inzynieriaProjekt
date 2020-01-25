@@ -27,7 +27,7 @@ public class Bucket {
     private String token;
     private BigDecimal totalValue;
  //   @OneToMany(mappedBy = "bucket")
-    @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private List<BucketPosition> positions;
 
 
@@ -73,7 +73,7 @@ public class Bucket {
 
     public boolean removeFromPositions(BucketPosition pos){
         for (BucketPosition it : positions){
-            if (it == pos) {
+            if (it.getId() == pos.getId()) {
                 positions.remove(it);
                 return true;
             }

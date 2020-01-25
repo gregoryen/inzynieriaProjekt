@@ -214,14 +214,22 @@ public class BucketController {
         Bucket bucket = getBucketByToken(token);
         BucketPosition position = getBucketPositionByProductId(productId,bucket);
 
+        System.out.println(position.getId());
+
         BigDecimal value = position.getProductPrice();
         value = value.multiply(new BigDecimal(position.getProductQuantity()));
         bucket.substructFromTotalValue(value);
+
+        //System.out.println(bucket.getPositions().size());
         bucket.removeFromPositions(position);
-        System.out.println(bucket.getPositions().size());
+        //bucketPositionRepo.deleteById(position.getId());
+       // System.out.println(bucket.getPositions().size());
+
         bucketRepo.save(bucket);
         //bucketPositionRepo.delete(position);
-        bucketPositionRepo.deleteById(position.getId());
+        //System.out.println(bucket.getBucketId());
+        //bucketPositionRepo.deleteBucketPositionByProductIdAndBucket(productId, bucket);
+
 
         return bucket;
     }
