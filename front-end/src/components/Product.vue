@@ -10,8 +10,8 @@
                                 :interval="4000"
                                 controls
                                 indicators
-                                img-width="800"
-                                img-height="480"
+                                img-width="400"
+                                img-height="280"
                                 style="text-shadow: 1px 1px 2px #333;"
                         >
                             <div v-if="Array.isArray(product._links.additionalImages)">
@@ -19,9 +19,9 @@
                                                   v-bind:key="index">
                                     <template v-slot:img>
                                         <img
-                                                class="d-block img-fluid w-100"
-                                                width="800"
-                                                height="480"
+                                                class="d-block"
+                                                width="400"
+                                                height="280"
                                                 :src="image.href"
                                                 alt="Zdjęcie produktu"
                                         >
@@ -32,9 +32,9 @@
                                 <b-carousel-slide>
                                     <template v-slot:img>
                                         <img
-                                                class="d-block img-fluid w-100"
-                                                width="800"
-                                                height="480"
+                                                class="d-block"
+                                                width="400"
+                                                height="280"
                                                 :src="product._links.additionalImages.href"
                                                 alt="Zdjęcie produktu"
                                         >
