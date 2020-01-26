@@ -1,4 +1,4 @@
-package com.engineering.shop.fileUpload.exception;
+package com.engineering.shop.fileUpload;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
