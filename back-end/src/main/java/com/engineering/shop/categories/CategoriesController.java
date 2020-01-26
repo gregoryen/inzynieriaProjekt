@@ -6,7 +6,6 @@ import com.google.common.collect.Iterables;
 import lombok.Data;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.hateoas.server.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +16,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/categories")
@@ -69,9 +66,7 @@ public class CategoriesController {
 
         List<Integer> idUsedCategories = products.stream().map(Product::getMainCategoryId).distinct().collect(Collectors.toList());
 
-        idUsedCategories.forEach( e -> {
-            categories.removeIf((element) -> element.getId().equals(e));
-        });
+        idUsedCategories.forEach(e -> categories.removeIf((element) -> element.getId().equals(e)));
 
         return categories;
     }
@@ -82,6 +77,7 @@ public class CategoriesController {
         List<Category> categories = IteratorUtils.toList(allCategories.iterator());
         categories.forEach(c -> c.add(ControllerLinkBuilder.linkTo(CategoriesController.class).slash(c.getId()).withSelfRel()));
         Collection<Category> rootCategories = categories.stream().filter(category -> category.getParentId() == null).collect(Collectors.toSet());
+        rootCategories = getCategoriesSortedByPreviousCategoryId(rootCategories);
         categories.removeAll(rootCategories);
         List<TreeNode> trees = rootCategories.stream().map(TreeNode::new).collect(Collectors.toList());
         trees.forEach(treeNode -> buildTree(treeNode, categories));
@@ -106,6 +102,24 @@ public class CategoriesController {
         childNodes.forEach(node -> this.buildTree(node, categories));
     }
 
+    private Collection<Category> getCategoriesSortedByPreviousCategoryId(Collection<Category> categories) {
+        Category previousCategory = categories.stream().filter(category -> Objects.equals(category.getPreviousCategoryId(), null)).findAny().orElseThrow(IllegalArgumentException::new);
+        categories.remove(previousCategory);
+
+        Collection<Category> sortedCategories = new ArrayList<>();
+        sortedCategories.add(previousCategory);
+
+        while (categories.size() > 0) {
+            Category finalPreviousCategory = previousCategory;
+            Category nextCategory = categories.stream().filter(category -> Objects.equals(category.getPreviousCategoryId(), finalPreviousCategory.getId())).findAny().orElseThrow(IllegalArgumentException::new);
+            sortedCategories.add(nextCategory);
+            categories.remove(nextCategory);
+            previousCategory = nextCategory;
+        }
+
+        return sortedCategories;
+    }
+
     @DeleteMapping
     public ResponseEntity<Object> deleteCategory(@RequestParam Integer id) {
         Iterable<Product> products = productsRepo.findByMainCategoryId(id);
@@ -124,8 +138,8 @@ public class CategoriesController {
             }
             categoriesRepo.deleteById(id);
         }
-         return new ResponseEntity<>(
-                 new DeleteCategoryMessage("Kategoria została usunieta"),
+        return new ResponseEntity<>(
+                new DeleteCategoryMessage("Kategoria została usunieta"),
                 HttpStatus.OK);
     }
 
