@@ -100,18 +100,15 @@ export default {
     deleteCartItem: function(id) {
       // eslint-disable-next-line no-console
         console.log(id)
-        // eslint-disable-next-line no-console
-        console.log(id)
         let token = JSON.parse(localStorage.getItem('user')).jwtToken
         let bucketId = token.substring(0, token.length/4)
         let url = apiConfig.root + "/bucket/deletePosition/" + bucketId + "/" + id;
-        // eslint-disable-next-line no-console
-        console.log(id)
         axios.delete(url)
         .then( (res) => {
           // eslint-disable-next-line no-console
           console.log(res)
           this.bucket = res.data
+          this.cartItems = this.bucket.positions;
         })
     },
     updateProductQuantity: function(id) {

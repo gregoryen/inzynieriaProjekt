@@ -6,11 +6,9 @@ import lombok.*;
 import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
+import java.io.Console;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -27,7 +25,7 @@ public class Bucket {
     private String token;
     private BigDecimal totalValue;
  //   @OneToMany(mappedBy = "bucket")
-    @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private List<BucketPosition> positions;
 
 
@@ -72,12 +70,46 @@ public class Bucket {
     }
 
     public boolean removeFromPositions(BucketPosition pos){
-        for (BucketPosition it : positions){
-            if (it == pos) {
-                positions.remove(it);
+    //public boolean removeFromPositions(Integer id){
+//        for (BucketPosition it : positions){
+////            if (it.getId() == id) {
+////                System.out.println(it.getId() == id);
+////                positions.remove(it);
+////                return true;
+////            }
+////        }
+////        return false;
+
+//        Iterator itr = positions.iterator();
+//        while(itr.hasNext()){
+//            if(itr.next().equals(pos))
+//                itr.remove();
+//                return true;
+//        }
+
+//            for (int i = 0 ; i < positions.size(); i++) {
+//                if (Objects.equals(pos, positions.get(i))){
+//                    System.out.println(positions.get(i).getId());
+//                    positions.remove(i);
+//                }
+//            }
+        int deletedId = pos.getProduct().getId();
+        int counter = 0;
+//        System.out.println(deletedId);
+        for (BucketPosition it : positions) {
+//            System.out.println(it.getId());
+            if(it.getProduct().getId() == deletedId) {
+//                System.out.println("Trafiony zatopiony !");
+//                System.out.println(counter);
+                positions.remove(counter);
                 return true;
+            } else {
+//                System.out.println("Nie trafiony");
+                System.out.println(counter);
             }
+            counter ++;
         }
+
         return false;
     }
 }

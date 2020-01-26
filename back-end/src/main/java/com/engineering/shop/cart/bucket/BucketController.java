@@ -182,20 +182,55 @@ public class BucketController {
         return bucket;
     }
 
-    // usuwanie pozycji
+//    // usuwanie pozycji
     @DeleteMapping("/deletePosition/{bucketId}/{productId}")
     public @ResponseBody Bucket deletePosition(@PathVariable("productId") Integer productId
                                 , @PathVariable("bucketId") String token){
+
+ //     System.out.println(token);
+      Bucket bucket = getBucketByToken(token);
+//      System.out.println(bucket.getTotalValue());
+    BucketPosition position = getBucketPositionByProductId(productId,bucket);
+
+    System.out.println(position.getId());
+
+    BigDecimal value = position.getProductPrice();
+  //  System.out.println(value);
+    value = value.multiply(new BigDecimal(position.getProductQuantity()));
+    bucket.substructFromTotalValue(value);
+   // System.out.println(bucket.getTotalValue());
+    bucket.removeFromPositions(position);
+    bucketRepo.save(bucket);
+
+    return bucket;
+}
+
+    // usuwanie pozycji
+
+    @DeleteMapping("/deletePosition")
+    public @ResponseBody Bucket deletePosition(@RequestBody BucketPositionPOJO pojo){
+        String token;
+        Integer  productId;
+
+        productId = pojo.getProduct();
+        token = pojo.getBucket();
+
         Bucket bucket = getBucketByToken(token);
         BucketPosition position = getBucketPositionByProductId(productId,bucket);
 
+        System.out.println(position.getId());
+
         BigDecimal value = position.getProductPrice();
+        System.out.println(value);
         value = value.multiply(new BigDecimal(position.getProductQuantity()));
         bucket.substructFromTotalValue(value);
+        System.out.println(bucket.getTotalValue());
         bucket.removeFromPositions(position);
-        System.out.println(bucket.getPositions().size());
         bucketRepo.save(bucket);
-        bucketPositionRepo.delete(position);
+        //bucketPositionRepo.delete(position);.
+        //System.out.println(bucket.getBucketId());
+        //bucketPositionRepo.deleteBucketPositionByProductIdAndBucket(productId, bucket);
+
 
         return bucket;
     }
