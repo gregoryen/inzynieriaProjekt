@@ -110,9 +110,9 @@
 
     <b-modal ref="successCreate" hide-footer title="Złożono zamówienie">
       <div class="d-block text-center">
-        <h3>Zamówienie zakończono sukcesem</h3>
+        <h3>Zamówienie zakończono sukcesem. Przechodze do płatności</h3>
       </div>
-      <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
+      <b-button class="mt-3" variant="success" block @click="hideSuccessModal">Zatwierdź</b-button>
     </b-modal>
 
     <b-modal ref="failCreate" hide-footer title="Nie złożono zamówienia">
