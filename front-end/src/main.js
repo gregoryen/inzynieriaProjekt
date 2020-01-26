@@ -47,6 +47,7 @@ import { extend } from 'vee-validate';
 import ProductsOverview from "./components/ProductsOverview";
 import AdminPanel from "./components/AdminPanel"
 import Home from "./components/Home"
+import Payment from "./components/Payment"
 
 
 extend('required', {
@@ -164,6 +165,11 @@ const router = new VueRouter({
       path: '/orderSummary',
       name: 'orderSummary',
       component: OrderSummary
+    },
+    {
+      path: '/payment/:order_id',
+      name: 'payment',
+      component: Payment
     },
     {
       path: '/addProduct',

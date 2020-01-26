@@ -117,7 +117,7 @@
 
     <b-modal ref="failCreate" hide-footer title="Nie złożono zamówienia">
       <div class="d-block text-center">
-        <h3>Nie udało się złożyć zamówienia</h3>
+        <h3>Nie udało się złożyć zamówienia. Spróbuj jeszcze raz.</h3>
       </div>
       <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
     </b-modal>
@@ -140,7 +140,8 @@ export default {
       homeNumberInput: '',
       postCodeInput: '',
       cityInput: '',
-      countryInput: ''
+      countryInput: '',
+      order_id: Number
     })
   },
   methods: {
@@ -152,7 +153,7 @@ export default {
     },
     hideSuccessModal() {
       this.$refs["successCreate"].hide();
-      this.$router.push("/");
+      this.$router.push({name: "payment", params: { order_id: this.order_id }});
     },
     hideFailModal() {
       this.$refs["failCreate"].hide();
@@ -181,6 +182,7 @@ export default {
           orderValue: totalValue,
           isPaid: true
         }).then( (res) => {
+          this.order_id = res.data
           this.showSuccessModal()
           // eslint-disable-next-line no-console
           console.log(res)
