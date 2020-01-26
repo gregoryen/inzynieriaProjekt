@@ -5,8 +5,8 @@ import com.engineering.shop.cart.Exceptions.BucketException;
 
 import com.engineering.shop.cart.bucketlist.*;
 
-import com.engineering.shop.cart.order.OrderRepo;
 
+import com.engineering.shop.cart.order.OrderRepo;
 import com.engineering.shop.common.Exceptions.ResourceNotFoundException;
 import com.engineering.shop.products.Product;
 import com.engineering.shop.products.ProductsRepo;
@@ -33,37 +33,26 @@ public class BucketController {
 
     BucketRepo bucketRepo;
     BucketPositionRepo bucketPositionRepo;
-    OrderRepo orderRepo;
     ProductsRepo productsRepo;
     BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition;
-//    BucketValidator bucketValidator;
+
 
     public BucketController(BucketRepo bucketRepo,
                             BucketPositionRepo bucketPositionRepo,
-                            OrderRepo orderRepo, ProductsRepo productsRepo,
+                            ProductsRepo productsRepo,
                             BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition ){
-                           // BucketValidator bucketValidator) { @Validated
+
         this.bucketRepo = bucketRepo;
         this.bucketPositionRepo = bucketPositionRepo;
-        this.orderRepo = orderRepo;
         this.productsRepo = productsRepo;
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
-     //   this.bucketValidator = bucketValidator;
-    }
 
-// Wysylam Jsona
-//    {
-//            "product" : 1,
-//            "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
-//            "productPrice": null,
-//            "productQuantity": 1,
-//            "bucket": "user1"
-//    }
+    }
 
     @PostMapping("/createBucket")
     public @ResponseBody String createBucketWithId (@RequestBody BucketPOJO bucketPOJO) {
-        String token = bucketPOJO.getId();
 
+        String token = bucketPOJO.getId();
         Boolean isInBase = bucketRepo.existsByToken(token);
 
         Bucket bucket;
@@ -187,55 +176,20 @@ public class BucketController {
     public @ResponseBody Bucket deletePosition(@PathVariable("productId") Integer productId
                                 , @PathVariable("bucketId") String token){
 
- //     System.out.println(token);
+
       Bucket bucket = getBucketByToken(token);
-//      System.out.println(bucket.getTotalValue());
     BucketPosition position = getBucketPositionByProductId(productId,bucket);
 
     System.out.println(position.getId());
 
     BigDecimal value = position.getProductPrice();
-  //  System.out.println(value);
     value = value.multiply(new BigDecimal(position.getProductQuantity()));
     bucket.substructFromTotalValue(value);
-   // System.out.println(bucket.getTotalValue());
     bucket.removeFromPositions(position);
     bucketRepo.save(bucket);
 
     return bucket;
 }
-
-    // usuwanie pozycji
-
-    @DeleteMapping("/deletePosition")
-    public @ResponseBody Bucket deletePosition(@RequestBody BucketPositionPOJO pojo){
-        String token;
-        Integer  productId;
-
-        productId = pojo.getProduct();
-        token = pojo.getBucket();
-
-        Bucket bucket = getBucketByToken(token);
-        BucketPosition position = getBucketPositionByProductId(productId,bucket);
-
-        System.out.println(position.getId());
-
-        BigDecimal value = position.getProductPrice();
-        System.out.println(value);
-        value = value.multiply(new BigDecimal(position.getProductQuantity()));
-        bucket.substructFromTotalValue(value);
-        System.out.println(bucket.getTotalValue());
-        bucket.removeFromPositions(position);
-        bucketRepo.save(bucket);
-        //bucketPositionRepo.delete(position);.
-        //System.out.println(bucket.getBucketId());
-        //bucketPositionRepo.deleteBucketPositionByProductIdAndBucket(productId, bucket);
-
-
-        return bucket;
-    }
-
-
 
     public Bucket getBucketByToken(String token) {
         Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findByToken(token)).orElseThrow(()-> new BucketException("Bucket not found with provided  token"));
@@ -251,21 +205,4 @@ public class BucketController {
         return optPosition.get();
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Map<String, String> handleValidationExceptions(
-//            MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getCode();
-//            errors.put(fieldName, errorMessage);
-//        });
-//        return errors;
-//    }
-//
-//    @InitBinder
-//    private void initBinder(WebDataBinder binder) {
-//        binder.setValidator(bucketValidator);
-//    }
 }

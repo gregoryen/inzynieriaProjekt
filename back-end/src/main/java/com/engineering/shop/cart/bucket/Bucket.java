@@ -1,12 +1,10 @@
 package com.engineering.shop.cart.bucket;
 
-import com.engineering.shop.cart.Exceptions.BucketException;
+
 import com.engineering.shop.cart.bucketlist.BucketPosition;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
-import java.io.Console;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -24,7 +22,6 @@ public class Bucket {
     private Integer bucketId;
     private String token;
     private BigDecimal totalValue;
- //   @OneToMany(mappedBy = "bucket")
     @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private List<BucketPosition> positions;
 
@@ -42,7 +39,6 @@ public class Bucket {
     public int getUniqueItemsNumber () {
         if (this.positions != null)
             return this.positions.size();
-
         return 0;
     }
 
@@ -70,42 +66,13 @@ public class Bucket {
     }
 
     public boolean removeFromPositions(BucketPosition pos){
-    //public boolean removeFromPositions(Integer id){
-//        for (BucketPosition it : positions){
-////            if (it.getId() == id) {
-////                System.out.println(it.getId() == id);
-////                positions.remove(it);
-////                return true;
-////            }
-////        }
-////        return false;
 
-//        Iterator itr = positions.iterator();
-//        while(itr.hasNext()){
-//            if(itr.next().equals(pos))
-//                itr.remove();
-//                return true;
-//        }
-
-//            for (int i = 0 ; i < positions.size(); i++) {
-//                if (Objects.equals(pos, positions.get(i))){
-//                    System.out.println(positions.get(i).getId());
-//                    positions.remove(i);
-//                }
-//            }
         int deletedId = pos.getProduct().getId();
         int counter = 0;
-//        System.out.println(deletedId);
         for (BucketPosition it : positions) {
-//            System.out.println(it.getId());
             if(it.getProduct().getId() == deletedId) {
-//                System.out.println("Trafiony zatopiony !");
-//                System.out.println(counter);
                 positions.remove(counter);
                 return true;
-            } else {
-//                System.out.println("Nie trafiony");
-                System.out.println(counter);
             }
             counter ++;
         }

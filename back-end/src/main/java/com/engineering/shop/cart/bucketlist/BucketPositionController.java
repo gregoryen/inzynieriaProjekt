@@ -15,12 +15,10 @@ import java.util.Optional;
 public class BucketPositionController {
 
     private BucketPositionRepo bucketPositionRepo;
-    private ProductsRepo productRepo;
     private BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition;
 
-    public BucketPositionController(BucketPositionRepo bucketPositionRepo, ProductsRepo productRepo, BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition) {
+    public BucketPositionController(BucketPositionRepo bucketPositionRepo, BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition) {
         this.bucketPositionRepo = bucketPositionRepo;
-        this.productRepo = productRepo;
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
     }
 
