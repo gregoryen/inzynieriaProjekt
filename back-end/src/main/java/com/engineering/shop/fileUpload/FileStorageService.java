@@ -1,8 +1,8 @@
-package com.engineering.shop.fileUpload.service;
+package com.engineering.shop.fileUpload;
 
-import com.engineering.shop.fileUpload.exception.FileStorageException;
-import com.engineering.shop.fileUpload.exception.MyFileNotFoundException;
-import com.engineering.shop.fileUpload.property.FileStorageProperties;
+import com.engineering.shop.fileUpload.FileStorageException;
+import com.engineering.shop.fileUpload.MyFileNotFoundException;
+import com.engineering.shop.fileUpload.FileStorageProperties;
 import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
 import org.apache.commons.io.FilenameUtils;
