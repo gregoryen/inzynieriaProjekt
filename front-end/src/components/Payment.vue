@@ -107,6 +107,9 @@ export default {
         }).then(response => {
             // eslint-disable-next-line no-console
             console.log(response)
+            this.showSuccessModal()
+        }).catch(() => {
+            this.showFailModal()
         })
     }
   },
