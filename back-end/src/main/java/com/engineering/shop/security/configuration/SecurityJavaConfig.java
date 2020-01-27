@@ -109,8 +109,10 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/opinions", "/opinions/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
+                .antMatchers("/changeUserRole").permitAll()
+                .antMatchers("/changeRolePrivileges").permitAll()
+                .antMatchers("/getUserPrivileges").permitAll()
                 .anyRequest().authenticated()
-
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();

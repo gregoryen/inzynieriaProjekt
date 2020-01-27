@@ -11,17 +11,20 @@
             </thead>
             <tbody>
               <tr>
-                <td @click="getUsersResponseData">Show Users</td>
+                <td @click="showUsers">Show Users</td>
               </tr>
               <tr>
-                <td @click="getRolesResponseData">Show Roles</td>
+                <td @click="showRoles">Show Roles</td>
               </tr>
               <tr>
-                <td @click="getPrivilegesResponseData">Show Privileges</td>
+                <td @click="showPrivileges">Show Privileges</td>
               </tr>
               <tr>
                 <td @click="showOpinionsTable">Show Opinions</td>
               </tr>
+              <tr>
+                <td @click="showAddAdvPanel">Add Advertisement</td>
+                </tr>
             </tbody>
           </table>
         </div>
@@ -95,22 +98,39 @@
           </table>
 
         </div>
+         <AddAdvertisement v-if="this.changeMainTable ==='addAdvertisement'" />
+    <OpinionsInAdminPanel  v-if="this.changeMainTable === 'opinions'"/>
+    <AdminPanelShowRoles v-if="this.changeMainTable==='showRoles'"   :forceUpdate = "forceUpdateAdminPanelShowRoles"/>
+    <AdminPanelShowPrivileges v-if="this.changeMainTable==='showPrivileges'"/>
+    <AdminPanelShowUsers v-if="this.changeMainTable==='showUsers'"  :forceUpdate = "forceUpdateAdminPanelShowUsers" :key="AdminPanelShowUsersReRender"/>
       </b-col>
-      <OpinionsInAdminPanel  v-if="this.changeMainTable === 'opinions'"/>
+  
     </b-row>
+    
+  
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import OpinionsInAdminPanel from "./OpinionsInAdminPanel";
+import AddAdvertisement from './AddAdvertisement.vue';
+import AdminPanelShowRoles from './AdminPanelShowRoles';
+import AdminPanelShowPrivileges from './AdminPanelShowPrivileges';
+import AdminPanelShowUsers from './AdminPanelShowUsers';
 export default {
   name: "AdminPanel",
   components: {
-    OpinionsInAdminPanel
+    OpinionsInAdminPanel,
+    AddAdvertisement,
+    AdminPanelShowRoles,
+    AdminPanelShowPrivileges,
+    AdminPanelShowUsers
   },
   data() {
     return {
+      AdminPanelShowUsersReRender:true,
+      AdminPanelShowRolesReRender:true,
       changeMainTable: "empty",
       items: [{ option: "Show users" }, { option: "Show roles" }],
       mainTable: [],
@@ -144,7 +164,7 @@ export default {
           /* eslint-disable no-console */
           console.log(response.data._embedded.users);
           this.mainTable = response.data._embedded.users;
-          this.changeMainTable = "users";
+          this.changeMainTable = ["users"];
         })
         .catch(error => {
           /* eslint-disable no-console */
@@ -153,6 +173,24 @@ export default {
     },
     showOpinionsTable: function ()  {
       this.changeMainTable = "opinions";
+    },
+    showAddAdvPanel:function(){
+      this.changeMainTable = 'addAdvertisement';
+    },
+    showRoles:function(){
+      this.changeMainTable='showRoles';
+    },
+    showPrivileges:function(){
+      this.changeMainTable='showPrivileges';
+    },
+      showUsers:function(){
+      this.changeMainTable='showUsers';
+    },
+    forceUpdateAdminPanelShowUsers(){
+      this.AdminPanelShowUsersReRender = !this.AdminPanelShowUsersReRender;
+    },
+     forceUpdateAdminPanelShowRoles(){
+      this.AdminPanelShowRolesReRender = !this.AdminPanelShowrolesReRender;
     },
     getRolesResponseData: function() {
       var root = "http://localhost:8080";

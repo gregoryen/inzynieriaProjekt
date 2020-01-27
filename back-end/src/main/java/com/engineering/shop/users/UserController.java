@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,9 +24,20 @@ public class UserController {
 
         return userRepository.getById(id);
     }
+
+    @GetMapping(path ="getAllUsers")
+    public Collection<?> getAllUsers(){
+            return userRepository.getAllUsers();
+    }
     @GetMapping(path="getUserPrivileges")
     public Collection<?> getUserPrivileges(){
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+    }
+
+    @PostMapping(path="changeUserRole")
+    public void changeUserRole(@RequestParam String roleName, @RequestParam  Long userID){
+
+        userRepository.changeRoleQuery(roleName,userID);
     }
 
    // @Query ("SELECT name from privilege INNER JOIN roles_privileges ON privilege.id = roles_privileges.privilege_id INNER JOIN users_roles ON users_roles.role_id = roles_privileges.role_id")

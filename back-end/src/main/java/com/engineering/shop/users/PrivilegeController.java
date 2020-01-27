@@ -8,16 +8,21 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+@RestController
 public class PrivilegeController {
 
     public PrivilegeRepository privilegeRepository;
-
+    public RoleRepository roleRepository;
     @Autowired
-    public PrivilegeController(PrivilegeRepository privilegeRepository) {
+    public PrivilegeController(PrivilegeRepository privilegeRepository, RoleRepository roleRepository) {
 this.privilegeRepository = privilegeRepository;
+        this.roleRepository = roleRepository;
     }
-
+    @GetMapping(path="getPrivilegesByRole")
+    Collection<?> getPrivilegesByRole(String name)
+    {
+        return privilegeRepository.getAllByRoleName(name);
+    }
 //        Privilege createPrivilegeIfNotFound(String name)
 //        {
 //            List<Privilege> list = privilegeRepository.getAllByName(name);
