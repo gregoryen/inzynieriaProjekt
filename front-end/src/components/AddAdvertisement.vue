@@ -107,10 +107,8 @@
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     import globalConfig from '../config'
 
-    const PRODUCTS = '/products';
-    const UPLOAD_IMAGE = '/images/uploadImage';
-    const UPLOAD_MULTIPLE_IMAGE = '/images/uploadMultipleImages';
-    const CATEGORIES_TREE = '/categories/tree';
+    const PRODUCTS = '/advertisement';
+    const UPLOAD_IMAGE = '/advImages/uploadImage';
 
     export default {
         name:'AddAdvertisement',
@@ -182,13 +180,6 @@
                 this.form.product.mainImage = null;
                 this.supported.mainImageURL = null;
                 this.status.mainImageSend = true;
-            },
-            resetAdditionalImages() {
-                this.$refs['additionalImages'].reset();
-                this.additionalImagesFiles = null;
-                this.form.additionalImages = null;
-                this.supported.additionalImagesURL = null;
-                this.status.additionalImagesSend = true;
             },
             onSubmit(evt) {
                 evt.preventDefault();
