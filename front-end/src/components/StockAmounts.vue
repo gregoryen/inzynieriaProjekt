@@ -105,7 +105,7 @@
                                 </download-csv>
                             </td>
                             <td>
-                                <button class="form-control" @click="disable(index)">
+                                <button type="button" class="form-control" @click="disable(index)">
                                     <strong v-if="report.disabled">schowaj</strong>
                                     <strong v-else>pokaż</strong>
                                 </button>
