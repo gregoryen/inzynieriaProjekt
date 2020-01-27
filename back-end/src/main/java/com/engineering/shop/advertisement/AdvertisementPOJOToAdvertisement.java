@@ -17,6 +17,7 @@ public class AdvertisementPOJOToAdvertisement implements Transformer<Advertiseme
                 .name(pojo.getName())
                 .description(pojo.getDescription())
                 .mainImage(pojo.getMainImage())
+                .date(pojo.getDate())
                 .build();
     }
 

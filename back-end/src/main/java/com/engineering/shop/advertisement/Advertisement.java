@@ -5,7 +5,7 @@ import lombok.*;
 import org.springframework.hateoas.RepresentationModel;
 
 import javax.persistence.*;
-
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -23,5 +23,6 @@ public class Advertisement extends RepresentationModel<Advertisement> {
     private Integer id;
     private String name;
     private String description;
+    private LocalDateTime date;
     private Integer mainImage;
 }
