@@ -34,6 +34,11 @@ public class UserController {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities();
     }
 
+    @DeleteMapping(path="deleteUserByEmail")
+    public void deleteUser(@RequestParam  String email){
+        userRepository.deleteUserHelpQuery1(email);
+        userRepository.deleteById(userRepository.getByEmail(email).getId());
+    }
     @PostMapping(path="changeUserRole")
     public void changeUserRole(@RequestParam String roleName, @RequestParam  Long userID){
 

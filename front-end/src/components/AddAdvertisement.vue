@@ -32,9 +32,7 @@
                                         :state="Boolean(mainImageFile)"
                                         placeholder="Przeciągnij i upuść plik tutaj"
                                         drop-placeholder="Upouść plik tutaj..."
-
                                         required
-
                                         accept="image/*"
                                         @change="onMainImagePicked"
                                 ></b-form-file>
@@ -86,28 +84,11 @@
                             </b-form-group>
                             <b-button type="submit" variant="primary">Dodaj</b-button>
                             <b-button type="reset" variant="danger">Zresetuj</b-button>
-
                         </b-form>
                     </b-card-text>
                 </b-col>
             </b-row>
         </b-container>
-
-
-        <b-modal ref="successCreate" hide-footer title="Utworzono nowy produkt">
-            <div class="d-block text-center">
-                <h3>Nowy produkt został dodany do sklepu</h3>
-            </div>
-            <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
-        </b-modal>
-
-        <b-modal ref="failCreate" hide-footer title="NIE stworzono nowego produktu">
-            <div class="d-block text-center">
-                <h3>Utworzenie nowego produktu nie udało się</h3>
-            </div>
-            <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
-        </b-modal>
-
         <b-modal ref="waitCreate" hide-footer title="Zdjęcia nie zostały jeszcze wysłane">
             <div class="d-block text-center">
                 <h3>Proszę odczekać chwilę i spróbować zatwierdzić dodanie nowego produktu ponownie</h3>
@@ -115,13 +96,7 @@
             <b-button class="mt-3" variant="danger" block @click="hideWaitModal">OK</b-button>
         </b-modal>
 
-        <b-modal ref="selectCategory" hide-footer title="Wybierz kategorię główną">
-            <div class="d-block text-center">
-                <h3>Proszę wybrać kategorię główną</h3>
-            </div>
-            <b-button class="mt-3" variant="danger" block @click="hideSelectCategoryModal">OK</b-button>
-        </b-modal>
-
+    
     </div>
 </template>
 
@@ -218,17 +193,10 @@
             onSubmit(evt) {
                 evt.preventDefault();
                 if (this.form.product.mainCategoryId) {
-                    if (this.status.additionalImagesSend === true && this.status.mainImageSend === true) {
-                        if (this.form.additionalImages === null) {
+                    if ( his.status.mainImageSend === true) {
                             this.form.additionalImages = []
                         }
                         this.form.additionalImages.push(this.form.product.mainImage);
-                        if (this.form.product.categories === null) {
-                            this.form.product.categories = []
-                        }
-                        if (this.form.product.categories.indexOf(this.form.product.mainCategoryId)) {
-                            this.form.product.categories.push(this.form.product.mainCategoryId);
-                        }
                         const config = {
                             headers: {
                                 'content-type': 'application/json'
@@ -240,15 +208,9 @@
                             }).catch(() => {
                             this.showFailModal();
                         });
-                    } else {
-                        this.waitModal();
-                    }
-                } else {
-                    this.selectCategoryModal();
-                }
+                } 
             },
             onReset() {
-                // Reset  form.products
                 this.form.product.name = '';
                 this.form.product.description = '';
                 this.form.product.mainCategoryId = null;
@@ -261,9 +223,7 @@
                 //Reset form images
                 this.resetMainImage();
                 this.resetAdditionalImages();
-
                 this.getTree();
-
                 //Reset all view
                 this.resetView()
             },
@@ -303,81 +263,7 @@
                         }
                     })
             },
-
-            onAdditionalImagesPicked(event) {
-                this.status.additionalImagesSend = false;
-                this.form.additionalImages = [];
-                const files = event.target.files;
-                this.supported.additionalImagesURL = [];
-
-
-                for (let i = 0; i < files.length; i++) {
-                    const fileReader = new FileReader();
-                    fileReader.addEventListener('load', () => {
-                        let temp = {
-                            image: fileReader.result,
-                            id: i
-                        };
-                        this.supported.additionalImagesURL.push(temp)
-                    });
-                    fileReader.readAsDataURL(files[i])
-                }
-
-                const formData = new FormData();
-                for (let file of files) {
-                    formData.append('files', file);
-                }
-
-                const config = {
-                    headers: {
-                        'content-type': 'multipart/form-data'
-                    }
-                };
-
-                axios.post(globalConfig.root + UPLOAD_MULTIPLE_IMAGE, formData, config)
-
-                    .then(res => {
-                        if (res.status === 200) {
-                            for (let temp of res.data) {
-                                this.form.additionalImages.push(temp.id);
-                            }
-                            this.status.additionalImagesSend = true;
-                        }
-                    });
-            },
-            createBranch: function (oldBranch) {
-                let newBranch = [];
-                for (let e of oldBranch) {
-                    let temp = {
-                        id: e.category.id,
-                        label: e.category.name,
-                    };
-                    let children = this.createBranch(e.children);
-                    if (children.length > 0) {
-                        temp.children = children;
-                    }
-                    newBranch.push(temp);
-                }
-                return newBranch;
-            },
-            getTree() {
-                const config = {
-                    headers: {
-                        'content-type': 'application/json'
-                    }
-                };
-                axios.get(globalConfig.root + CATEGORIES_TREE, config)
-                    .then(res => {
-                            if (res.status === 200) {
-                                this.supported.treeCategories = this.createBranch(res.data);
-                            }
-                        }
-                    );
-            }
         },
-        created() {
-            this.getTree();
-        }
     }
 </script>
 

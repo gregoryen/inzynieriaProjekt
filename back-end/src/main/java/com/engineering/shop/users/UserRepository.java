@@ -21,6 +21,11 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Transactional
     @Modifying
+    @Query(value ="delete from users_roles where user_id = (select id from users where email =?1 )",nativeQuery = true)
+    void deleteUserHelpQuery1(String email);
+
+    @Transactional
+    @Modifying
     @Query(value="update users_roles set role_id = (select id from role where name = ?1 ) where user_id = ?2", nativeQuery = true)
     void changeRoleQuery(String name, Long id);
 }

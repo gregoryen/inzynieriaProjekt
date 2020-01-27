@@ -30,77 +30,9 @@
         </div>
       </b-col>
       <b-col cols="12" md="8">
-        <div class="main-table">
-          <table
-            class="table b-table table-sm table-bordered"
-            v-if="this.changeMainTable === 'users'"
-          >
-            <thead class="thead-light">
-              <tr>
-                <th>Email</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in mainTable" v-bind:key="item.email">
-                <td>{{ item.email }}</td>
-                <td>{{ item.firstName }}</td>
-                <td>{{ item.lastName }}</td>
-                <td>
-                  <b-button pill variant="warning" size="sm">Edit</b-button>
-                </td>
-                <td>
-                  <b-button pill variant="danger" size="sm">Delete</b-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table
-            class="table b-table table-sm table-bordered"
-            v-if="this.changeMainTable === 'roles'"
-          >
-            <thead class="thead-light">
-              <tr>
-                <th>Role</th>
-                <th>Edit</th>
-                <th>Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in mainTable" v-bind:key="item.name">
-                <td>{{ item.name }}</td>
-                <td>
-                  <b-button pill variant="warning" size="sm">Edit</b-button>
-                </td>
-                <td>
-                  <b-button pill variant="danger" size="sm">Delete</b-button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <table
-            class="table b-table table-sm table-bordered"
-            v-if="this.changeMainTable === 'privileges'"
-          >
-            <thead class="thead-light">
-              <tr>
-                <th>Privileges</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in mainTable" v-bind:key="item.name">
-                <td>{{ item.name }}</td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-         <AddAdvertisement v-if="this.changeMainTable ==='addAdvertisement'" />
+    <AddAdvertisement v-if="this.changeMainTable ==='addAdvertisement'" />
     <OpinionsInAdminPanel  v-if="this.changeMainTable === 'opinions'"/>
-    <AdminPanelShowRoles v-if="this.changeMainTable==='showRoles'"   :forceUpdate = "forceUpdateAdminPanelShowRoles"/>
+    <AdminPanelShowRoles v-if="this.changeMainTable==='showRoles'"   :forceUpdate = "forceUpdateAdminPanelShowRoles"  :key="AdminPanelShowRolesReRender"/>
     <AdminPanelShowPrivileges v-if="this.changeMainTable==='showPrivileges'"/>
     <AdminPanelShowUsers v-if="this.changeMainTable==='showUsers'"  :forceUpdate = "forceUpdateAdminPanelShowUsers" :key="AdminPanelShowUsersReRender"/>
       </b-col>
@@ -112,7 +44,7 @@
 </template>
 
 <script>
-import axios from "axios";
+
 import OpinionsInAdminPanel from "./OpinionsInAdminPanel";
 import AddAdvertisement from './AddAdvertisement.vue';
 import AdminPanelShowRoles from './AdminPanelShowRoles';
@@ -137,40 +69,7 @@ export default {
     };
   },
   methods: {
-    getUsersTable() {
-      /* eslint-disable no-console */
-      console.log("users");
-      this.mainTable = this.users;
-      this.changeMainTable = "users";
-    },
-    getRolesTable() {
-      /* eslint-disable no-console */
-      console.log("roles");
-      this.mainTable = this.roles;
-      this.changeMainTable = "roles";
-    },
-    getUsersResponseData: function() {
-      var root = "http://localhost:8080";
-      var token = this.$store.state.auth.user.jwtToken
-       const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
-      axios
-        .get(root + "/users", config)
-        .then(response => {
-          /* eslint-disable no-console */
-          console.log(response.data._embedded.users);
-          this.mainTable = response.data._embedded.users;
-          this.changeMainTable = ["users"];
-        })
-        .catch(error => {
-          /* eslint-disable no-console */
-          console.log(error);
-        });
-    },
+
     showOpinionsTable: function ()  {
       this.changeMainTable = "opinions";
     },
@@ -190,52 +89,9 @@ export default {
       this.AdminPanelShowUsersReRender = !this.AdminPanelShowUsersReRender;
     },
      forceUpdateAdminPanelShowRoles(){
-      this.AdminPanelShowRolesReRender = !this.AdminPanelShowrolesReRender;
+      this.AdminPanelShowRolesReRender = !this.AdminPanelShowRolesReRender;
     },
-    getRolesResponseData: function() {
-      var root = "http://localhost:8080";
-      var token = this.$store.state.auth.user.jwtToken
-           const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
-      axios
-        .get(root + "/roles", config)
-        .then(response => {
-          /* eslint-disable no-console */
-          console.log(response.data._embedded.roles);
-          this.mainTable = response.data._embedded.roles;
-          this.changeMainTable = "roles";
-        })
-        .catch(error => {
-          /* eslint-disable no-console */
-          console.log(error);
-        });
-    },
-        getPrivilegesResponseData: function() {
-      var root = "http://localhost:8080";
-      var token = this.$store.state.auth.user.jwtToken
-            const config = {
-        headers: {
-          Authorization: "Bearer " + token,
-          "Content-type": "application/json"
-        }
-      };
-      axios
-        .get(root + "/privileges", config)
-        .then(response => {
-          /* eslint-disable no-console */
-          console.log(response.data._embedded.privileges);
-          this.mainTable = response.data._embedded.privileges;
-          this.changeMainTable = "privileges";
-        })
-        .catch(error => {
-          /* eslint-disable no-console */
-          console.log(error);
-        });
-    }
+ 
   }
 };
 </script>

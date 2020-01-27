@@ -1,6 +1,8 @@
  <template>
  
  <div>
+   <input type="text" v-model="roleNameToAdd"/>
+   <button v-on:click="handleAddRoleButton">Add Role</button>
     <tr>  <AdminPanelEditRole :role="role" :closeMethod="handleClose"  :key="EditRoleReRender" :methodForceUpdate="methodForceUpdate" v-if="this.editRole" /></tr>
  <table
             class="table b-table table-sm table-bordered">
@@ -18,7 +20,7 @@
                   <b-button v-on:click="handleEditRoleButton(item)" pill variant="warning" size="sm">Edit</b-button>
                 </td>
                 <td>
-                  <b-button  pill variant="danger" size="sm">Delete</b-button>
+                  <b-button  v-on:click="handleDeleteRoleButton(item)" pill variant="danger" size="sm">Delete</b-button>
                 </td>
               </tr>
             </tbody>
@@ -44,15 +46,18 @@ export default {
       role:null,
       editRole:false,
       mainTable: [],
-      EditRoleReRender:true
+      EditRoleReRender:true,
+      roleNameToAdd:""
     };
   },
     methods:{
        handleEditRoleButton :function(item)
         {
 
+
+
             this.role = item
-            if(!(this.$store.state.auth.user.role == this.role[0]))
+            if(!(this.$store.state.auth.user.role == this.role.name))
             {
             this.editRole = true;
             }
@@ -63,7 +68,22 @@ export default {
         },
         methodForceUpdate :function(){
             this.forceUpdate();
-        }
+        },
+        handleDeleteRoleButton:function(item){
+            this.role = item
+            if(!(this.$store.state.auth.user.role == this.role.name))
+            {
+                UserService.deleteRole(this.role.name).then(()=>(
+             this.forceUpdate()))
+    }
+    },
+    handleAddRoleButton:function(){
+      if(this.roleNameToAdd!=="")
+      {
+      UserService.createRolebyName(this.roleNameToAdd).then(()=>(
+             this.forceUpdate()))
+    }
+    }
     },
  mounted() {
         UserService.getRoles().then(response=>(this.mainTable = response))

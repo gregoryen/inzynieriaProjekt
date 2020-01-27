@@ -38,7 +38,9 @@ export default {
 
     
     handleSave:function(){
-      let id = this.role._links.self.href.substring(this.role._links.self.href.length-1,this.role._links.self.href.length)
+
+      let index = this.role._links.self.href.search('/roles/');
+      let id = this.role._links.self.href.substring(index+7,this.role._links.self.href.length)
 
         UserService.updateRolePrivileges(this.additional.join('-'),id)
         this.methodForceUpdate()

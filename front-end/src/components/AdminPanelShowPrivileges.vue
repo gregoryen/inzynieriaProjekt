@@ -26,7 +26,7 @@ export default {
   },
     
  mounted() {
-        UserService.getPrivileges().then(response=>(this.mainTable = response.data._embedded.privileges))
+        UserService.getPrivileges().then(response=>(this.mainTable = response))
 }
 }
 </script>

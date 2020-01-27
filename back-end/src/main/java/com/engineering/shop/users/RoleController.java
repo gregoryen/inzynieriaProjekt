@@ -1,14 +1,11 @@
 package com.engineering.shop.users;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import javax.transaction.Transactional;
+import java.util.*;
+
 @RestController
 public class RoleController {
 
@@ -36,18 +33,40 @@ public class RoleController {
         }
 
     }
+    @PostMapping(path="createRoleByName")
+    public Long createRoleByName(@RequestParam String roleName){
+        return createRoleIfNotFound(roleName).getId();
+    }
 
-    //PrivilegeController privilegeController = new PrivilegeController(privilegeRepository);
-//    public Role createRoleIfNotFound(String name)
-//    {
-//        List<Role> list = roleRepository.getAllByName(name);
-//        if(list.size()<1)
-//        {
-//            Set<Privilege> set = Set.of(privilegeController.createPrivilegeIfNotFound("READ_PRIVILEGE"));
-//            return new Role(name, set);
-//        }
-//        else
-//            return roleRepository.getByName(name);
-//    }
+    @DeleteMapping (path="deleteRole")
+    public void deleteRole(@RequestParam String roleName){
+        roleRepository.updateQueryChangeUserRoles(roleName);
+        roleRepository.deleteQuery1(roleRepository.getByName(roleName).getId());
+        roleRepository.deleteById(roleRepository.getByName(roleName).getId());
+    }
 
+
+
+    @Transactional
+    Privilege createPrivilegeIfNotFound(String name) {
+
+        Privilege privilege = privilegeRepository.getByName(name);
+        if (privilege == null) {
+            privilege = new Privilege(name);
+            privilegeRepository.save(privilege);
+        }
+        return privilege;
+    }
+
+    @Transactional
+    Role createRoleIfNotFound(String name) {
+
+        Role role = roleRepository.getByName(name);
+        if (role == null) {
+            role = new Role(name);
+            role.setPrivileges(Arrays.asList(createPrivilegeIfNotFound("READ_PRIVILEGE")));
+            roleRepository.save(role);
+        }
+        return role;
+    }
 }

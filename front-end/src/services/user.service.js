@@ -66,6 +66,17 @@ class UserService {
     });
     return array;
   }
+  async deleteRole(roleName){
+    return await axios.delete(API_URL+'/deleteRole?roleName='+roleName,{headers:authHeader()})
+  }
+  async deleteUser(email){
+    return await axios.delete(API_URL+"/deleteUserByEmail?email="+email,{headers:authHeader()})
+  }
+  async createRolebyName(name){
+    return await axios.post(API_URL+"/createRoleByName?roleName="+name,{headers:{...authHeader(),
+      ...{"Access-Control-Allow-Origin": "*",
+    "Content-Type": "application/json"}}})
+  }
 }
 
 export default new UserService();

@@ -24,6 +24,14 @@ public interface RoleRepository extends CrudRepository<Role, Long> {
     @Query(value="insert into roles_privileges values (?1,(select id from privilege where name = ?2))",nativeQuery = true)
     void insertQuery1(long id, String roleName );
 
+    @Modifying
+    @Query(value = "update users_roles set role_id = (select id from role where name = 'ROLE_USER' ) where role_id = (select id from role where name = ?1) ", nativeQuery = true)
+    void updateQueryChangeUserRoles(String roleName);
+
+
+
     @Override
     <S extends Role> S save(S role);
+
+
 }
