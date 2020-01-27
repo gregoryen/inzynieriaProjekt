@@ -3,20 +3,28 @@ package com.engineering.shop.cart.bucket;
 
 import com.engineering.shop.cart.Exceptions.BucketException;
 
-import com.engineering.shop.cart.bucketlist.BucketPosition;
-import com.engineering.shop.cart.bucketlist.BucketPositionPOJO;
-import com.engineering.shop.cart.bucketlist.BucketPositionPOJOtoBucketPosition;
-import com.engineering.shop.cart.bucketlist.BucketPositionRepo;
+import com.engineering.shop.cart.bucketlist.*;
 
 import com.engineering.shop.cart.order.OrderRepo;
 
+import com.engineering.shop.common.Exceptions.ResourceNotFoundException;
 import com.engineering.shop.products.Product;
 import com.engineering.shop.products.ProductsRepo;
 
+
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -28,25 +36,28 @@ public class BucketController {
     OrderRepo orderRepo;
     ProductsRepo productsRepo;
     BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition;
+//    BucketValidator bucketValidator;
 
-    @Autowired
-    public BucketController(BucketRepo bucketRepo, BucketPositionRepo bucketPositionRepo,
-                          OrderRepo orderRepo, ProductsRepo productsRepo,
-                          BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition) {
+    public BucketController(BucketRepo bucketRepo,
+                            BucketPositionRepo bucketPositionRepo,
+                            OrderRepo orderRepo, ProductsRepo productsRepo,
+                            BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition ){
+                           // BucketValidator bucketValidator) { @Validated
         this.bucketRepo = bucketRepo;
         this.bucketPositionRepo = bucketPositionRepo;
         this.orderRepo = orderRepo;
         this.productsRepo = productsRepo;
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
+     //   this.bucketValidator = bucketValidator;
     }
 
-//     Wysylam Jsona
+// Wysylam Jsona
 //    {
-//        "productId" : 1,
-//        "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
-//        "productPrice": null,
-//        "productQuantity": 1,
-//        "bucket": 1
+//            "product" : 1,
+//            "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
+//            "productPrice": null,
+//            "productQuantity": 1,
+//            "bucket": "user1"
 //    }
 
     @PostMapping("/addProduct")
@@ -70,6 +81,7 @@ public class BucketController {
 
         Boolean isInBucket = bucketPositionRepo.existsByProductIdAndBucket(productId, bucket);
 
+
         if(isInBucket) {
            position = getBucketPositionByProductId(productId, bucket);
            total = position.getProductPrice().multiply(new BigDecimal(position.getProductQuantity()));
@@ -78,7 +90,16 @@ public class BucketController {
            bucketPositionRepo.save(position);
         } else {
            position = bucketPositionPOJOtoBucketPosition.transform(bucketPositionPOJO);
+
         }
+
+        Boolean isActive = isActive = position.getProduct().isActive();
+
+        if(!isActive){
+            // rzucic wyjatkiem
+            return "Cannot add product to bucket, Product is not avaiable in the warehouse";
+        }
+
         total = position.getProductPrice().multiply(new BigDecimal(position.getProductQuantity()));
         bucket.addToTotalValue(total);
         bucket.addToPositions(position);
@@ -89,6 +110,23 @@ public class BucketController {
 
        //  można by było jednak tu generowac id koszyka i zwracac
         return "save";
+    }
+
+    @PostMapping("/createBucket")
+    public @ResponseBody String createBucketWithId (@RequestBody  BucketPOJO bucketPOJO) {
+
+        String token = bucketPOJO.getBucket();
+        Boolean isInBase = bucketRepo.existsByToken(token);
+        Bucket bucket;
+
+        if (isInBase) {
+            return "Bucket already exists";
+        } else {
+            bucket = new Bucket(token);
+            bucketRepo.save(bucket);
+        }
+
+        return "Bucket created at id: " + token;
     }
 
     @GetMapping("/all")
@@ -107,7 +145,7 @@ public class BucketController {
         return getBucketByToken(token);
     }
 
-    // usuwanie calego koszyka
+
     @DeleteMapping("/delete/{id}")
     public void deleteBucket (@PathVariable("id") String token){
         Bucket bucket = getBucketByToken(token);
@@ -170,4 +208,22 @@ public class BucketController {
                 .orElseThrow(()-> new BucketException("Bucket position not found with provided  id"));
         return optPosition.get();
     }
+
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public Map<String, String> handleValidationExceptions(
+//            MethodArgumentNotValidException ex) {
+//        Map<String, String> errors = new HashMap<>();
+//        ex.getBindingResult().getAllErrors().forEach((error) -> {
+//            String fieldName = ((FieldError) error).getField();
+//            String errorMessage = error.getCode();
+//            errors.put(fieldName, errorMessage);
+//        });
+//        return errors;
+//    }
+//
+//    @InitBinder
+//    private void initBinder(WebDataBinder binder) {
+//        binder.setValidator(bucketValidator);
+//    }
 }

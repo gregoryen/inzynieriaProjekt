@@ -76,21 +76,21 @@
             </b-list-group>
             </b-form-group>
 
-            <b-button type="submit" variant="primary">Submit</b-button>
-            <b-button type="reset" variant="danger">Reset</b-button>
+            <b-button type="submit" variant="primary">Dodaj</b-button>
+            <b-button type="reset" variant="danger">Zresetuj</b-button>
         </b-form>
 
 
         <b-modal ref="successCreate" hide-footer title="Utworzono nową kategorię">
             <div class="d-block text-center">
-                <h3>Nowa kategoria zostala dodany do sklepu</h3>
+                <h3>Nowa kategoria zostala dodana do sklepu</h3>
             </div>
             <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
         </b-modal>
 
         <b-modal ref="failCreate" hide-footer title="NIE stworzono nowej kategorii">
             <div class="d-block text-center">
-                <h3>Utworzenie nowegej kategorii nie udało się</h3>
+                <h3>Utworzenie nowej kategorii nie udało się</h3>
             </div>
             <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
         </b-modal>
@@ -102,9 +102,9 @@
             <b-button class="mt-3" variant="danger" block @click="hideSelectCategoryModal">OK</b-button>
         </b-modal>
 
-        <b-card class="mt-3" header="Form Data Result">
+<!--        <b-card class="mt-3" header="Form Data Result">
             <pre class="m-0">{{ form }}</pre>
-        </b-card>
+        </b-card>-->
     </div>
 </template>
 
@@ -114,6 +114,7 @@
     import Treeselect from '@riophae/vue-treeselect'
     // import the styles
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+    import globalConfig from '../config'
 
     const CATEGORIES_CHILDREN = '/categories/children';
     const CATEGORIES_TREE = '/categories/tree';
@@ -123,9 +124,6 @@
     export default {
         // register the component
         components: {Treeselect},
-        props: {
-            baseurl: String
-        },
         data() {
             return {
                 form: {
@@ -178,7 +176,7 @@
                             'content-type': 'application/json'
                         },
                     };
-                    axios.post(this.baseurl + ADD_CATEGORIES, this.form, config)
+                    axios.post(globalConfig.root + ADD_CATEGORIES, this.form, config)
                         .then(() => {
                             this.showSuccessModal()
                         }).catch(() => {
@@ -234,7 +232,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.get(this.baseurl + CATEGORIES_CHILDREN, config)
+                axios.get(globalConfig.root + CATEGORIES_CHILDREN, config)
                     .then(res => {
                             if (res.status === 200) {
                                 for (let i = 0; i < res.data.length; i++) {
@@ -261,7 +259,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.get(this.baseurl + CATEGORIES_MAIN, config)
+                axios.get(globalConfig.root + CATEGORIES_MAIN, config)
                     .then(res => {
                             if (res.status === 200) {
                                 for (let i = 0; i < res.data.length; i++) {
@@ -313,7 +311,7 @@
                     }
                 };
 
-                axios.get(this.baseurl + CATEGORIES_TREE, config)
+                axios.get(globalConfig.root + CATEGORIES_TREE, config)
                     .then(res => {
                             if (res.status === 200) {
                                 this.supported.treeCategories = this.createBranch(res.data);

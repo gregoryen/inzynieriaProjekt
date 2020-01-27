@@ -32,12 +32,12 @@
     const PRODUCTS = '/products/';
     import axios from 'axios';
     import { bus } from '../main'
+    import globalConfig from '../config'
 
     export default {
         name: "DeleteProductHeader",
         props: {
             productHeader: Object,
-            baseurl: String
         },
         methods: {
             showSuccessModal() {
@@ -62,7 +62,7 @@
                         'content-type': 'application/json'
                     }
                 };
-                axios.delete(this.baseurl + PRODUCTS + this.productHeader.id, config)
+                axios.delete(globalConfig.root + PRODUCTS + this.productHeader.id, config)
                     .then(() => {
                             this.showSuccessModal()
                         }
