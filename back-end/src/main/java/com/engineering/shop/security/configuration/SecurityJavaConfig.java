@@ -116,6 +116,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/createRoleByName").permitAll()
                 .antMatchers("/deleteRole").permitAll()
                 .antMatchers("/deleteUserByEmail").permitAll()
+                .antMatchers("/advImages","/advImages/**").permitAll()
+                .antMatchers("/advertisement","/advertisement/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
