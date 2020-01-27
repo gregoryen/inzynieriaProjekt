@@ -1,6 +1,6 @@
 package com.engineering.shop.products;
 
-import com.engineering.shop.fileUpload.controller.FileController;
+import com.engineering.shop.fileUpload.FileController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.hateoas.EntityModel;

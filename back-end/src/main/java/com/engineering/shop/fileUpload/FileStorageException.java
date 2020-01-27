@@ -1,4 +1,4 @@
-package com.engineering.shop.fileUpload.exception;
+package com.engineering.shop.fileUpload;
 
 public class FileStorageException extends RuntimeException {
     public FileStorageException(String message) {

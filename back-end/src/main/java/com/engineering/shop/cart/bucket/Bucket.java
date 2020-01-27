@@ -1,16 +1,12 @@
 package com.engineering.shop.cart.bucket;
 
-import com.engineering.shop.cart.Exceptions.BucketException;
+
 import com.engineering.shop.cart.bucketlist.BucketPosition;
 import lombok.*;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -26,8 +22,7 @@ public class Bucket {
     private Integer bucketId;
     private String token;
     private BigDecimal totalValue;
- //   @OneToMany(mappedBy = "bucket")
-    @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy ="bucket", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval=true)
     private List<BucketPosition> positions;
 
 
@@ -44,7 +39,6 @@ public class Bucket {
     public int getUniqueItemsNumber () {
         if (this.positions != null)
             return this.positions.size();
-
         return 0;
     }
 
@@ -72,12 +66,17 @@ public class Bucket {
     }
 
     public boolean removeFromPositions(BucketPosition pos){
-        for (BucketPosition it : positions){
-            if (it == pos) {
-                positions.remove(it);
+
+        int deletedId = pos.getProduct().getId();
+        int counter = 0;
+        for (BucketPosition it : positions) {
+            if(it.getProduct().getId() == deletedId) {
+                positions.remove(counter);
                 return true;
             }
+            counter ++;
         }
+
         return false;
     }
 }

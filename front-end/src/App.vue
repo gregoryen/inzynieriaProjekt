@@ -85,7 +85,6 @@ export default {
       return false;
     },
     createBucket() {    //przydaloby sie przeniesc to w inne miejsce ale narazie dziala wiec nie ruszam
-    //wywoluje sie caly czas a powinna tylko raz po zalogowaniu
       let user = JSON.parse(localStorage.getItem('user'))
       axios.post(config.root + "/bucket/createBucket", {
         id: user.jwtToken.substr(0, user.jwtToken.length/4)

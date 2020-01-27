@@ -102,6 +102,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/product", "/product/**").permitAll()
                 .antMatchers("/bucketProduct", "/bucketProduct/**").permitAll()
                 .antMatchers("/cart", "/cart/**").permitAll()
+                .antMatchers("/payment","/payment/**").permitAll()
                 .antMatchers("/images/**", "/products/**").permitAll()
                 .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**").permitAll()
                 .antMatchers("/suppliers/**", "/stock_amounts/**", "/supplies/**").permitAll()

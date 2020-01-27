@@ -1,4 +1,4 @@
-package com.engineering.shop.fileUpload.property;
+package com.engineering.shop.fileUpload;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

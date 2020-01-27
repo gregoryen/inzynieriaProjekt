@@ -34,10 +34,10 @@ public class OrderController {
     }
 
     @PostMapping("/addOrder")
-    public @ResponseBody String addOrder(@RequestBody @Validated OrderPOJO orderPOJO){
+    public @ResponseBody Integer addOrder(@RequestBody @Validated OrderPOJO orderPOJO){
         Order order = orderPOJOtoOrder.transform(orderPOJO);
         orderRepo.save(order);
-        return "Order Saved";
+        return order.getOrderId();
     }
 
     @GetMapping("/all")

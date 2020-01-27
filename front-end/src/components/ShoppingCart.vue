@@ -12,8 +12,10 @@
             <div class="cartList">
               <ul class="cartItems" v-for="item in cartItems" v-bind:key="item.itemName">
                 <b-row>
-                  <p> {{item.product.id}} </p>  <!-- Do wyrzucenia chyba ze chcemy id produktu wyswietlac -->
-                  <b-col sm="4">
+                  <b-col sm="1">
+                    <p style="padding-top:1.6em;"> {{item.product.id}} </p>  <!-- Do wyrzucenia chyba ze chcemy id produktu wyswietlac -->
+                  </b-col>
+                  <b-col sm="3">
                     <img :src="'http://localhost:8100/images/downloadAdditionalImage?idImage=' 
                     + item.product.mainImage" height="85em" width="85em" />
                             <!-- DO TEGO LINKA WYZEJ TRZEBA ZMIENIC ADRES LOCAL HOSTA NA ZMIENNA -->
@@ -57,9 +59,9 @@
           </b-col>
           <b-col cols="4">
             <div class="cartSummary">
-              <p v-if="cartItems.length > 1">{{cartItems.length}} produktów</p>
-              <p v-else>{{cartItems.length}} produkt</p>
-              <p>Koszt: {{this.bucket.totalValue}} zł</p>
+              <p style="text-align: center;" v-if="cartItems.length > 1">{{cartItems.length}} produktów</p>
+              <p style="text-align: center;" v-else>{{cartItems.length}} produkt</p>
+              <p style="text-align: center;">Koszt: {{this.bucket.totalValue}} zł</p>
               <router-link to="/orderSummary" tag="b-button">Przejdź do kasy</router-link>
             </div>
           </b-col>
@@ -100,18 +102,15 @@ export default {
     deleteCartItem: function(id) {
       // eslint-disable-next-line no-console
         console.log(id)
-        // eslint-disable-next-line no-console
-        console.log(id)
         let token = JSON.parse(localStorage.getItem('user')).jwtToken
         let bucketId = token.substring(0, token.length/4)
         let url = apiConfig.root + "/bucket/deletePosition/" + bucketId + "/" + id;
-        // eslint-disable-next-line no-console
-        console.log(id)
         axios.delete(url)
         .then( (res) => {
           // eslint-disable-next-line no-console
           console.log(res)
           this.bucket = res.data
+          this.cartItems = this.bucket.positions;
         })
     },
     updateProductQuantity: function(id) {
