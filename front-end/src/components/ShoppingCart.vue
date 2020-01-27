@@ -33,7 +33,7 @@
                       v-if="item.product.active === true"
                       type="number"
                       min="1"
-                      max="10"
+                      v-bind:max="getMaxValue(item.product.id)"
                       step="1"
                       v-bind:value="item.productQuantity"
                       size="2"
@@ -96,6 +96,7 @@ export default {
       cartItems: [],
       kosztWysylki: 32,
       totalValue: 0,
+      stock_amounts: []
     };
   },
   methods: {
@@ -134,6 +135,16 @@ export default {
           this.bucket = res.data
           this.cartItems = res.data.positions
       })
+    },
+    getMaxValue: function(id) {
+      for (let item of this.stock_amounts)
+      {
+        if (item.productId == id)
+        {
+          return item.amount
+        }
+      }
+      return 10;
     }
   },
   created() {
@@ -153,6 +164,13 @@ export default {
         console.log(response.data.positions) 
     }).then( () => {
       this.loading = true;
+    });
+
+    axios.get(apiConfig.root + "/stock_amounts/last_updated_with_names")
+    .then(response => {
+        // eslint-disable-next-line no-console
+        console.log(response)
+        this.stock_amounts = response.data
     });
   }
 };
