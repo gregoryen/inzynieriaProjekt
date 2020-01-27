@@ -10,6 +10,7 @@ public class UserTokenInformation {
     private String name;
     private String privileges;
     private String lastName;
+    private String role;
 
 }
 

@@ -9,7 +9,7 @@
                 <h6 class="card-price">{{productHeader.price}} PLN</h6>
             </div>
 
-            <router-link :to="{name: 'product', params: {link: productHeader._links.self.href}}">
+            <router-link :to="{name: 'product', params: {link: productHeader._links.self.href, id: productHeader.id}}">
                 <b-button variant="success">Zobacz szczegóły</b-button>
             </router-link>
         </div>

@@ -19,12 +19,14 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import StarRating from 'vue-star-rating'
 import {
-    faHome,
-    faUser,
-    faUserPlus,
-    faSignInAlt,
-    faSignOutAlt
+  faHome,
+  faUser,
+  faUserPlus,
+  faSignInAlt,
+  faSignOutAlt,
+  faShoppingCart
 } from '@fortawesome/free-solid-svg-icons';
+library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt, faShoppingCart);
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
@@ -33,8 +35,6 @@ import VueCurrencyInput from 'vue-currency-input'
 import ShoppingCart from './components/ShoppingCart'
 import OrderSummary from './components/OrderSummary'
 import AddProduct from "./components/AddProduct";
-import Home from './components/Home'
-import AdminPanel from './components/AdminPanel'
 import WarehouseSupplyForm from './components/WarehouseSupplyForm';
 import StockAmounts from './components/StockAmounts';
 
@@ -46,6 +46,9 @@ import DeleteCategory from "./components/DeleteCategory";
 import DeleteProduct from './components/DeleteProduct'
 import { extend } from 'vee-validate';
 import ProductsOverview from "./components/ProductsOverview";
+import AdminPanel from "./components/AdminPanel"
+import Home from "./components/Home"
+import Payment from "./components/Payment"
 
 
 extend('required', {
@@ -66,12 +69,20 @@ extend('max', {
     message: 'Field too long'
 });
 
-Vue.config.productionTip = false
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
-Vue.use(BootstrapVue)
-Vue.use(VueRouter)
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+const pluginOptions = {
+  globalOptions: { currency: 'PLN' }
+}
+
+Vue.use(VueRouter);
+Vue.use(BootstrapVue);
+Vue.use(VueCurrencyInput, pluginOptions)
+
+Vue.config.productionTip = false;
+
 Vue.component('star-rating', StarRating);
 
 const ifNotAuthenticated = (to, from, next) => {
@@ -120,15 +131,6 @@ next('/')
   else
   next('/')
 }
-const pluginOptions = {
-    globalOptions: {currency: 'PLN'}
-}
-
-Vue.use(VueRouter);
-Vue.use(BootstrapVue);
-Vue.use(VueCurrencyInput, pluginOptions)
-
-Vue.config.productionTip = false;
 
 export const bus = new Vue();
 
@@ -161,7 +163,13 @@ const router = new VueRouter({
     },
     {
       path: '/orderSummary',
+      name: 'orderSummary',
       component: OrderSummary
+    },
+    {
+      path: '/payment/:order_id',
+      name: 'payment',
+      component: Payment
     },
     {
       path: '/addProduct',

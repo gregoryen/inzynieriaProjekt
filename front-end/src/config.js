@@ -1,4 +1,3 @@
 export default {
-    root: "http://localhost:8100",
-    token: "eyJhbGciOiJSUzUxMiJ9.eyJyb2xlIjoiUkVBRF9QUklWSUxFR0UiLCJuYW1lIjoic2Rhc2RhZCBzZGFzZGFzZCIsInN1YiI6ImNzYWRhc2RAc2Rhc2RhZC5jb20iLCJpYXQiOjE1Nzg4NDMwOTEsImV4cCI6MTU4MTQzNTA5MX0.Qq1C7Xo-WLUpIVC1yf9SLe6_grf5bIkdK9YiyCJcg5y8uidIXChbZrB0bM6hgQNWblcRCLIhkYAxzeSL-5BymndueOS5HKvmtcyLwsWdl-NwwBjjKOC-NSVgTWi4T-4OUz2LnMkJVE5dneVj2F51Eic2NpK7bu0scrVYbtNoNJd8vTax8M-VJEC8tWg4yjc0amRPXAjwfIGR4db2paUrMXiaTxWunKQVqtgGB7MCYICCKyD_aEfNnxhP3KW9tQBFnRsiEBwV3xDyc9brKEYpZmx5tMju3N5fPBohfSjU7cm9l82byZqc08_RG9ouWT25rGf9ycUoCbq2SskqrpF-Jw"
+    root: "http://localhost:8100"
 };

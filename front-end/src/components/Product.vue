@@ -10,8 +10,8 @@
                                 :interval="4000"
                                 controls
                                 indicators
-                                img-width="800"
-                                img-height="480"
+                                img-width="400"
+                                img-height="280"
                                 style="text-shadow: 1px 1px 2px #333;"
                         >
                             <div v-if="Array.isArray(product._links.additionalImages)">
@@ -19,9 +19,9 @@
                                                   v-bind:key="index">
                                     <template v-slot:img>
                                         <img
-                                                class="d-block img-fluid w-100"
-                                                width="800"
-                                                height="480"
+                                                class="d-block"
+                                                width="400"
+                                                height="280"
                                                 :src="image.href"
                                                 alt="Zdjęcie produktu"
                                         >
@@ -32,9 +32,9 @@
                                 <b-carousel-slide>
                                     <template v-slot:img>
                                         <img
-                                                class="d-block img-fluid w-100"
-                                                width="800"
-                                                height="480"
+                                                class="d-block"
+                                                width="400"
+                                                height="280"
                                                 :src="product._links.additionalImages.href"
                                                 alt="Zdjęcie produktu"
                                         >
@@ -48,7 +48,7 @@
                     <div class="item2">
                         <div id="price">Cena: {{product.price}} PLN</div>
                         <p id="description">Opis: {{product.description}}</p>
-                        <AddToBucketButton v-bind:productId="this.productId"/>
+                        <AddToBucketButton v-bind:productId="this.product.id"/>
                     </div>
                           <div id="categories" class="item3">
                             <ul>
@@ -67,7 +67,7 @@
             </div>
         </div>
             <OpinionsInProductPage v-bind:productId="product.id"/>
-    </div>
+        </div>
 </template>
 
 <script>
@@ -90,8 +90,7 @@
             return {
                 loading: false,
                 product: null,
-                tree: null,
-                productId: null
+                tree: null
             };
         },
         async mounted() {
@@ -111,9 +110,6 @@
         methods: {
             emitProducts(id) {
                 this.$store.dispatch('productsHeader', globalConfig.root + UPLOAD_ACTIVE_HEADER_PRODUCTS_BY_CATEGORY_ID + id);
-            },
-            getProductId() {
-                return this.productId
             }
         }
     };

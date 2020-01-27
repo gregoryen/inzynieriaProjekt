@@ -5,8 +5,8 @@ import com.engineering.shop.cart.Exceptions.BucketException;
 
 import com.engineering.shop.cart.bucketlist.*;
 
-import com.engineering.shop.cart.order.OrderRepo;
 
+import com.engineering.shop.cart.order.OrderRepo;
 import com.engineering.shop.common.Exceptions.ResourceNotFoundException;
 import com.engineering.shop.products.Product;
 import com.engineering.shop.products.ProductsRepo;
@@ -33,32 +33,39 @@ public class BucketController {
 
     BucketRepo bucketRepo;
     BucketPositionRepo bucketPositionRepo;
-    OrderRepo orderRepo;
     ProductsRepo productsRepo;
     BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition;
-//    BucketValidator bucketValidator;
+
 
     public BucketController(BucketRepo bucketRepo,
                             BucketPositionRepo bucketPositionRepo,
-                            OrderRepo orderRepo, ProductsRepo productsRepo,
+                            ProductsRepo productsRepo,
                             BucketPositionPOJOtoBucketPosition bucketPositionPOJOtoBucketPosition ){
-                           // BucketValidator bucketValidator) { @Validated
+
         this.bucketRepo = bucketRepo;
         this.bucketPositionRepo = bucketPositionRepo;
-        this.orderRepo = orderRepo;
         this.productsRepo = productsRepo;
         this.bucketPositionPOJOtoBucketPosition = bucketPositionPOJOtoBucketPosition;
-     //   this.bucketValidator = bucketValidator;
+
     }
 
-// Wysylam Jsona
-//    {
-//            "product" : 1,
-//            "productName": null, <- moze byc null bo i tak biore nazw i cene z produktu z bazy
-//            "productPrice": null,
-//            "productQuantity": 1,
-//            "bucket": "user1"
-//    }
+    @PostMapping("/createBucket")
+    public @ResponseBody String createBucketWithId (@RequestBody BucketPOJO bucketPOJO) {
+
+        String token = bucketPOJO.getId();
+        Boolean isInBase = bucketRepo.existsByToken(token);
+
+        Bucket bucket;
+
+        if (isInBase) {
+            return "Bucket already exists";
+        } else {
+            bucket = new Bucket(token);
+            bucketRepo.save(bucket);
+        }
+
+        return "Bucket created at id: " + token;
+    }
 
     @PostMapping("/addProduct")
     public @ResponseBody String addProductById (@RequestBody BucketPositionPOJO bucketPositionPOJO) {
@@ -112,23 +119,6 @@ public class BucketController {
         return "save";
     }
 
-    @PostMapping("/createBucket")
-    public @ResponseBody String createBucketWithId (@RequestBody  BucketPOJO bucketPOJO) {
-
-        String token = bucketPOJO.getBucket();
-        Boolean isInBase = bucketRepo.existsByToken(token);
-        Bucket bucket;
-
-        if (isInBase) {
-            return "Bucket already exists";
-        } else {
-            bucket = new Bucket(token);
-            bucketRepo.save(bucket);
-        }
-
-        return "Bucket created at id: " + token;
-    }
-
     @GetMapping("/all")
     public Iterable<Bucket> findAll () {
         return bucketRepo.findAll();
@@ -136,7 +126,12 @@ public class BucketController {
 
     @GetMapping("/itemNumber/{token}")
     public int getItemNumber(@PathVariable("token") String token) {
-        return getBucketByToken(token).getUniqueItemsNumber();
+        try {
+            return getBucketByToken(token).getUniqueItemsNumber();
+        }
+        catch (Exception ex) {
+            return 0;
+        }
     }
 
 
@@ -153,7 +148,7 @@ public class BucketController {
     }
 
     @PutMapping("/update/{bucketId}/{productId}/{quantity}")
-    public @ResponseBody String updatePosition(@PathVariable("productId") Integer productId
+    public @ResponseBody Bucket updatePosition(@PathVariable("productId") Integer productId
                                                 , @PathVariable("bucketId") String token
                                                 , @PathVariable("quantity") Integer quantity){
 
@@ -173,27 +168,28 @@ public class BucketController {
         bucket.setTotalValue(total);
 
         bucketRepo.save(bucket);
-        return "Updated";
+        return bucket;
     }
 
-    // usuwanie pozycji
+//    // usuwanie pozycji
     @DeleteMapping("/deletePosition/{bucketId}/{productId}")
-    public @ResponseBody String deletePosition(@PathVariable("productId") Integer productId
+    public @ResponseBody Bucket deletePosition(@PathVariable("productId") Integer productId
                                 , @PathVariable("bucketId") String token){
-        Bucket bucket = getBucketByToken(token);
-        BucketPosition position = getBucketPositionByProductId(productId,bucket);
-
-        BigDecimal value = position.getProductPrice();
-        value = value.multiply(new BigDecimal(position.getProductQuantity()));
-        bucket.substructFromTotalValue(value);
-        bucket.removeFromPositions(position);
-        bucketRepo.save(bucket);
-        bucketPositionRepo.delete(position);
-
-        return "Position deleted";
-    }
 
 
+      Bucket bucket = getBucketByToken(token);
+    BucketPosition position = getBucketPositionByProductId(productId,bucket);
+
+    System.out.println(position.getId());
+
+    BigDecimal value = position.getProductPrice();
+    value = value.multiply(new BigDecimal(position.getProductQuantity()));
+    bucket.substructFromTotalValue(value);
+    bucket.removeFromPositions(position);
+    bucketRepo.save(bucket);
+
+    return bucket;
+}
 
     public Bucket getBucketByToken(String token) {
         Optional<Bucket> optBucket = Optional.ofNullable(bucketRepo.findByToken(token)).orElseThrow(()-> new BucketException("Bucket not found with provided  token"));
@@ -209,21 +205,4 @@ public class BucketController {
         return optPosition.get();
     }
 
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    @ExceptionHandler(MethodArgumentNotValidException.class)
-//    public Map<String, String> handleValidationExceptions(
-//            MethodArgumentNotValidException ex) {
-//        Map<String, String> errors = new HashMap<>();
-//        ex.getBindingResult().getAllErrors().forEach((error) -> {
-//            String fieldName = ((FieldError) error).getField();
-//            String errorMessage = error.getCode();
-//            errors.put(fieldName, errorMessage);
-//        });
-//        return errors;
-//    }
-//
-//    @InitBinder
-//    private void initBinder(WebDataBinder binder) {
-//        binder.setValidator(bucketValidator);
-//    }
 }

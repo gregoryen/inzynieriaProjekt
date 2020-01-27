@@ -1,7 +1,5 @@
-package com.engineering.shop.fileUpload.controller;
+package com.engineering.shop.fileUpload;
 
-import com.engineering.shop.fileUpload.exception.MyFileNotFoundException;
-import com.engineering.shop.fileUpload.service.FileStorageService;
 import com.engineering.shop.imageProducts.ImageProduct;
 import com.engineering.shop.imageProducts.ImageProductRepo;
 import com.engineering.shop.products.Product;
@@ -10,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

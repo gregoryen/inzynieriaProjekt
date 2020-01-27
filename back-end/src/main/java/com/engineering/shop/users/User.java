@@ -61,6 +61,13 @@ public class User implements Serializable {
     }
     public User() {
     }
+    public class UserOutput{
+        String firstName;
+        String lastName;
+        String email;
+        String role;
+
+    }
 }
 
 

@@ -102,6 +102,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/product", "/product/**").permitAll()
                 .antMatchers("/bucketProduct", "/bucketProduct/**").permitAll()
                 .antMatchers("/cart", "/cart/**").permitAll()
+                .antMatchers("/payment","/payment/**").permitAll()
                 .antMatchers("/images/**", "/products/**").permitAll()
                 .antMatchers("/uploadFile/**", "/uploadMultipleFiles/**","/products/**","/downloadFile/**").permitAll()
                 .antMatchers("/suppliers/**", "/stock_amounts/**", "/supplies/**").permitAll()
@@ -109,8 +110,10 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/products/**", "/categories/**").permitAll()
                 .antMatchers("/opinions", "/opinions/**").permitAll()
                 .antMatchers("/adminPanel").hasAuthority("ADMIN_PRIVILEGE")
+                .antMatchers("/changeUserRole").permitAll()
+                .antMatchers("/changeRolePrivileges").permitAll()
+                .antMatchers("/getUserPrivileges").permitAll()
                 .anyRequest().authenticated()
-
                 .and()
                 .formLogin().successHandler(successHandler).failureHandler(failureHandler()).and()
                 .logout();

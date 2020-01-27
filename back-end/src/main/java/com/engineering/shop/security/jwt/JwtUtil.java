@@ -27,9 +27,10 @@ public class JwtUtil implements Serializable {
     private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.RS512;
     private static final long JWT_TOKEN_VALIDITY = 30 * 24 * 60 * 60;
     private static final String DEVICE_KEY = "device";
-    private static final String ROLE_KEY = "role";
+    private static final String PRIVILEGE_KEY = "privileges";
     private static final String NAME_KEY = "name";
     private static final String LAST_NAME_KEY = "lastName";
+    private static final String ROLE_KEY ="role";
     private static final String ENCRYPTION = "RSA";
 
     private PrivateKey privateKey;
@@ -67,7 +68,7 @@ public class JwtUtil implements Serializable {
     }
 
     String getUserPrivilegesFromToken(String token) {
-        return getStringClaimFromToken(token, ROLE_KEY);
+        return getStringClaimFromToken(token, PRIVILEGE_KEY);
     }
 
     boolean isTokenValid(String token, UserDetails userDetails) {
@@ -95,8 +96,9 @@ public class JwtUtil implements Serializable {
     public String generateToken(UserTokenInformation userTokenInformation) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(NAME_KEY, userTokenInformation.getName());
-        claims.put(ROLE_KEY, userTokenInformation.getPrivileges());
+        claims.put(PRIVILEGE_KEY, userTokenInformation.getPrivileges());
         claims.put(LAST_NAME_KEY,userTokenInformation.getLastName());
+        claims.put(ROLE_KEY,userTokenInformation.getRole());
         Date now = new Date();
 
         return Jwts.builder().setClaims(claims)

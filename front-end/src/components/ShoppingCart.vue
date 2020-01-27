@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <div v-if="loading">
     <div class="shoppingCart">
       <div class="bucket">
         <h1 style="text-align: left; background-color: #c1cde0">Koszyk</h1>
@@ -11,7 +12,10 @@
             <div class="cartList">
               <ul class="cartItems" v-for="item in cartItems" v-bind:key="item.itemName">
                 <b-row>
-                  <b-col sm="4">
+                  <b-col sm="1">
+                    <p style="padding-top:1.6em;"> {{item.product.id}} </p>  <!-- Do wyrzucenia chyba ze chcemy id produktu wyswietlac -->
+                  </b-col>
+                  <b-col sm="3">
                     <img :src="'http://localhost:8100/images/downloadAdditionalImage?idImage=' 
                     + item.product.mainImage" height="85em" width="85em" />
                             <!-- DO TEGO LINKA WYZEJ TRZEBA ZMIENIC ADRES LOCAL HOSTA NA ZMIENNA -->
@@ -22,18 +26,19 @@
                     <li v-else>Niedostępny</li>
                     <li>{{item.product.price}} zł</li>
                   </b-col>
-                  <b-col sm="2"> <!-- NIZEJ MIN ZAMIENIC NA BUCKETPOSITION.QUANTITY -->
+                  <b-col sm="2">
                     <input
                       class="itemNumberSpinner"
+                      v-bind:id="item.product.id"
                       v-if="item.product.active === true"
                       type="number"
-                      min="1"       
+                      min="1"
                       max="10"
                       step="1"
-                      value="1"
+                      v-bind:value="item.productQuantity"
                       size="2"
-                    />              <!-- PRZY AKTUALIZACJI SPINNERA AKTUALIZUJ QUANTITY NA BACKENDZIE -->
-                                    <!--  /update/{bucketId}/{productId}/{quantity} -->
+                      v-on:change="updateProductQuantity(item.product.id)"
+                    />
                     <input
                       class="itemNumberSpinner"
                       v-else
@@ -54,9 +59,9 @@
           </b-col>
           <b-col cols="4">
             <div class="cartSummary">
-              <p v-if="cartItems.length > 1">{{cartItems.length}} produktów</p>
-              <p v-else>{{cartItems.length}} produkt</p>
-              <p>Koszt: {{this.totalValue}} zł</p>
+              <p style="text-align: center;" v-if="cartItems.length > 1">{{cartItems.length}} produktów</p>
+              <p style="text-align: center;" v-else>{{cartItems.length}} produkt</p>
+              <p style="text-align: center;">Koszt: {{this.bucket.totalValue}} zł</p>
               <router-link to="/orderSummary" tag="b-button">Przejdź do kasy</router-link>
             </div>
           </b-col>
@@ -64,9 +69,13 @@
       </div>
 
       <div style="float: left;">
-        <b-button @click="$router.go(-1)">Kontynuuj zakupy</b-button>
-        <!-- Wraca do poprzedniej strony -->
+        <!-- @click="$router.go("-1") alternatywnie cofnij do poprzedniej strony -->
+        <b-button @click="$router.push('/overview')">Kontynuuj zakupy</b-button>
       </div>
+    </div>
+    </div>
+    <div v-else>
+      <p>Ładowanie strony</p>
     </div>
   </div>
 </template>
@@ -77,47 +86,73 @@ import apiConfig from "../config.js"
 
 export default {
   name: "ShoppingCart",
-  // props: {
-  //   bucketId: String
-  // },
+  props: {
+    bucketId: String      //undefined nieuzywane atm
+  },
   data: function() {
     return {
+      loading: false,
+      bucket: Object,
       cartItems: [],
       kosztWysylki: 32,
-      totalValue: 0
+      totalValue: 0,
     };
   },
   methods: {
-    deleteCartItem: (id) => {
-        let url = apiConfig.root + "/bucket/deletePosition" + "/user1/" + id;  //ID KOSZYKA do zmiany
-        // eslint-disable-next-line no-console
+    deleteCartItem: function(id) {
+      // eslint-disable-next-line no-console
         console.log(id)
+        let token = JSON.parse(localStorage.getItem('user')).jwtToken
+        let bucketId = token.substring(0, token.length/4)
+        let url = apiConfig.root + "/bucket/deletePosition/" + bucketId + "/" + id;
         axios.delete(url)
         .then( (res) => {
           // eslint-disable-next-line no-console
           console.log(res)
+          this.bucket = res.data
+          this.cartItems = this.bucket.positions;
         })
+    },
+    updateProductQuantity: function(id) {
+      let value = document.getElementById(id).value
+
+      let token = JSON.parse(localStorage.getItem('user')).jwtToken
+      let bucketId = token.substring(0, token.length/4)
+      // eslint-disable-next-line no-console
+      console.log(bucketId)
+      // eslint-disable-next-line no-console
+      console.log(document.getElementById(id))
+      
+      // eslint-disable-next-line no-console
+      console.log(value)
+      // <!--  /update/{bucketId}/{productId}/{quantity} -->
+      let url = apiConfig.root + '/bucket/update/' + bucketId + '/' + id + '/' + value
+      axios.put(url)
+      .then( (res) => {
+          // eslint-disable-next-line no-console
+          console.log(res)
+          this.bucket = res.data
+          this.cartItems = res.data.positions
+      })
     }
   },
   created() {
-    let url = apiConfig.root + "/bucket/getBucketById/" + "user1";  //ID KOSZYKA do zmiany
-
-    // const config = {
-    //   headers: {
-    //     Authorization: "Bearer " + apiConfig.token,
-    //     "Content-type": "application/json"
-    //   }
-    // };
+    let token = JSON.parse(localStorage.getItem('user')).jwtToken
+    let bucketId = token.substring(0, token.length/4)
+    // eslint-disable-next-line no-console
+    console.log(bucketId)
+    let url = apiConfig.root + "/bucket/getBucketById/" + bucketId;
 
     axios.get(url).then(response => {
         // eslint-disable-next-line no-console
         console.log(response.data)
+        this.bucket = response.data
         this.totalValue = response.data.totalValue;
         this.cartItems = response.data.positions;
         // eslint-disable-next-line no-console
-        console.log(response.data.positions)
-
-        // this.$router.go(0);    //odswiez strone
+        console.log(response.data.positions) 
+    }).then( () => {
+      this.loading = true;
     });
   }
 };

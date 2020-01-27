@@ -10,7 +10,7 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="nameInput"
+                  v-model="nameInput"
                   class="form-control"
                 />
               </div>
@@ -21,40 +21,30 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="surnameInput"
+                  v-model="surnameInput"
                   class="form-control"
                 />
               </div>
             </div>
 
             <div class="form-group row">
-              <label class="col-sm-4 col-form-label" for="companyInput">Firma</label>
+              <label class="col-sm-4 col-form-label" for="telephoneNumber">Telefon</label>
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="companyInput"
+                  v-model="telephoneNumber"
                   class="form-control"
                 />
               </div>
             </div>
 
-            <div class="form-group row">
-              <label class="col-sm-4 col-form-label" for="nipInput">NIP</label>
-              <div class="col-sm-8">
-                <input
-                  type="text"
-                  id="nipInput"
-                  class="form-control"
-                />
-              </div>
-            </div>
 
             <div class="form-group row">
               <label class="col-sm-4 col-form-label" for="streetInput">Ulica</label>
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="streetInput"
+                  v-model="streetInput"
                   class="form-control"
                 />
               </div>
@@ -65,7 +55,7 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="homeNumberInput"
+                  v-model="homeNumberInput"
                   class="form-control"
                 />
               </div>
@@ -76,7 +66,7 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="postCodeInput"
+                  v-model="postCodeInput"
                   class="form-control"
                 />
               </div>
@@ -87,7 +77,7 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="cityInput"
+                  v-model="cityInput"
                   class="form-control"
                 />
               </div>
@@ -98,39 +88,113 @@
               <div class="col-sm-8">
                 <input
                   type="text"
-                  id="countryInput"
+                  v-model="countryInput"
                   class="form-control"
                 />
               </div>
             </div>
             
+
+            <b-button class="dark" v-on:click=executeOrder66() >Złóż zamówienie</b-button>
           </div>
         </b-col>
-        <b-col cols="4">
+        <!-- <b-col cols="4">
           <div class="cartSummary">
             <p>{{productCount}} produktow</p>
             <p>Wysyłka: 32 zł</p>
             <p>Razem: {{totalPrice}} zł</p>
           </div>
-        </b-col>
+        </b-col> -->
       </b-row>
     </div>
+
+    <b-modal ref="successCreate" hide-footer title="Złożono zamówienie">
+      <div class="d-block text-center">
+        <h3>Zamówienie zakończono sukcesem. Przechodze do płatności</h3>
+      </div>
+      <b-button class="mt-3" variant="success" block @click="hideSuccessModal">Zatwierdź</b-button>
+    </b-modal>
+
+    <b-modal ref="failCreate" hide-footer title="Nie złożono zamówienia">
+      <div class="d-block text-center">
+        <h3>Nie udało się złożyć zamówienia. Spróbuj jeszcze raz.</h3>
+      </div>
+      <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
+    </b-modal>
   </div>
 </template>
 
 
 
 <script>
+import config from "../config"
+import axios from "axios"
 export default {
   name: "OrderSummary",
-  props: {
-    productCount: Number,
-    totalPrice: Number
+  data() {
+    return({
+      nameInput: '',
+      surnameInput: '',
+      telephoneNumber: '',
+      streetInput: '',
+      homeNumberInput: '',
+      postCodeInput: '',
+      cityInput: '',
+      countryInput: '',
+      order_id: Number
+    })
+  },
+  methods: {
+    showSuccessModal() {
+      this.$refs["successCreate"].show()
+    },
+    showFailModal() {
+      this.$refs["failCreate"].show()
+    },
+    hideSuccessModal() {
+      this.$refs["successCreate"].hide();
+      this.$router.push({name: "payment", params: { order_id: this.order_id }});
+    },
+    hideFailModal() {
+      this.$refs["failCreate"].hide();
+    },
+    
+    executeOrder66() {
+      let user = JSON.parse(localStorage.getItem('user'))
+      // eslint-disable-next-line no-console
+      console.log(user)
+      let token = user.jwtToken
+      let bucketId = token.substring(0, token.length/4)
+      let totalValue = null
+
+      axios.get(config.root + '/bucket/getBucketById/' + bucketId)
+      .then( (res) => {
+        totalValue = res.data.totalValue
+      }).then( () => {
+        axios.post(config.root + '/order/addOrder', {
+          firstName: this.nameInput,
+          lastName: this.surnameInput,
+          adress: this.streetInput + '' + this.homeNumberInput + '' + this.postCodeInput + '' 
+          + this.cityInput + '' + this.countryInput,
+          phoneNumber: this.telephoneNumber,
+          email: user.email,
+          orderBucketId: bucketId,
+          orderValue: totalValue,
+          isPaid: true
+        }).then( (res) => {
+          this.order_id = res.data
+          this.showSuccessModal()
+          // eslint-disable-next-line no-console
+          console.log(res)
+        }).catch( () => {
+          this.showFailModal()
+        })
+      })
+    }
   }
 };
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 ul {
   list-style-type: none;
