@@ -22,9 +22,10 @@ public class UserSignUpPOJOToUserTransformer implements Transformer<UserSignUpPO
 
         Privilege privilege = createPrivilegeIfNotFound("PRIVILEGE_USER");
         Privilege privilege2 = createPrivilegeIfNotFound("PRIVILEGE_COMMUNICATOR_CLIENT");
-        createPrivilegeIfNotFound("PRIVILEGE_COMMUNICATOR_ADMIN");
-        createPrivilegeIfNotFound("PRIVILEGE_ADMIN");
-        createPrivilegeIfNotFound("PRIVILEGE_PRODUCT_MANAGER");
+        Privilege privilege3 =createPrivilegeIfNotFound("PRIVILEGE_COMMUNICATOR_ADMIN");
+        Privilege privilege4 = createPrivilegeIfNotFound("PRIVILEGE_ADMIN");
+        Privilege privilege5 = createPrivilegeIfNotFound("PRIVILEGE_PRODUCT_MANAGER");
+        Role role2 = createRoleIfNotFound("ROLE_ADMIN",Arrays.asList(privilege4,privilege5,privilege3));
         Role role = createRoleIfNotFound("ROLE_USER",Arrays.asList(privilege,privilege2));
         return User.builder()
                 .email(pojo.getEmail())
