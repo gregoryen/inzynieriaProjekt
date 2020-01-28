@@ -16,10 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/advertisement")
@@ -40,6 +37,10 @@ public class AdvertisementController {
     @PostMapping
     public Advertisement addProduct(@RequestBody AdvertisementPOJO advPOJO) {
        Advertisement adv = advertisementPOJOToAdvertisement.transform(advPOJO);
+        System.out.println(adv.getDate());
+        System.out.println(adv.getDescription());
+        System.out.println(adv.getId());
+        System.out.println(adv.getMainImage());
         Integer mainImage = adv.getMainImage();
         Advertisement savedAdv = advertisementRepo.save(adv);
 
@@ -50,6 +51,12 @@ public class AdvertisementController {
         }
 
         return savedAdv;
+    }
+
+
+    @GetMapping
+    public Collection<Advertisement> getAll(){
+        return advertisementRepo.getAllSortedByDate();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

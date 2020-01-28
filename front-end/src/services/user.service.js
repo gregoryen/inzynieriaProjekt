@@ -77,6 +77,9 @@ class UserService {
       ...{"Access-Control-Allow-Origin": "*",
     "Content-Type": "application/json"}}})
   }
+  async getAdvertisement(){
+   
+       return await axios.get(API_URL +'/advertisement',{headers:authHeader()})
+  }
 }
-
 export default new UserService();

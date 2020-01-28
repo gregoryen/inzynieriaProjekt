@@ -13,7 +13,7 @@
                             >
                                 <b-form-input
                                         id="input-1"
-                                        v-model="form.product.name"
+                                        v-model="form.advertisement.name"
                                         type="text"
                                         required
                                         placeholder="Podaj tytuł"
@@ -49,7 +49,7 @@
                                           label-for="input-1">
                                 <b-form-textarea
                                         id="description"
-                                        v-model="form.product.description"
+                                        v-model="form.advertisement.description"
                                         placeholder="Opis"
                                         rows="3"
                                         max-rows="12"
@@ -63,23 +63,10 @@
                             >
                                 <b-form-input
                                         id="input-2"
-                                        v-model="form.product.name"
+                                        v-model="form.advertisement.date"
                                         type="date"
                                         required
                                         placeholder="Podaj datę początku ogłoszenia"
-                                ></b-form-input>
-                            </b-form-group>
-                                <b-form-group
-                                    id="input-group-3"
-                                    label="Data wygaśniecia:"
-                                    label-for="input-3"
-                            >
-                                <b-form-input
-                                        id="input-3"
-                                        v-model="form.product.name"
-                                        type="date"
-                                        required
-                                        placeholder="Podaj date końca ogłoszneia"
                                 ></b-form-input>
                             </b-form-group>
                             <b-button type="submit" variant="primary">Dodaj</b-button>
@@ -89,9 +76,23 @@
                 </b-col>
             </b-row>
         </b-container>
+          <b-modal ref="successCreate" hide-footer title="Utworzono nowy produkt">
+            <div class="d-block text-center">
+                <h3>Nowe ogłoszenie zostało dodane</h3>
+            </div>
+            <b-button class="mt-3" variant="success" block @click="hideSuccessModal">OK</b-button>
+        </b-modal>
+
+        <b-modal ref="failCreate" hide-footer title="NIE stworzono nowego produktu">
+            <div class="d-block text-center">
+                <h3>Utworzenie nowego ogłoszenia nie udało się</h3>
+            </div>
+            <b-button class="mt-3" variant="danger" block @click="hideFailModal">OK</b-button>
+        </b-modal>
+
         <b-modal ref="waitCreate" hide-footer title="Zdjęcia nie zostały jeszcze wysłane">
             <div class="d-block text-center">
-                <h3>Proszę odczekać chwilę i spróbować zatwierdzić dodanie nowego produktu ponownie</h3>
+                <h3>Proszę odczekać chwilę i spróbować zatwierdzić dodanie ogłoszenia ponownie</h3>
             </div>
             <b-button class="mt-3" variant="danger" block @click="hideWaitModal">OK</b-button>
         </b-modal>
@@ -107,7 +108,7 @@
     import '@riophae/vue-treeselect/dist/vue-treeselect.css'
     import globalConfig from '../config'
 
-    const PRODUCTS = '/advertisement';
+    const ADVERTISEMENTS = '/advertisement';
     const UPLOAD_IMAGE = '/advImages/uploadImage';
 
     export default {
@@ -116,36 +117,25 @@
             return {
 
                 form: {
-                    product: {
+                    advertisement: {
                         name: '',
                         description: '',
-                        mainCategoryId: null,
-                        categories: null,
-                        price: null,
-                        reference: '',
-                        isbn: '',
-                        ean13: '',
-                        active: true,
-                        mainImage: null
-                    },
-                    additionalImages: null
+                        mainImage: null,
+                        date:''
+                    }
                 },
-                additionalImagesFiles: null,
                 mainImageFile: null,
                 show: true,
                 supported: {
-
-                    treeCategories: [],
                     mainImageURL: null,
-                    additionalImagesURL: null,
                 },
                 status: {
                     mainImageSend: true,
-                    additionalImagesSend: true,
-
+               
                 }
-            }
-        },
+            
+        }
+    },
         methods: {
 
             showSuccessModal() {
@@ -156,9 +146,6 @@
             },
             waitModal() {
                 this.$refs["waitCreate"].show();
-            },
-            selectCategoryModal() {
-                this.$refs["selectCategory"].show();
             },
             hideSuccessModal() {
                 this.$refs["successCreate"].hide();
@@ -171,51 +158,39 @@
             hideWaitModal() {
                 this.$refs["waitCreate"].hide();
             },
-            hideSelectCategoryModal() {
-                this.$refs["selectCategory"].hide();
-            },
             resetMainImage() {
                 this.$refs['mainImage'].reset();
                 this.mainImageFile = null;
-                this.form.product.mainImage = null;
+                this.form.advertisement.mainImage = null;
                 this.supported.mainImageURL = null;
                 this.status.mainImageSend = true;
             },
             onSubmit(evt) {
                 evt.preventDefault();
-                if (this.form.product.mainCategoryId) {
-                    if ( his.status.mainImageSend === true) {
+              
+                    if ( this.status.mainImageSend === true) {
                             this.form.additionalImages = []
                         }
-                        this.form.additionalImages.push(this.form.product.mainImage);
+                        
                         const config = {
                             headers: {
                                 'content-type': 'application/json'
                             },
                         };
-                        axios.post(globalConfig.root + PRODUCTS, this.form, config)
+                      
+                        axios.post(globalConfig.root + ADVERTISEMENTS, this.form.advertisement, config)
                             .then(() => {
                                 this.showSuccessModal();
                             }).catch(() => {
                             this.showFailModal();
                         });
-                } 
+                
             },
             onReset() {
-                this.form.product.name = '';
-                this.form.product.description = '';
-                this.form.product.mainCategoryId = null;
-                this.form.product.categories = null;
-                this.form.product.price = null;
-                this.form.product.reference = '';
-                this.form.product.isbn = '';
-                this.form.product.ean13 = '';
-                this.form.product.active = true;
+                this.form.advertisement.name = '';
+                this.form.advertisement.description = '';
                 //Reset form images
                 this.resetMainImage();
-                this.resetAdditionalImages();
-                this.getTree();
-                //Reset all view
                 this.resetView()
             },
             resetView() {
@@ -226,7 +201,7 @@
             },
             onMainImagePicked(event) {
                 this.status.mainImageSend = false;
-                this.form.product.mainImage = null;
+                this.form.advertisement.mainImage = null;
                 const files = event.target.files;
 
                 //Create imageURL to display selected image to user
@@ -249,7 +224,7 @@
 
                     .then(res => {
                         if (res.status === 200) {
-                            this.form.product.mainImage = res.data.id;
+                            this.form.advertisement.mainImage = res.data.id;
                             this.status.mainImageSend = true;
                         }
                     })

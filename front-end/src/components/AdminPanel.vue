@@ -30,7 +30,8 @@
         </div>
       </b-col>
       <b-col cols="12" md="8">
-   
+
+         <AddAdvertisement v-if="this.changeMainTable ==='addAdvertisement'" />
     <OpinionsInAdminPanel  v-if="this.changeMainTable === 'opinions'"/>
     <AdminPanelShowRoles v-if="this.changeMainTable==='showRoles'"   :forceUpdate = "forceUpdateAdminPanelShowRoles"  :key="AdminPanelShowRolesReRender"/>
     <AdminPanelShowPrivileges v-if="this.changeMainTable==='showPrivileges'"/>
@@ -46,7 +47,7 @@
 <script>
 
 import OpinionsInAdminPanel from "./OpinionsInAdminPanel";
-
+import AddAdvertisement from './AddAdvertisement.vue';
 import AdminPanelShowRoles from './AdminPanelShowRoles';
 import AdminPanelShowPrivileges from './AdminPanelShowPrivileges';
 import AdminPanelShowUsers from './AdminPanelShowUsers';
@@ -54,7 +55,7 @@ export default {
   name: "AdminPanel",
   components: {
     OpinionsInAdminPanel,
-
+    AddAdvertisement,
     AdminPanelShowRoles,
     AdminPanelShowPrivileges,
     AdminPanelShowUsers

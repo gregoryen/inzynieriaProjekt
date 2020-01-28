@@ -18,55 +18,54 @@
         img-src="../assets/tasmaKroplujaca.jpg"
       >
       </b-carousel-slide>
-
-      <!-- Three xd -->
       <b-carousel-slide
         caption="Three whitening"
         img-src="../assets/bielenie.jpg"
       >
       </b-carousel-slide>
     </b-carousel>
-    <div>
-      <div class="space"></div>
-      <b-card-group deck>
-        <div class="small-card-deck">
-        <b-card
-          border-variant="success"
-          img-src="../assets/grabie.jpg"
-          img-alt="Card image"
-          img-top
-          img-height="560px"
-        >
-          <h2>
-            Our best rating product
-          </h2>
-        </b-card>
-        <b-card
-          border-variant="success"
-          img-src="../assets/opryskiwacze.jpg"
-          img-alt="Card image"
-          img-bottom
-        >
-          <h2>
-            Now all sprayers on sale !!!
-          </h2>
-        </b-card>
-        </div>
-      </b-card-group>
-    </div>
+    <table>
+       
+            <div v-for="item in filteredAdv()" v-bind:key="item.name">
+                
+              <tr class="header">{{ item.name }}</tr>
+              <td class="description">{{ item.description }}</td>
+              <tr class="image"><img :src="'http://localhost:8100/advImages/downloadMainImage?idAdv=' 
+                    + item.id"/></tr>
+
+            </div>
+    </table>
   </div>
 </template>
 
 <script>
+import UserService from '../services/user.service';
 export default {
   name: "Home",
   data() {
     return {
       slide: 0,
+      mainTable:null,
+      show:false,
       sliding: null
     };
   },
+  mounted() {
+        UserService.getAdvertisement().then(array=>{this.mainTable = array.data})
+},
   methods: {
+    filteredAdv:function(){
+if(this.mainTable.length<=5)
+return this.mainTable
+else
+return this.mainTable.slice(0,5)
+
+
+    },
+
+    
+      
+    
     onSlideStart() {
       this.sliding = true;
     },
@@ -76,4 +75,11 @@ export default {
   }
 };
 </script>
+<style>
+.header{
+  font-size:40px;
+  font-style:italic;
 }
+
+</style>
+
