@@ -172,33 +172,46 @@ const router = new VueRouter({
       component: Payment
     },
     {
-      path: '/addProduct',
-      component: AddProduct
-    },
-    {
       path: '/adminPanel',
       name: 'adminPanel',
       component: AdminPanel,
       beforeEnter: ifHavePrivilege,
       meta: {
-        requiredPrivilege: 'ADMIN_PRIVILEGE'
+        requiredPrivilege: 'PRIVILEGE_ADMIN'
       },
     },
     {
       path: '/warehouseSupplyForm',
-      component: WarehouseSupplyForm
-    },
+      component: WarehouseSupplyForm,
+      meta: {
+        requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
+      }}
+      ,
+    
     {
       path: '/StockAmounts',
       component: StockAmounts
-    },
+      ,
+      meta: {
+        requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
+      }},
+      
+    
   { path: '/product', name: 'product', component: Product },
   { path: '/products', name: 'products', component: Products },
   { path: '/categories', name: 'categories', component: Categories },
-  { path: '/addCategory', name: 'addCategory', component: AddCategory},
-  { path: '/addProduct', name: 'addProduct', component: AddProduct },
-  { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory },
-  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct },
+  { path: '/addCategory', name: 'addCategory', component: AddCategory,  meta: {
+    requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
+  }},
+  { path: '/addProduct', name: 'addProduct', component: AddProduct,  meta: {
+    requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
+  }},
+  { path: '/deleteCategory', name: 'deleteCategory', component: DeleteCategory, meta: {
+    requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
+  }},
+  { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct, meta: {
+    requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
+  } },
   { path: '/overview', name: 'overview', component: ProductsOverview }
   ]
 });

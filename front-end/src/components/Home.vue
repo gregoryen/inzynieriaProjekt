@@ -31,7 +31,8 @@
               <tr class="header">{{ item.name }}</tr>
               <td class="description">{{ item.description }}</td>
               <tr class="image"><img :src="'http://localhost:8100/advImages/downloadMainImage?idAdv=' 
-                    + item.id"/></tr>
+                    + item.id" height="850em" width="1110em" /></tr>
+                    <tr><td>{{item.date.substring(0,10)}}</td></tr>
 
             </div>
     </table>

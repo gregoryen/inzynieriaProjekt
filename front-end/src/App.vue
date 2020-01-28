@@ -22,9 +22,29 @@
         </li>
       </div>
       <div class="navbar-nav ml-auto" v-if="currentUser">
-        <li class="nav-item" v-if="ifHavePrivilege('ADMIN_PRIVILEGE')">
+        <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_ADMIN')">
           <a href="/adminPanel" class="nav-link">
            Admin Panel
+          </a>
+        </li>
+          <li class="nav-item">
+          <a href="/overview" class="nav-link">
+           Overview
+          </a>
+        </li>
+          <li class="nav-item">
+          <a href="/communicator" class="nav-link">
+           Contact
+          </a>
+        </li>
+          <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
+          <a href="/warehouseSupplyForm" class="nav-link">
+           Warehouse Supply
+          </a>
+        </li>
+         <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
+          <a href="/StockAmounts" class="nav-link">
+           Stock Amounts
           </a>
         </li>
         <li class="nav-item">
@@ -71,10 +91,13 @@ export default {
       this.$router.push("/login");
     },
     ifHavePrivilege(privilegeName) {
+     
       if (this.$store.state.auth.status.loggedIn) {
-
+        
         let userInfo = this.$store.state.auth.user.privileges.split(',');
+        
         for (let i = 0; i < userInfo.length; i++) {
+            
           if (userInfo[i] == privilegeName) {
             return true;
           }
