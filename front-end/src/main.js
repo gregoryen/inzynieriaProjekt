@@ -118,7 +118,7 @@ const ifHavePrivilege = (to, from, next) => {
 const pluginOptions = {
     globalOptions: {currency: 'PLN'}
 }
-
+export const bus = new Vue();
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(VueCurrencyInput, pluginOptions)
@@ -203,4 +203,3 @@ new Vue({
     }),
     render: h => h(App),
 }).$mount('#app')
-export const bus = new Vue();
