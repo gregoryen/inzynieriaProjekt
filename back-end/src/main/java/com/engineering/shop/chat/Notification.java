@@ -29,7 +29,7 @@ public class Notification {
                         sendNotification(reciver);
                     }
                 },
-                30000 // 900000 - 15 minut
+                900000 // 900000 - 15 minut
         );
     }
 
