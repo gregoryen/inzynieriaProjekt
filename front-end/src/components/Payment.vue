@@ -94,23 +94,58 @@ export default {
     hideFailModal() {
       this.$refs["failCreate"].hide();
     },
+  
 
     executePayment69() {
         let queryString = window.location.href.split('/');
         // eslint-disable-next-line no-console
         console.log(queryString[queryString.length - 1])
+        let error = false;
 
         let url = apiConfig.root + "/payment/create";
-        axios.post(url, {
-            orderId: queryString[queryString.length - 1],
-            paymentType: "Credit Card"
-        }).then(response => {
-            // eslint-disable-next-line no-console
-            console.log(response)
-            this.showSuccessModal()
-        }).catch(() => {
-            this.showFailModal()
-        })
+
+        for (let item of this.cartItems)
+        {
+            let patchURL = apiConfig.root + "/stock_amounts/decrease_amount?amount=" 
+                          + item.productQuantity + "&productId=" + item.product.id
+            axios.post(patchURL)
+            .then(res => {
+              // eslint-disable-next-line no-console
+              console.log(res)
+              if (res.data.status === "failed")
+              {
+                this.showFailModal();
+                error = true;
+              }
+            })
+
+        }
+
+        setTimeout(function(){ 
+           // eslint-disable-next-line no-console
+              console.log("timeout")
+        }, 1000);
+          
+          if (!error)
+          {
+            axios.post(url, {
+              orderId: queryString[queryString.length - 1],
+              paymentType: "Credit Card"
+            }).then(response => {
+              // eslint-disable-next-line no-console
+              console.log(response)
+              this.showSuccessModal()
+            }).catch(() => {
+              this.showFailModal()
+            })
+          }
+          
+
+
+            
+
+
+        
     }
   },
   created() {

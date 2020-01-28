@@ -24,7 +24,7 @@ import config from "../config.js"
                     product: this.$props.productId,
                     productName: null,
                     productPrice: null,
-                    productQuantity: 1,
+                    productQuantity: 0,
                     bucket: bucketId
                 }).then( ()=> {
                     this.$router.push("/shoppingCart")
