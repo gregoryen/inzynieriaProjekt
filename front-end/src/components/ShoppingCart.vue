@@ -32,7 +32,7 @@
                       v-bind:id="item.product.id"
                       v-if="item.product.active === true"
                       type="number"
-                      min="1"
+                      v-bind:min="getMinValue(item.product.id)"
                       v-bind:max="getMaxValue(item.product.id)"
                       step="1"
                       v-bind:value="item.productQuantity"
@@ -145,6 +145,13 @@ export default {
         }
       }
       return 10;
+    },
+    getMinValue: function(id) {
+      if (this.getMaxValue(id) < 1)
+      {
+        return 0;
+      }
+      else return 1;
     }
   },
   created() {
