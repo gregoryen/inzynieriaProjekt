@@ -1,22 +1,22 @@
 <template>
     <div class="conversationsList">
         <div class="container">
-            <h1>Twoje konwersacje</h1>
+            <h1>Your conversations</h1>
             <ul id="usersList" v-for="i in userConversations" :key="i">
-                <li>{{i}} <input type="button" @click="onClickButton(i)" value="Otwórz" class="btn btn-info"></li>
+                <li>{{i}} <input type="button" @click="onClickButton(i)" value="Open" class="btn btn-info"></li>
             </ul>
         </div>
     </div>
 </template>
 
 <script>
-    import axios from 'axios'
+    import axios from 'axios';
+    import conf from './../config';
+
 
     export default {
         name: "ConversationsList",
-        props: {
-            token: String
-        },
+        props: {},
         data() {
             return {
                 userConversations: null
@@ -24,8 +24,8 @@
         },
         methods: {
             getConversations: function () {
-                var root = "http://localhost:8080";
-                var token = this.token;
+                var root = conf.root;
+                var token = this.$store.state.auth.user.jwtToken;
                 const config = {
                     headers: {
                         Authorization: "Bearer " + token
@@ -50,5 +50,13 @@
 </script>
 
 <style scoped>
+
+    * {
+        text-align: center;
+    }
+
+    ul {
+        list-style-type: none;
+    }
 
 </style>
