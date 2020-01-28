@@ -42,9 +42,9 @@
                 // eslint-disable-next-line no-console
                 console.log(this.$store.state.auth.user);
 
-                var root = conf.root;
+                var root = conf.root
 
-                var url = root + "/messages/user" + (this.$store.state.auth.user.privileges == "PRIVILEGE_COMMUNICATOR_ADMIN" ? "/" + this.addressee : "");
+                var url = root + "/messages/user" + (this.$store.state.auth.user.privileges.includes("PRIVILEGE_COMMUNICATOR_ADMIN") ? "/" + this.addressee : "");
                 var token = this.$store.state.auth.user.jwtToken;
 
                 const config = {

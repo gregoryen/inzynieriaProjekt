@@ -37,9 +37,30 @@
            Contact
           </a>
         </li>
+
           <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
           <a href="/warehouseSupplyForm" class="nav-link">
            Warehouse Supply
+          </a>
+        </li>
+        <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
+          <a href="/addProduct" class="nav-link">
+            Add Product
+          </a>
+        </li>
+        <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
+          <a href="/deleteProduct" class="nav-link">
+            Delete Product
+          </a>
+        </li>
+        <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
+          <a href="/addCategory" class="nav-link">
+            Add Category
+          </a>
+        </li>
+        <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
+          <a href="/deleteCategory" class="nav-link">
+            Delete Category
           </a>
         </li>
          <li class="nav-item" v-if="ifHavePrivilege('PRIVILEGE_PRODUCT_MANAGER')">
@@ -91,13 +112,13 @@ export default {
       this.$router.push("/login");
     },
     ifHavePrivilege(privilegeName) {
-     
+
       if (this.$store.state.auth.status.loggedIn) {
-        
+
         let userInfo = this.$store.state.auth.user.privileges.split(',');
-        
+
         for (let i = 0; i < userInfo.length; i++) {
-            
+
           if (userInfo[i] == privilegeName) {
             return true;
           }
@@ -117,7 +138,7 @@ export default {
           console.log(res)
       })
       return user.jwtToken
-    } 
+    }
   }
 };
 </script>

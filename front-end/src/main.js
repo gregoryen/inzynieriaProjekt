@@ -45,6 +45,10 @@ import DeleteProduct from './components/DeleteProduct'
 import {extend} from 'vee-validate';
 import AdminPanel from "./components/AdminPanel"
 import ProductsOverview from "./components/ProductsOverview";
+import Communicator from "./components/Communicator";
+import WarehouseSupplyForm from "./components/WarehouseSupplyForm";
+import StockAmounts from "./components/StockAmounts";
+import Payment from "./components/Payment";
 
 
 extend('required', {
@@ -185,8 +189,14 @@ const router = new VueRouter({
         { path: '/deleteProduct', name: 'deleteProduct', component: DeleteProduct, meta: {
                 requiredPrivilege: 'PRIVILEGE_PRODUCT_MANAGER'
             } },
-        { path: '/overview', name: 'overview', component: ProductsOverview }
+        { path: '/overview', name: 'overview', component: ProductsOverview },
+        { path: '/communicator', name: 'communicator', component: Communicator },
+
+        { path: '/warehouseSupplyForm', name: 'WarehouseSupplyForm', component: WarehouseSupplyForm },
+        { path: '/stockAmounts', name: 'stockAmounts', component: StockAmounts },
+        { path: '/payment/:order_id', name: 'payment', component:  Payment},
     ]
+
 });
 
 
