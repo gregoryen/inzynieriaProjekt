@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App.vue'
 import BootstrapVue from 'bootstrap-vue'
 import VueRouter from 'vue-router'
+import VueChatScroll from 'vue-chat-scroll'
+
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -68,6 +70,7 @@ Vue.component('ValidationProvider', ValidationProvider);
 Vue.component('ValidationObserver', ValidationObserver);
 Vue.use(BootstrapVue)
 Vue.use(VueRouter)
+Vue.use(VueChatScroll);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 

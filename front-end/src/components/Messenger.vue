@@ -1,20 +1,23 @@
 <template>
     <div class="messenger">
         <div class="container" id="chatBox">
-            <input type="button" @click="onClickBackButton()" value="Back" class="btn btn-info">
+            <input v-if="addressee != null" type="button" @click="onClickBackButton()" value="Back" class="btn btn-info">
             <h2 v-if="addressee == null">Conversation with: Helpdesk</h2>
             <h2 v-else>Conversation with: {{addressee}}</h2>
-            <div class="container rounded" id="messageArea">
-                <ul v-for="message in messages" v-bind:key="message.id">
-                    <li v-if="message.sender == addressee" name="leftSide">{{message.text}}</li>
-                    <li v-else name="rightSide">{{message.text}}</li>
+
+            <div class="container rounded" id="messageArea" >
+                <ul id="messagesList" v-chat-scroll="{always: true, smooth: true}">
+                    <li v-for="message in messages" v-bind:key="message.id">
+                        <div v-if="message.sender == addressee" name="leftSide">{{message.text}}</div>
+                        <div v-else name="rightSide">{{message.text}}</div>
+                    </li>
                 </ul>
             </div>
-            <form class="form-inline" id="messageForm">
+            <div class="form-inline" id="messageForm">
                 <input type="text" id="message" v-model="text" placeholder="Type a message..." autocomplete="off"
-                       class="form-control"/>
+                       class="form-control" @keydown.enter="sendMessage()"/>
                 <input type="button" id="bt" @click="sendMessage()" value="Send" class="btn btn-info">
-            </form>
+            </div>
         </div>
     </div>
 </template>
@@ -41,8 +44,7 @@
 
                 var root = conf.root;
 
-                // Privileges niżej będą zmienione, jak zostaną ustalone role
-                var url = root + "/messages/user" + (this.$store.state.auth.user.privileges == "ADMIN" ? "/" + this.addressee : "");
+                var url = root + "/messages/user" + (this.$store.state.auth.user.privileges == "PRIVILEGE_COMMUNICATOR_ADMIN" ? "/" + this.addressee : "");
                 var token = this.$store.state.auth.user.jwtToken;
 
                 const config = {
@@ -77,6 +79,7 @@
                 axios.post(root + "/messages", data, config).then(() => {
                     this.text = "";
                     this.loadMessages();
+                    // this.messagesList.scrollTop = this.messagesList.scrollHeight;
                 }).catch(error => {
                     /* eslint-disable no-console */
                     console.log(error);
@@ -95,20 +98,19 @@
 
 <style scoped>
     #chatBox {
-        /*border: solid grey 2px;*/
-        margin-top: 5%;
+        margin-top: 5vh;
         min-height: 50vh;
     }
 
     #messageArea {
         border: solid grey 2px;
-        min-height: 50vh;
+        height: 50vh;
+        overflow-y: auto;
     }
 
     .form-inline {
         padding: auto;
         margin: auto;
-
     }
 
     #messageForm {
@@ -129,17 +131,23 @@
 
     ul {
         list-style-type: none;
+        padding-left: 0;
     }
 
-    li[name="leftSide"] {
+    div[name="leftSide"] {
         text-align: left;
+        padding-top: 20px;
         font-size: 20px;
+        list-style: none;
     }
 
-    li[name="rightSide"] {
+    div[name="rightSide"] {
         text-align: right;
+        padding-top: 20px;
         color: blue;
         font-size: 20px;
+        list-style: none;
     }
+
 
 </style>
